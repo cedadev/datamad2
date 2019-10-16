@@ -88,6 +88,17 @@
                         <li class="nav-item">
                             <a class="nav-link" href="">My Grants</a>
                         </li>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="">My Account</a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" href="{%  url 'logout' %}">Logout</a>
+                            </li>
+                            {% else %}
+                                <a class="nav-link" href="{%  url 'login' %}">Login</a>
+                            {% endif %}
+                        </li>
                     </ul>
                 </div>
                 <a href="https://www.ceda.ac.uk/" class=navbar-brand">
