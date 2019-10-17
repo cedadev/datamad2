@@ -135,7 +135,7 @@ class Grant(models.Model):
     # Sanctions Recommended	Sharepoint	Yes, No or Null
     sanctions_recommended = models.BooleanField(null=True, blank=True)
     # Imorted grant info	Siebel
-    imported_grant = models.ForeignKey(to=ImportedGrant, on_delete=models.PROTECT)
+    imported_grant = models.ForeignKey(to=ImportedGrant, on_delete=models.PROTECT, primary_key=True)
     # C for S found?	Sharepoint	Yes/No/Grant not found
     case_for_support_found = models.BooleanField(null=True, blank=True)
 

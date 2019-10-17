@@ -309,9 +309,9 @@
                     <tr>
                         <th></th>
                             {%  if grant_detail.claim_status %}
-                                <td> CLAIMED </td>
+                                <td><a href="{% url 'change_claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> Change claim status </button></a></td>
                             {% else %}
-                                <td col align="right"><button class="btn btn-primary" id="claim">CLAIM</button></td>
+                                <td><a href="{% url 'claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> CLAIM</button></a></td>
                             {%  endif %}
                     </tr>
                     </tbody>
