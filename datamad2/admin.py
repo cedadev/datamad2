@@ -14,7 +14,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields = ('email', 'data_centre')
+        fields = ('email', 'first_name', 'last_name', 'data_centre')
 
     def clean_password2(self):
     #checks the 2 passwords match
@@ -38,7 +38,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields= ('email', 'password', 'data_centre', 'is_active', 'is_admin')
+        fields= ('email', 'first_name', 'last_name', 'password', 'data_centre', 'is_active', 'is_admin')
 
     def clean_password(self):
         return self.initial["password"]
@@ -47,16 +47,16 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('email', 'data_centre', 'is_admin')
+    list_display = ( 'first_name', 'last_name', 'email','data_centre', 'is_admin')
     list_filter = ('is_admin',)
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'data_centre')}),
+        (None, {'fields': ('email', 'first_name', 'last_name', 'password', 'data_centre')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'data_centre', 'password1', 'password2')
+            'fields': ('email', 'first_name', 'last_name', 'data_centre', 'password1', 'password2')
         }),
     )
     search_fields = ('email',)

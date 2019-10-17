@@ -2,3 +2,18 @@
   padding: 5px 32px;
   text-align: center;
 }
+
+.login-box {
+  max-width: 300px;
+  margin: 0 auto;
+  position: relative;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px 20px 30px 20px;
+  text-align: center
+}
+
+form {
+  display:table;
+  margin:auto;
+}

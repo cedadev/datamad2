@@ -122,86 +122,33 @@
     <div class="container{% if container_fluid %}-fluid{% endif %}">
 
     {% block content_main %}
-        {% block content_header %}
-
-            <div class="page-header" id="banner">
-            <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-2">
-                {% block page_title %}
-                    <div class="wrapper">
-                        <!-- Sidebar -->
-                        <nav id="sidebar">
-                            <div class="sidebar-header">
-                                <h3>DataMAD</h3>
-                            </div>
-                            <ul class="list-unstyled components">
-                                <h4>Grants</h4>
-                                <li>
-                                    <a href="{% url 'grant_list'%}">All</a>
-                                </li>
-                                <li>
-                                    <a href="#">Unassigned</a>
-                                </li>
-                                <li>
-                                    <a href="#">BODC</a>
-                                </li>
-                                <li>
-                                    <a href="#">CEDA</a>
-                                </li>
-                                <li>
-                                    <a href="#">EIDC</a>
-                                </li>
-                                <li>
-                                    <a href="#">NGDC</a>
-                                </li>
-                                <li>
-                                    <a href="#">PDC</a>
-                                </li>
-                                <li>
-                                    <a href="#">ADS</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                {% endblock %}
-            </div>
             <div class="col">
-                <table class="row-border" id="grants" style="width:100%">
-                    <thead>
-                    <tr>
-                        <th>Grant Reference</th>
-                        <th>Title</th>
-                        <th>Assigned Data Centre</th>
-                        <th>Other Data Centre </th>
-                        <th>Routing Classification</th>
-                        <th>Claim Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for grant in grants %}
-                        <tr>
-                            <td>
-                                <a href="{% url 'grant_detail' pk=grant.imported_grant.pk %}">
-                                    {{ grant.imported_grant.grant_ref}}
-                                </a>
-                            </td>
-                            <td> {{ grant.imported_grant.title }}</td>
-                            <td> {{ grant.assigned_data_centre }}</td>
-                            <td> {{ grant.other_data_centre }}</td>
-                            <td> {{ grant.imported_grant.routing_classification|icon }}</td>
-                            {%  if grant.imported_grant.claim_status %}
-                                <td id="claim">CLAIMED </td>
-                            {% else %}
-                                <td><a href="{% url 'claim' pk=grant.imported_grant.pk %}"><button class="btn btn-primary" id="claim"> CLAIM</button></a></td>
-                            {%  endif %}
-                        </tr>
+            <table class="row-border" id="grants" style="width:100%">
+            <tr>
+                <th> <h4>Account Details </h4></th>
+            </tr>
+            <tr>
+                <th>First Name</th>
+                <td>{{ user.first_name }} </td>
+            </tr>
+            <tr>
+                <th>Surname</th>
+                <td>{{ user.last_name }} </td>
+            </tr>
+            <tr>
+                <th>Email Address</th>
+                <td>{{ user.get_username }}</td>
+            </tr>
+            <tr>
+                <th>Data Centre</th>
+                <td>{{ user.data_centre }} </td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><a href="{% url 'logout'%}"> <button class="btn btn-primary" id="claim"> Logout </button> </a> </td>
+            </tr>
+    </table>
 
-                    {%  endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-        {% endblock content_header %}
     {% endblock content_main %}
 
 </div>
