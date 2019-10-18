@@ -135,7 +135,7 @@
                                 <h3>DataMAD</h3>
                             </div>
                             <ul class="list-unstyled components">
-                                <h4>All Grants</h4>
+                                <h4>Unassigned</h4>
                                 <li>
                                     <a href="{% url 'grant_list'%}">All</a>
                                 </li>
@@ -178,7 +178,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for grant in grants %}
+                    {% for grant in ceda_grants %}
                         <tr>
                             <td>
                                 <a href="{% url 'grant_detail' pk=grant.imported_grant.pk %}">

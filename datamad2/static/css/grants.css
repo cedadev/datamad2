@@ -17,3 +17,7 @@ form {
   display:table;
   margin:auto;
 }
+
+#site-name {
+ text-align: center;
+}

@@ -105,7 +105,7 @@ class Grant(models.Model):
     alt_data_contact_phone = models.CharField(max_length=256, null=True, blank=True)
     # Assigned Data Centre	Sharepoint	E.g. NGDC
     assigned_data_centre = models.CharField(max_length=200, blank=True, null=True,
-                                            choices=(("Unassigned", "Unassigned"),
+                                            choices=(
                                                      ("BODC", "BODC"),
                                                      ("CEDA", "CEDA"),
                                                      ("EIDC", "EIDC"),
@@ -115,7 +115,7 @@ class Grant(models.Model):
                                                      ))
     # Other DC's Expecting Datasets	Sharepoint	E.g. PDC
     other_data_centre = models.CharField(max_length=200, blank=True, null=True,
-                                         choices=(("None", "None"),
+                                         choices=(
                                                   ("BODC", "BODC"),
                                                   ("CEDA", "CEDA"),
                                                   ("EIDC", "EIDC"),

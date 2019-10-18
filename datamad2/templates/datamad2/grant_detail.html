@@ -136,13 +136,13 @@
                                     <a href="{% url 'grant_list'%}">All</a>
                                 </li>
                                 <li>
-                                    <a href="#">Unassigned</a>
+                                    <a href="{% url 'unassigned'%}">Unassigned</a>
                                 </li>
                                 <li>
                                     <a href="#">BODC</a>
                                 </li>
                                 <li>
-                                    <a href="#">CEDA</a>
+                                    <a href="{% url 'ceda'%}">CEDA</a>
                                 </li>
                                 <li>
                                     <a href="#">EIDC</a>
@@ -309,9 +309,15 @@
                     <tr>
                         <th></th>
                             {%  if grant_detail.claim_status %}
-                                <td><a href="{% url 'change_claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> Change claim status </button></a></td>
+                                <td>
+                                    <a href="{% url 'unclaim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> UNCLAIM </button></a>
+                                    <a href="{% url 'change_claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> REASSIGN </button></a>
+                                </td>
                             {% else %}
-                                <td><a href="{% url 'claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> CLAIM</button></a></td>
+                                <td>
+                                    <a href="{% url 'claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> CLAIM</button></a>
+                                    <a href="{% url 'change_claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> ASSIGN </button></a>
+                                </td>
                             {%  endif %}
                     </tr>
                     </tbody>
