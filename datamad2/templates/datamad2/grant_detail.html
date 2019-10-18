@@ -136,13 +136,13 @@
                                     <a href="{% url 'grant_list'%}">All</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'unassigned'%}">Unassigned</a>
+                                    <a href="#">Unassigned</a>
                                 </li>
                                 <li>
                                     <a href="#">BODC</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'ceda'%}">CEDA</a>
+                                    <a href="#">CEDA</a>
                                 </li>
                                 <li>
                                     <a href="#">EIDC</a>
@@ -308,10 +308,14 @@
                     </tr>
                     <tr>
                         <th></th>
-                            {%  if grant_detail.claim_status %}
+                            {%  if grant_detail.claim_status and grant.assigned_data_centre == user.data_centre %}
                                 <td>
                                     <a href="{% url 'unclaim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> UNCLAIM </button></a>
                                     <a href="{% url 'change_claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> REASSIGN </button></a>
+                                </td>
+                            {% elif  grant_detail.claim_status %}
+                                <td>
+                                    CLAIMED
                                 </td>
                             {% else %}
                                 <td>

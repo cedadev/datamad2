@@ -7,22 +7,26 @@ from django.db.models import Q
 
 @login_required
 def grant_detail(request, pk):
+    grant = get_object_or_404(Grant, pk=pk)
     grant_detail = get_object_or_404(ImportedGrant, pk=pk)
-    return render(request, 'datamad2/grant_detail.html', {'grant_detail': grant_detail})
+    return render(request, 'datamad2/grant_detail.html', {'grant_detail': grant_detail, 'grant':grant})
 
 
 def grant_list(request):
     grants = Grant.objects.all()
-    return render(request, 'datamad2/grant_list.html', {'grants': grants})
+    assignee = request.GET.get('data_centre', '')
+        # if assignee:
+        #     all = grants
+        #     unassigned = grants.filter(assigned_data_centre=None)
+        #     bodc = grants.filter(Q(assigned_data_centre="BODC")|Q(other_data_centre="BODC"))
+        #     ceda = grants.filter(Q(assigned_data_centre="CEDA") | Q(other_data_centre="CEDA"))
+        #     eidc = grants.filter(Q(assigned_data_centre="EIDC") | Q(other_data_centre="EIDC"))
+        #     ngdc = grants.filter(Q(assigned_data_centre="NGDC") | Q(other_data_centre="NGDC"))
+        #     pdc = grants.filter(Q(assigned_data_centre="PDC") | Q(other_data_centre="PDC"))
+        #     ads = grants.filter(Q(assigned_data_centre="ADS")|Q(other_data_centre="ADS"))
+        #     grants = all | unassigned | bodc | ceda | eidc | ngdc | pdc | ads | grants
+    return render(request, 'datamad2/grant_list.html', {'grants': grants, 'filter': assignee})
 
-
-def unassigned(request):
-    unassigned_grants = Grant.objects.filter(assigned_data_centre=None)
-    return render(request, 'datamad2/unassigned.html', {'unassigned_grants': unassigned_grants})
-
-def ceda(request):
-    ceda_grants = Grant.objects.filter(Q(assigned_data_centre="CEDA")|Q(other_data_centre="CEDA"))
-    return render(request, 'datamad2/ceda.html', {'ceda_grants': ceda_grants})
 
 
 @login_required
@@ -51,6 +55,7 @@ def unclaim(request, pk):
 @login_required
 def change_claim(request, pk):
     change_claim = get_object_or_404(Grant, pk=pk)
+    grant_detail = get_object_or_404(ImportedGrant, pk=pk)
     if request.method == 'POST':
         form = UpdateClaim(request.POST, instance=change_claim)
         if form.is_valid():
