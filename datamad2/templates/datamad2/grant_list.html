@@ -13,7 +13,7 @@
     {% endblock %}
 
     {% block stylesheets %}
-        <link rel="shortcut icon" href="http://www.ceda.ac.uk/static/img/favicon.ico"/>
+        <link rel="shortcut icon" href="https://nerc.ukri.org/nerc/includes/themes/MasterSite/images/favicon.ico">
         <!-- Bootstrap Core
         CSS -->
         <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/4/flatly/bootstrap.css" media="screen">
@@ -137,28 +137,28 @@
                             <ul class="list-unstyled components">
                                 <h4>All Grants</h4>
                                 <li>
-                                    <a href="{% url 'grant_list'%}">All</a>
+                                    <a href="{% url 'grant_list' %}">All</a>
                                 </li>
                                 <li>
-                                    <a href="#">Unassigned</a>
+                                    <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
                                 </li>
                                 <li>
-                                    <a href="#">BODC</a>
+                                    <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
                                 </li>
                                 <li>
-                                    <a href="#">CEDA</a>
+                                    <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
                                 </li>
                                 <li>
-                                    <a href="#">EIDC</a>
+                                    <a href="{% url 'grant_list' %}?datacentre=EIDC">EIDC</a>
                                 </li>
                                 <li>
-                                    <a href="#">NGDC</a>
+                                    <a href="{% url 'grant_list' %}?datacentre=NGDC">NGDC</a>
                                 </li>
                                 <li>
-                                    <a href="#">PDC</a>
+                                    <a href="{% url 'grant_list' %}?datacentre=PDC">PDC</a>
                                 </li>
                                 <li>
-                                    <a href="#">ADS</a>
+                                    <a href="{% url 'grant_list' %}?datacentre=ADS">ADS</a>
                                 </li>
                             </ul>
                         </nav>
