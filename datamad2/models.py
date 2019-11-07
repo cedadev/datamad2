@@ -2,14 +2,75 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
+from django.utils import timezone
 
-class ImportedGrant(models.Model):
-    # NGDC Management view field	Source (e.g. Siebel, NGDC)	Description			RTS Script
-
+class Grant(models.Model):
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
+    # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
+    alt_data_contact_email = models.EmailField(null=True, blank=True)
+    # Alt Data Contact Phone No	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
+    alt_data_contact_phone = models.CharField(max_length=256, null=True, blank=True)
+    # Assigned Data Centre	Sharepoint	E.g. NGDC
+    assigned_data_centre = models.CharField(max_length=200, blank=True, null=True,
+                                            choices=(
+                                                     ("BODC", "BODC"),
+                                                     ("CEDA", "CEDA"),
+                                                     ("EIDC", "EIDC"),
+                                                     ("NGDC", "NGDC"),
+                                                     ("PDC", "PDC"),
+                                                     ("ADS", "ADS"),
+                                                     ))
+    # Other DC's Expecting Datasets	Sharepoint	E.g. PDC
+    other_data_centre = models.CharField(max_length=200, blank=True, null=True,
+                                         choices=(
+                                                  ("BODC", "BODC"),
+                                                  ("CEDA", "CEDA"),
+                                                  ("EIDC", "EIDC"),
+                                                  ("NGDC", "NGDC"),
+                                                  ("PDC", "PDC"),
+                                                  ("ADS", "ADS"),
+                                                  ))
+    # Hide Record	Sharepoint
+    hide_record = models.BooleanField(null=True, blank=True)
+    # DateContact with PI	Sharepoint	Date or Null
+    date_contacted_pi = models.DateField(null=True, blank=True)
+    # Will Grant Produce Data	Sharepoint	Y/N
+    will_grant_produce_data = models.BooleanField(null=True, blank=True)
+    # Datasets Delivered as per DMP?	Sharepoint	Yes, No or Null
+    datasets_delivered = models.BooleanField(null=True, blank=True,
+                                             help_text="Datasets Delivered as per DMP?	Sharepoint	Yes, No or Null")
+    # Sanctions Recommended	Sharepoint	Yes, No or Null
+    sanctions_recommended = models.BooleanField(null=True, blank=True)
+    # C for S found?	Sharepoint	Yes/No/Grant not found
+    case_for_support_found = models.BooleanField(null=True, blank=True)
+    #claim status
+    claim_status = models.CharField(max_length=256, null=True, blank=True)
+    # checks for updated imported grant (more than one version)
+    updated_imported_grant = models.BooleanField(null=True, blank=True, editable=False, verbose_name='Grant updated')
+
+    def __str__(self):
+        return f"{self.grant_ref[:50]}"
+
+
+class ImportedGrant(models.Model):
+    #ordering by creation date
+    class Meta:
+      ordering = ['-creation_date']
     # Title	Siebel	Name of the grant			PROJECT_TITLE
     title = models.CharField(max_length=1024, default='')
+    # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
+    grant_ref = models.CharField(max_length=50, default='', blank=True)
+    #grant to imported grant relationship
+    grant = models.ForeignKey(to=Grant, on_delete=models.PROTECT, default='', null=True, blank=True)
+    #date imported grant was created
+    creation_date = models.DateTimeField(auto_now_add=True)
+    # def save(self, *args, **kwargs):
+    #     #On save, update timestamps
+    #     if not self.id:
+    #         self.created = timezone.now()
+    #     self.modified = timezone.now()
+    #     return super(ImportedGrant, self).save(*args, **kwargs)
     # Grant Status	Siebel	Active/Closed			GRANT_STATUS
     grant_status = models.CharField(max_length=50, default="Active",
                                     choices=(("Active", "Active"), ("Closed", "Closed")))
@@ -91,56 +152,11 @@ class ImportedGrant(models.Model):
     abstract = models.TextField(default='', blank=True)
     # Objectives	Siebel		Truncated
     objectives = models.TextField(default='', blank=True)
-    # Grant approved date
-    claim_status = models.CharField(max_length=256, null=True, blank=True)
+    # ordered by newest imported grant first
+
 
     def __str__(self):
-        return f"{self.grant_ref}: {self.title[:50]}... [{self.grant_holder}]"
-
-
-class Grant(models.Model):
-    # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
-    alt_data_contact_email = models.EmailField(null=True, blank=True)
-    # Alt Data Contact Phone No	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
-    alt_data_contact_phone = models.CharField(max_length=256, null=True, blank=True)
-    # Assigned Data Centre	Sharepoint	E.g. NGDC
-    assigned_data_centre = models.CharField(max_length=200, blank=True, null=True,
-                                            choices=(
-                                                     ("BODC", "BODC"),
-                                                     ("CEDA", "CEDA"),
-                                                     ("EIDC", "EIDC"),
-                                                     ("NGDC", "NGDC"),
-                                                     ("PDC", "PDC"),
-                                                     ("ADS", "ADS"),
-                                                     ))
-    # Other DC's Expecting Datasets	Sharepoint	E.g. PDC
-    other_data_centre = models.CharField(max_length=200, blank=True, null=True,
-                                         choices=(
-                                                  ("BODC", "BODC"),
-                                                  ("CEDA", "CEDA"),
-                                                  ("EIDC", "EIDC"),
-                                                  ("NGDC", "NGDC"),
-                                                  ("PDC", "PDC"),
-                                                  ("ADS", "ADS"),
-                                                  ))
-    # Hide Record	Sharepoint
-    hide_record = models.BooleanField(null=True, blank=True)
-    # DateContact with PI	Sharepoint	Date or Null
-    date_contacted_pi = models.DateField(null=True, blank=True)
-    # Will Grant Produce Data	Sharepoint	Y/N
-    will_grant_produce_data = models.BooleanField(null=True, blank=True)
-    # Datasets Delivered as per DMP?	Sharepoint	Yes, No or Null
-    datasets_delivered = models.BooleanField(null=True, blank=True,
-                                             help_text="Datasets Delivered as per DMP?	Sharepoint	Yes, No or Null")
-    # Sanctions Recommended	Sharepoint	Yes, No or Null
-    sanctions_recommended = models.BooleanField(null=True, blank=True)
-    # Imorted grant info	Siebel
-    imported_grant = models.ForeignKey(to=ImportedGrant, on_delete=models.PROTECT, primary_key=True)
-    # C for S found?	Sharepoint	Yes/No/Grant not found
-    case_for_support_found = models.BooleanField(null=True, blank=True)
-
-    def __str__(self):
-        return self.imported_grant.__str__()
+        return f"{self.grant_ref}: {self.title[:50]}: [{self.grant_holder}]"
 
 
 class MyUserManager(BaseUserManager):

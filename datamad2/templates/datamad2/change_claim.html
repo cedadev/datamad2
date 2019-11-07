@@ -13,7 +13,7 @@
     {% endblock %}
 
     {% block stylesheets %}
-        <link rel="shortcut icon" href="http://www.ceda.ac.uk/static/img/favicon.ico"/>
+        <link rel="shortcut icon" href="https://nerc.ukri.org/nerc/includes/themes/MasterSite/images/favicon.ico"/>
         <!-- Bootstrap Core
         CSS -->
         <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/4/flatly/bootstrap.css" media="screen">
@@ -38,7 +38,6 @@
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
         <script type="text/javascript" src="{% static 'js/table_sorter.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/general.js' %}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     {% endblock head_js %}
@@ -72,7 +71,7 @@
         <div class="container">
             {% block navbar_branding %}
                 <a href="https://nerc.ukri.org/" class="navbar-brand">
-                    <img src="https://nerc.ukri.org/nerc/assets/images/logos/nerc/nerc-logo-115.png" alt="NERC logo">
+                    <img src="{% static 'images/UKRI_NER_Council-Logo_Horiz-RGB[W].png' %}" alt="NERC logo" style="width:210px;height:60px;">
                 </a>
                 <div id="navbarResponsive">
                     <ul class="navbar-nav">
@@ -80,7 +79,7 @@
                             <a class="nav-link" href=""> Home </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'grant_list'%}">All Grants</a>
+                            <a class="nav-link" href="{% url 'grant_list'%}">Grants</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="">Science Area</a>
@@ -92,17 +91,24 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{%  url 'my_account' %}">My Account</a>
                             </li>
+                        {%  endif %}
+                        &emsp; &emsp;
+                    </ul>
+                </div>
+                <div>
+                    <ul class="navbar-nav">
+                        {% if user.is_authenticated %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{%  url 'logout' %}">Logout</a>
+                                <a class="nav-link" href="{%  url 'logout' %}"><i class='fa fa-user-alt'></i>&nbsp;Logout</a>
                             </li>
                         {% else %}
-                            <a class="nav-link" href="{%  url 'login' %}">Login</a>
+                            <a class="nav-link" href="{%  url 'login' %}"><i class='fa fa-user-alt'></i>&nbsp;Login</a>
                         {% endif %}
                     </ul>
                 </div>
-                <a href="https://www.ceda.ac.uk/" class=navbar-brand">
-                    <img src="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_div/0.3.1/_assets/img/ceda_logo_transp_white_h80.png" alt="CEDA logo">
-                </a>
+{#                <a href="https://www.ceda.ac.uk/" class=navbar-brand">#}
+{#                    <img src="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_div/0.3.1/_assets/img/ceda_logo_transp_white_h80.png" alt="CEDA logo">#}
+{#                </a>#}
             {% endblock navbar_branding %}
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
