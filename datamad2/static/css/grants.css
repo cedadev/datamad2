@@ -63,3 +63,13 @@ form {
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
+.w3-card{
+  box-shadow:0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+#button {
+  text-align: right;
+}
+
+dding-24{padding-top:24px!important;padding-bottom:24px!important}

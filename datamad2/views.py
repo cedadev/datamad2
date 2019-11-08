@@ -34,9 +34,9 @@ def routing_classification(request):
         #imported_grants = ImportedGrant.objects.all()
         classification = request.GET.get('rc')
         if classification == 'none':
-            grants = grants.filter(importedgrant__routing_classification=None)
+            grants = grants.filter(importedgrant__routing_classification=None).distinct()
         elif classification:
-            grants = grants.filter(importedgrant__routing_classification=classification)
+            grants = grants.filter(importedgrant__routing_classification=classification).distinct()
         return render(request, 'datamad2/routing_classification.html', {'grants': grants})
 
 @login_required
