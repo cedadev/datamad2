@@ -64,21 +64,21 @@
                             Some details of this grant have been changed since the original proposal.
                         </div>
                     {%  endif %}
-                    <div class="w3-card">
+                    <div class="w3-card col-lg-8">
                         <table  id="grants" style="width:100%">
                             <tr>
                                 <th> <h3>{{ imported_grant.title }} </h3></th>
                                 {%  if imported_grant.grant.claim_status and imported_grant.grant.assigned_data_centre == user.data_centre %}
-                                    <td id="button">
+                                    <td id="right">
                                         <a href="{% url 'unclaim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> UNCLAIM </button></a>
                                         <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> REASSIGN </button></a>
                                     </td>
                                 {% elif  imported_grant.grant.claim_status %}
-                                    <td id ="button">
+                                    <td id ="right">
                                         CLAIMED
                                     </td>
                                 {% else %}
-                                    <td id="button">
+                                    <td id="right">
                                         <a href="{% url 'claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> CLAIM</button></a>
                                         <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> ASSIGN </button></a>
                                     </td>
@@ -111,11 +111,11 @@
                             </tr>
                             <tr>
                                 <th>Scheme</th>
-                                <td>{{ imported_grant.scheme }} </td>
+                                <td >{{ imported_grant.scheme }} </td>
                             </tr>
                             <tr>
                                 <th>Lead Grant</th>
-                                <td>{{ imported_grant.lead_grant }} </td>
+                                <td >{{ imported_grant.lead_grant }} </td>
                             </tr>
                             <tr>
                                 <th>Parent Grant</th>
