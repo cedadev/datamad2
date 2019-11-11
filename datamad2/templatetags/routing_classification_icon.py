@@ -15,7 +15,7 @@ def icon(value):
                          "style='color:#9ce879'></i></a>")
 
     elif value == "Atmospheric":
-        return mark_safe("<a id='science-icon' title='Earth' data-toggle='tooltip'><i class='fa fa-cloud fa-lg' "
+        return mark_safe("<a id='science-icon' title='Atmospheric' data-toggle='tooltip'><i class='fa fa-cloud fa-lg' "
                          "style='color:#a9c3c7'></i></a>")
 
     elif value == "Freshwater":

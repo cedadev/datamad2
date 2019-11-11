@@ -83,6 +83,7 @@ class ImportedGrantAdmin(admin.ModelAdmin):
 admin.site.register(ImportedGrant, ImportedGrantAdmin)
 
 class GrantAdmin(admin.ModelAdmin):
+    readonly_fields = ['updated_imported_grant']
     pass
 
 admin.site.register(Grant, GrantAdmin)

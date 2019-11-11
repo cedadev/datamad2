@@ -1,360 +1,248 @@
-{% load staticfiles cookielaw_tags i18n fwtheme_tags routing_classification_icon %}
+{%  extends 'datamad2/base.html' %}
+{% load staticfiles cookielaw_tags i18n fwtheme_tags %}
+{% load routing_classification_icon %}
 {% is_container_fluid as container_fluid %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>{% block head_title %}{{ grant_detail.title}}{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    {% block blog_feeds %}
+{% block content %}
+    {% block page_special %}
     {% endblock %}
 
-    {% block stylesheets %}
-        <link rel="shortcut icon" href="https://nerc.ukri.org/nerc/includes/themes/MasterSite/images/favicon.ico"/>
-        <!-- Bootstrap Core
-        CSS -->
-        <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/4/flatly/bootstrap.css" media="screen">
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/_assets/css/custom.min.css">
-        <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/_assets/css/org-custom.css">
-        <link href="{% static "css/grants.css" %}" rel="stylesheet">
-        <!-- data table CSS -->
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-        <!-- Custom Fonts -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/v4-shims.css">
+    {# To make content occupy full width, override the block page_container #}
+    {# with one of the same name which OMITS the div class=container tag #}
 
-        {# most further customisations can go here, after org theme styling #}
-        {% block stylesheets_extra %}{% endblock %}
+    {% block page_container %}
 
-    {% endblock stylesheets %}
+        <div class="container{% if container_fluid %}-fluid{% endif %}">
 
-    {% block head_js %}
-        <script src="{% static "cookielaw/js/cookielaw.js" %}"></script>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
-        <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" src="{% static 'js/table_sorter.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/general.js' %}"></script>
-    {% endblock head_js %}
+        {% block content_main %}
+            {% block content_header %}
 
-    {% block head_js_extra %}{% endblock head_js_extra %}
-
-</head>
-<body id="{% block body_id %}body{% endblock body_id %}">
-
-{% block cookielaw_banner %}
-    {% if 'cookielaw_accepted' not in request.COOKIES %}
-
-        <div class="container-fluid">
-            <div class="alert alert-info text-center" id="CookielawBanner">
-                This website uses cookies.
-                By continuing to use this website you are agreeing to our use of cookies.&nbsp;
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary"
-                            onclick="Cookielaw.createCookielawCookie();">OK</button>
-
-                    <button type="button" class="btn btn-secondary"
-                            onclick="window.open('http://www.ceda.ac.uk/privacy-and-cookies/')">Find out more</button>
+                <div class="page-header" id="banner">
+                <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    {% block page_title %}
+                        <div class="wrapper">
+                            <!-- Sidebar -->
+                            <nav id="sidebar">
+                                <div class="sidebar-header">
+                                    <h3>DataMAD</h3>
+                                </div>
+                                <ul class="list-unstyled components">
+                                    <h4>All Grants</h4>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}">All</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=EIDC">EIDC</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=NGDC">NGDC</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=PDC">PDC</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=ADS">ADS</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    {% endblock %}
                 </div>
-            </div>
-        </div>
-    {% endif %}
-{% endblock %}
+                <div class="col">
+                    {%  if imported_grant.grant.updated_imported_grant == True %}
+                        <div class="alert alert-secondary" role="alert">
+                            Some details of this grant have been changed since the original proposal.
+                        </div>
+                    {%  endif %}
+                    <div class="w3-card col-lg-8">
+                        <table  id="grants" style="width:100%">
+                            <tr>
+                                <th> <h3>{{ imported_grant.title }} </h3></th>
+                                {%  if imported_grant.grant.claim_status and imported_grant.grant.assigned_data_centre == user.data_centre %}
+                                    <td id="right">
+                                        <a href="{% url 'unclaim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> UNCLAIM </button></a>
+                                        <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> REASSIGN </button></a>
+                                    </td>
+                                {% elif  imported_grant.grant.claim_status %}
+                                    <td id ="right">
+                                        CLAIMED
+                                    </td>
+                                {% else %}
+                                    <td id="right">
+                                        <a href="{% url 'claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> CLAIM</button></a>
+                                        <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> ASSIGN </button></a>
+                                    </td>
+                                {%  endif %}
+                            </tr>
+                            <tr>
+                                <th>Grant Reference</th>
+                                <td> {{ imported_grant.grant_ref }} </td>
+                            </tr>
 
-{% block navbar_main %}
-    <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
-        <div class="container">
-            {% block navbar_branding %}
-                <a href="https://nerc.ukri.org/" class="navbar-brand">
-                    <img src="https://nerc.ukri.org/nerc/assets/images/logos/nerc/nerc-logo-115.png" alt="NERC logo">
-                </a>
-                <div id="navbarResponsive">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'grant_list' %}">All Grants</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Science Area</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="">My Grants</a>
-                        </li>
-                        {% if user.is_authenticated %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{%  url 'my_account' %}">My Account</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{%  url 'logout' %}">Logout</a>
-                            </li>
-                        {% else %}
-                            <a class="nav-link" href="{%  url 'login' %}">Login</a>
-                        {% endif %}
-                    </ul>
-                </div>
-                <a href="https://www.ceda.ac.uk/" class=navbar-brand">
-                    <img src="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_div/0.3.1/_assets/img/ceda_logo_transp_white_h80.png" alt="CEDA logo">
-                </a>
-            {% endblock navbar_branding %}
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </div>
-{% endblock navbar_main %}
+                            <tr>
+                                <th>Date Added</th>
+                                <td>{{ imported_grant.creation_date }} </td>
+                            </tr>
+                            <tr>
+                                <th>Grant Status</th>
+                                <td>{{ imported_grant.status }} </td>
+                            </tr>
+                            <tr>
+                                <th>Amount Awarded</th>
+                                <td>{{ imported_grant.amount_awarded }} </td>
+                            </tr>
+                            <tr>
+                                <th>Call</th>
+                                <td>{{ imported_grant.call }} </td>
+                            </tr>
+                            <tr>
+                                <th>Grant Type</th>
+                                <td>{{ imported_grant.grant_type }} </td>
+                            </tr>
+                            <tr>
+                                <th>Scheme</th>
+                                <td >{{ imported_grant.scheme }} </td>
+                            </tr>
+                            <tr>
+                                <th>Lead Grant</th>
+                                <td >{{ imported_grant.lead_grant }} </td>
+                            </tr>
+                            <tr>
+                                <th>Parent Grant</th>
+                                <td>{{ imported_grant.parent_grant }} </td>
+                            </tr>
+                            <tr>
+                                <th>Grant Holder</th>
+                                <td>{{ imported_grant.grant_holder }} </td>
+                            </tr>
+                            <tr>
+                                <th>Department</th>
+                                <td>{{ imported_grant.department }} </td>
+                            </tr>
+                            <tr>
+                                <th>Research Organisation</th>
+                                <td>{{ imported_grant.research_organisation }} </td>
+                            </tr>
+                            <tr>
+                                <th>Address</th>
+                                <td>{{ imported_grant.address1 }} </td>
+                            </tr>
+                            <tr>
+                                <th>Address line 2</th>
+                                <td>{{ imported_grant.address2 }} </td>
+                            </tr>
+                            <tr>
+                                <th>City</th>
+                                <td>{{ imported_grant.city }} </td>
+                            </tr>
+                            <tr>
+                                <th>Post Code</th>
+                                <td>{{ imported_grant.post_code }} </td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{ imported_grant.email }} </td>
+                            </tr>
+                            <tr>
+                                <th>Work number</th>
+                                <td>{{ imported_grant.work_number }} </td>
+                            </tr>
+                            <tr>
+                                <th>Data Contact Email</th>
+                                <td>{{ imported_grant.data_contact_email }} </td>
+                            </tr>
+                            <tr>
+                                <th>Data Contact Phone Number</th>
+                                <td>{{ imported_grant.data_contact_phone }} </td>
+                            </tr>
+                            <tr>
+                                <th>Routing Classification</th>
+                                <td>{{ imported_grant.routing_classification }} </td>
+                            </tr>
+                            <tr>
+                                <th>Secondary Classification</th>
+                                <td>{{ imported_grant.secondary_classification }} </td>
+                            </tr>
+                            <tr>
+                                <th>Science Area</th>
+                                <td>{{ imported_grant.science_area }}</td>
+                            </tr>
+                            <tr>
+                                <th>NCAS</th>
+                                <td>{{ imported_grant.ncas }} </td>
+                            </tr>
+                            <tr>
+                                <th>NCEO</th>
+                                <td>{{ imported_grant.nceo }} </td>
+                            </tr>
+                            <tr>
+                                <th>Comments</th>
+                                <td>{{ imported_grant.comments }} </td>
+                            </tr>
+                            <tr>
+                                <th>Actual Start Date</th>
+                                <td>{{ imported_grant.actual_start_date }} </td>
+                            </tr>
+                            <tr>
+                                <th>Actual End Date</th>
+                                <td>{{ imported_grant.actual_end_date }} </td>
+                            </tr>
+                            <tr>
+                                <th>Original Proposed Start Date</th>
+                                <td>{{ imported_grant.original_proposed_start_date}} </td>
+                            </tr>
+                            <tr>
+                                <th>Original Proposed End Date</th>
+                                <td>{{ imported_grant.original_proposed_end_date}} </td>
+                            </tr>
+                            <tr>
+                                <th>Proposed Start Date</th>
+                                <td>{{ imported_grant.proposed_start_date }} </td>
+                            </tr>
+                            <tr>
+                                <th>Proposed End Date</th>
+                                <td>{{ imported_grant.proposed_end_date}} </td>
+                            </tr>
+                            <tr>
+                                <th>End Date Changed</th>
+                                <td>{{ imported_grant.end_date_changed }} </td>
+                            </tr>
+                            <tr>
+                                <th>Start Date Changed</th>
+                                <td>{{ imported_grant.start_date_changed}} </td>
+                            </tr>
+                            <tr>
+                                <th>Abstract</th>
+                                <td>{{ imported_grant.abstract|linebreaksbr }} </td>
+                            </tr>
+                            <tr>
+                                <th>Objectives</th>
+                                <td>{{ imported_grant.objectives|linebreaksbr }} </td>
+                            </tr>
+                            <tr>
 
-{% block page_special %}
-{% endblock %}
 
-{# To make content occupy full width, override the block page_container #}
-{# with one of the same name which OMITS the div class=container tag #}
-
-{% block page_container %}
-
-    <div class="container{% if container_fluid %}-fluid{% endif %}">
-
-    {% block content_main %}
-        {% block content_header %}
-
-            <div class="page-header" id="banner">
-            <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-2">
-                {% block page_title %}
-                    <div class="wrapper">
-                        <!-- Sidebar -->
-                        <nav id="sidebar">
-                            <div class="sidebar-header">
-                                <h3>DataMAD</h3>
-                            </div>
-                            <ul class="list-unstyled components">
-                                <h4>Grant Detail</h4>
-                                <li>
-                                    <a href="{% url 'grant_list'%}">All</a>
-                                </li>
-                                <li>
-                                    <a href="#">Unassigned</a>
-                                </li>
-                                <li>
-                                    <a href="#">BODC</a>
-                                </li>
-                                <li>
-                                    <a href="#">CEDA</a>
-                                </li>
-                                <li>
-                                    <a href="#">EIDC</a>
-                                </li>
-                                <li>
-                                    <a href="#">NGDC</a>
-                                </li>
-                                <li>
-                                    <a href="#">PDC</a>
-                                </li>
-                                <li>
-                                    <a href="#">ADS</a>
-                                </li>
-                            </ul>
-                        </nav>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
-                {% endblock %}
-            </div>
-
-            <div class="col">
-                <tr>
-                    <th> <h3>{{ grant_detail.title }} </h3></th>
-                </tr>
-                <tr>
-                    <th> <h4>{{ grant_detail.grant_ref }} </h4></th>
-                </tr>
-                <table class="row-border" id="grants" style="width:100%">
-                    <tr>
-                        <th>Grant Status</th>
-                        <td>{{ grant_detail.status }} </td>
-                    </tr>
-                    <tr>
-                        <th>Amount Awarded</th>
-                        <td>{{ grant_detail.amount_awarded }} </td>
-                    </tr>
-                    <tr>
-                        <th>Call</th>
-                        <td>{{ grant_detail.call }} </td>
-                    </tr>
-                    <tr>
-                        <th>Grant Type</th>
-                        <td>{{ grant_detail.grant_type }} </td>
-                    </tr>
-                    <tr>
-                        <th>Scheme</th>
-                        <td>{{ grant_detail.scheme }} </td>
-                    </tr>
-                    <tr>
-                        <th>Lead Grant</th>
-                        <td>{{ grant_detail.lead_grant }} </td>
-                    </tr>
-                    <tr>
-                        <th>Parent Grant</th>
-                        <td>{{ grant_detail.parent_grant }} </td>
-                    </tr>
-                    <tr>
-                        <th>Grant Holder</th>
-                        <td>{{ grant_detail.grant_holder }} </td>
-                    </tr>
-                    <tr>
-                        <th>Department</th>
-                        <td>{{ grant_detail.department }} </td>
-                    </tr>
-                    <tr>
-                        <th>Research Organisation</th>
-                        <td>{{ grant_detail.research_organisation }} </td>
-                    </tr>
-                    <tr>
-                        <th>Address</th>
-                        <td>{{ grant_detail.address1 }} </td>
-                    </tr>
-                    <tr>
-                        <th>Address line 2</th>
-                        <td>{{ grant_detail.address2 }} </td>
-                    </tr>
-                    <tr>
-                        <th>City</th>
-                        <td>{{ grant_detail.city }} </td>
-                    </tr>
-                    <tr>
-                        <th>Post Code</th>
-                        <td>{{ grant_detail.post_code }} </td>
-                    </tr>
-                    <tr>
-                        <th>Email</th>
-                        <td>{{ grant_detail.email }} </td>
-                    </tr>
-                    <tr>
-                        <th>Work number</th>
-                        <td>{{ grant_detail.work_number }} </td>
-                    </tr>
-                    <tr>
-                        <th>Data Contact Email</th>
-                        <td>{{ grant_detail.data_contact_email }} </td>
-                    </tr>
-                    <tr>
-                        <th>Data Contact Phone Number</th>
-                        <td>{{ grant_detail.data_contact_phone }} </td>
-                    </tr>
-                    <tr>
-                        <th>Routing Classification</th>
-                        <td>{{ grant_detail.routing_classification }} </td>
-                    </tr>
-                    <tr>
-                        <th>Secondary Classification</th>
-                        <td>{{ grant_detail.secondary_classification }} </td>
-                    </tr>
-                    <tr>
-                        <th>Science Area</th>
-                        <td>{{ grant_detail.science_area }}</td>
-                    </tr>
-                    <tr>
-                        <th>NCAS</th>
-                        <td>{{ grant_detail.ncas }} </td>
-                    </tr>
-                    <tr>
-                        <th>NCEO</th>
-                        <td>{{ grant_detail.nceo }} </td>
-                    </tr>
-                    <tr>
-                        <th>Comments</th>
-                        <td>{{ grant_detail.comments }} </td>
-                    </tr>
-                    <tr>
-                        <th>Actual Start Date</th>
-                        <td>{{ grant_detail.actual_start_date }} </td>
-                    </tr>
-                    <tr>
-                        <th>Actual End Date</th>
-                        <td>{{ grant_detail.actual_end_date }} </td>
-                    </tr>
-                    <tr>
-                        <th>Original Proposed Start Date</th>
-                        <td>{{ grant_detail.original_proposed_start_date}} </td>
-                    </tr>
-                    <tr>
-                        <th>Original Proposed End Date</th>
-                        <td>{{ grant_detail.original_proposed_end_date}} </td>
-                    </tr>
-                    <tr>
-                        <th>Proposed Start Date</th>
-                        <td>{{ grant_detail.proposed_start_date }} </td>
-                    </tr>
-                    <tr>
-                        <th>Proposed End Date</th>
-                        <td>{{ grant_detail.proposed_end_date}} </td>
-                    </tr>
-                    <tr>
-                        <th>End Date Changed</th>
-                        <td>{{ grant_detail.end_date_changed }} </td>
-                    </tr>
-                    <tr>
-                        <th>Start Date Changed</th>
-                        <td>{{ grant_detail.start_date_changed}} </td>
-                    </tr>
-                    <tr>
-                        <th>Abstract</th>
-                        <td>{{ grant_detail.abstract|linebreaksbr }} </td>
-                    </tr>
-                    <tr>
-                        <th>Objectives</th>
-                        <td>{{ grant_detail.objectives|linebreaksbr }} </td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                            {%  if grant_detail.claim_status and grant.assigned_data_centre == user.data_centre %}
-                                <td>
-                                    <a href="{% url 'unclaim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> UNCLAIM </button></a>
-                                    <a href="{% url 'change_claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> REASSIGN </button></a>
-                                </td>
-                            {% elif  grant_detail.claim_status %}
-                                <td>
-                                    CLAIMED
-                                </td>
-                            {% else %}
-                                <td>
-                                    <a href="{% url 'claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> CLAIM</button></a>
-                                    <a href="{% url 'change_claim' pk=grant_detail.pk %}"><button class="btn btn-primary" id="claim"> ASSIGN </button></a>
-                                </td>
-                            {%  endif %}
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-
-        {% endblock content_header %}
-    {% endblock content_main %}
-
-</div>
-
-{% endblock page_container %}
-
-{% block footer %}
-    <footer>
-        <div class="container">
-            <div class="row d-flex justify-content-around border border-light border-bottom-0 border-left-0 border-right-0 pt-5 pb-2 mt-5">
-                <div class="col-md-4">
-                    <p class="text-center small">
-                        Copyright © 2018 <a href="http://www.stfc.ac.uk">STFC</a>
-                        All Rights Reserved<br>
-                        <a href="http://www.ceda.ac.uk/accessibility" target="_blank">Accessibility</a> |
-                        <a href="http://www.ceda.ac.uk/disclaimer" target="_blank">Disclaimer</a> |
-                        <a href="http://www.ceda.ac.uk/privacy-and-cookies/" target="_blank">Privacy and Cookies</a><br/>
-                        <a href="http://www.ceda.ac.uk" target="_blank">CEDA</a>
-                    </p>
                 </div>
-            </div>
-        </div>
-    </footer>
-{% endblock footer %}
-</body>
-</html>
 
-{# Mustache templates #}
+
+            {% endblock content_header %}
+        {% endblock content_main %}
+
+    </div>
+
+    {% endblock page_container %}
+{%  endblock %}

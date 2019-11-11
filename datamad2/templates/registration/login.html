@@ -1,34 +1,11 @@
+{%  extends 'datamad2/base.html' %}
 {% load staticfiles cookielaw_tags i18n fwtheme_tags %}
 {% is_container_fluid as container_fluid %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>{% block head_title %}Login{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    {% block blog_feeds %}
-    {% endblock %}
+{% block navbar_main %}
+{%  endblock navbar_main %}
 
-    {% block stylesheets %}
-        <link rel="shortcut icon" href="http://www.ceda.ac.uk/static/img/favicon.ico"/>
-        <!-- Bootstrap Core
-        CSS -->
-        <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/4/flatly/bootstrap.css" media="screen">
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/_assets/css/custom.min.css">
-        <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/_assets/css/org-custom.css">
-        <link href="{% static "css/grants.css" %}" rel="stylesheet">
-        <!-- Custom Fonts -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/v4-shims.css">
-
-        {# most further customisations can go here, after org theme styling #}
-        {% block stylesheets_extra %}{% endblock %}
-
-    {% endblock stylesheets %}
-
+{%  block content %}
     {% block page_container %}
 
         <h1 id="site-name"> DataMAD </h1>
@@ -80,3 +57,7 @@
     </div>
 
 {% endblock page_container %}
+{% endblock  %}
+
+{% block footer %}
+{% endblock footer %}

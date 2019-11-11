@@ -3,7 +3,8 @@
 {% load routing_classification_icon %}
 {% is_container_fluid as container_fluid %}
 
-{%  block content %}
+{% block content %}
+
 {% block page_special %}
 {% endblock %}
 
@@ -28,30 +29,24 @@
                                 <h3>DataMAD</h3>
                             </div>
                             <ul class="list-unstyled components">
-                                <h4>Grants</h4>
+                                <h4>Routing Classification</h4>
                                 <li>
-                                    <a href="{% url 'grant_list' %}">All</a>
+                                    <a href="{% url 'routing_classification' %}?rc=none">None</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
+                                    <a href="{% url 'routing_classification' %}?rc=Marine">Marine</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
+                                    <a href="{% url 'routing_classification' %}?rc=Earth">Earth</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
+                                    <a href="{% url 'routing_classification' %}?rc=Atmospheric">Atmospheric</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=EIDC">EIDC</a>
+                                    <a href="{% url 'routing_classification' %}?rc=Freshwater">Freshwater</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=NGDC">NGDC</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=PDC">PDC</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=ADS">ADS</a>
+                                    <a href="{% url 'routing_classification' %}?rc=Terrestrial">Terrestrial</a>
                                 </li>
                             </ul>
                         </nav>
@@ -77,7 +72,7 @@
                         <tr>
                             <td>
                                 <a href="{% url 'grant_detail' pk=imported_grant.pk %}">
-                                {{ imported_grant.grant_ref}}
+                                {{ imported_grant.grant_ref }}
                                 </a>
                             </td>
                             <td> {{ imported_grant.title }}</td>
@@ -108,8 +103,8 @@
 
         {% endblock content_header %}
     {% endblock content_main %}
+
 </div>
 
 {% endblock page_container %}
-{%  endblock %}
-
+{% endblock %}
