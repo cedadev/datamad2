@@ -76,14 +76,13 @@
             <div id="navbarResponsive" class="navbar-nav">
                     <li class="nav-item dropdown">
                         <div>
-                            <a class="nav-link dropbtn" href=""> Home </a>
+                            <a class="nav-link dropbtn" href="{% url 'grant_list' %}"> All Grants </a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropbtn" >Grants
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <div class="dropdown-content">
-                            <a href="{% url 'grant_list' %}">All</a>
                             <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
                             <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
                             <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
@@ -107,7 +106,7 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropbtn" href="">My Grants</a>
+                        <a class="nav-link dropbtn" href="{% url 'grant_list' %}?datacentre={{user.data_centre}}">My Grants</a>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">

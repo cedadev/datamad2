@@ -75,7 +75,7 @@ class ImportedGrant(models.Model):
     grant_status = models.CharField(max_length=50, default="Active",
                                     choices=(("Active", "Active"), ("Closed", "Closed")))
     # AmountAwarded	Siebel	Amount in pounds stirling			AMOUNT
-    amount_awarded = models.IntegerField(null=True, blank=True)
+    amount_awarded = models.IntegerField(null=True, default='', blank=True)
     # Call	Siebel	E.g. Standard Grant DEC06			CALL
     call = models.CharField(max_length=1024, default='', blank=True)
     # Grant Type	Siebel	E.g. RM grants & fees			GRANT_TYPE
@@ -84,7 +84,7 @@ class ImportedGrant(models.Model):
     # Scheme	Siebel	E.g. Standard Grant			SCHEME
     scheme = models.CharField(max_length=1024, default='', blank=True)
     # Lead Grant (Yes / No)	Siebel	Y/N			LEAD_GRANT
-    lead_grant = models.BooleanField(null=True, blank=True)
+    lead_grant = models.BooleanField(null=True, default='', blank=True)
     # Parent Grant	Siebel	Cross reference record to a lead grant record if the grant is covered by an
     # overarching DMP			PARENT_GRANT
     parent_grant = models.ForeignKey(on_delete=models.PROTECT, to='ImportedGrant', null=True, blank=True)
@@ -105,13 +105,13 @@ class ImportedGrant(models.Model):
     # E-Mail	Siebel	Email address			EMAIL
     email = models.EmailField(null=True, blank=True)
     # Work Number	Siebel	Work telephone number			WORK_NUMBER
-    work_number = models.CharField(max_length=256, null=True, blank=True)
+    work_number = models.CharField(max_length=256, null=True, blank=True, default='')
     # Data Contact Email	Siebel	PI may not always be the contact for data related issues
     # (although responsible for ensuring delivery of the data)			MISSING
-    data_contact_email = models.EmailField(null=True, blank=True)
+    data_contact_email = models.EmailField(null=True, blank=True, default='')
     # Data Contact Phone	Siebel	PI may not always be the contact for data related issues
     # (although responsible for ensuring delivery of the data)			MISSING
-    data_contact_phone = models.CharField(max_length=256, null=True, blank=True)
+    data_contact_phone = models.CharField(max_length=256, null=True, blank=True, default='')
     # Routing Classification	Siebel	E.g. Earth, Freshwater			ROUTING_CLASSIFICATION
     routing_classification = models.CharField(max_length=200, blank=True, null=True,
                                               choices=(("Marine", "Marine"),
@@ -125,29 +125,33 @@ class ImportedGrant(models.Model):
     # Science Area	Siebel	E.g. Earth: 70% Marine:30%			MISSING
     science_area = models.CharField(max_length=256, null=True, blank=True)
     # NCAS (Yes/No)	Siebel	Y/N			NCAS
-    ncas = models.BooleanField(null=True, blank=True)
+    ncas = models.CharField(max_length=200, blank=True, null=True,
+                                              choices=(("Yes", "Yes"),
+                                                       ("No", "No")))
     # NCEO (yes/No)	Siebel	Y/N			NCEO
-    nceo = models.BooleanField(null=True, blank=True)
+    nceo = models.CharField(max_length=200, blank=True, null=True,
+                                              choices=(("Yes", "Yes"),
+                                                       ("No", "No")))
     # Comments	Siebel	Currently not in use			MISSING
     comments = models.TextField(default='', blank=True)
-    # Actual Start Date	Siebel				ACTUAL_START_DATE
-    actual_start_date = models.DateField(null=True, blank=True)
-    # Actual End Date	Siebel				ACTUAL_END_DATE
-    actual_end_date = models.DateField(null=True, blank=True)
-    # Original Proposed Start Date Siebel Date field set to the same as Proposed
-    # Start Date when record first added to the list	MISSING
-    original_proposed_start_date = models.DateField(null=True, blank=True)
-    # Original Proposed End Date	Siebel	Date field  set to the same as Proposed End Date when record first
-    # added to the list			MISSING
-    original_proposed_end_date = models.DateField(null=True, blank=True)
+    # # Original Proposed Start Date Siebel Date field set to the same as Proposed
+    # # Start Date when record first added to the list	MISSING
+    # original_proposed_start_date = models.DateField(null=True, blank=True)
+    # # Original Proposed End Date	Siebel	Date field  set to the same as Proposed End Date when record first
+    # # added to the list			MISSING
+    # original_proposed_end_date = models.DateField(null=True, blank=True)
     # Proposed Start date	Siebel				PROPOSED_ST_DT
     proposed_start_date = models.DateField(null=True, blank=True)
     # Proposed End date	Siebel				PROPOSED_END_DT
     proposed_end_date = models.DateField(null=True, blank=True)
+    # Actual Start Date	Siebel				ACTUAL_START_DATE
+    actual_start_date = models.DateField(null=True, blank=True)
+    # Actual End Date	Siebel				ACTUAL_END_DATE
+    actual_end_date = models.DateField(null=True, blank=True)
     # End Date Changed?	Siebel				MISSING
-    end_date_changed = models.BooleanField(null=True, blank=True)
-    # Start Date Changed?	Siebel				MISSING
-    start_date_changed = models.BooleanField(null=True, blank=True)
+    # end_date_changed = models.BooleanField(null=True, blank=True)
+    # # Start Date Changed?	Siebel				MISSING
+    # start_date_changed = models.BooleanField(null=True, blank=True)
     # Abstract	Siebel		Truncated
     abstract = models.TextField(default='', blank=True)
     # Objectives	Siebel		Truncated

@@ -66,12 +66,20 @@ form {
 
 .w3-card{
   box-shadow:0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
-  float:none;
-  display:inline-block;
   padding:15px;
-  vertical-align: middle;
+
 }
 
-/*#right {*/
-/*  text-align: right;*/
-/*}*/
+.col-lg-8{
+  position: relative;
+  /*left: 2em;*/
+  left: 4%
+}
+
+#right{
+  text-align: right;
+}
+
+.column-id {
+  width: 60%;
+}
