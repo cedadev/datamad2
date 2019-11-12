@@ -31,13 +31,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'datamad2.apps.Datamad2Config',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'datamad2.apps.Datamad2Config',
     'cookielaw',
     'fwtheme_django_ceda_serv',
     'fwtheme_django'

@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant
 from .forms import UpdateClaim
 from django.db.models import Q
+from django.http import JsonResponse
 
 
 @login_required
