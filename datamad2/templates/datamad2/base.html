@@ -105,14 +105,15 @@
                             <a href="{% url 'routing_classification' %}?rc=Terrestrial">Terrestrial</a>
                         </div>
                     </li>
+                {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropbtn" href="{% url 'grant_list' %}?datacentre={{user.data_centre}}">My Grants</a>
                     </li>
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropbtn" href="{%  url 'my_account' %}">My Account</a>
-                        </li>
-                    {%  endif %}
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropbtn" href="{%  url 'my_account' %}">My Account</a>
+                    </li>
+                {%  endif %}
 
 
                 </div>

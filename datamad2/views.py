@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant
 from .forms import UpdateClaim
 from django.db.models import Q
+from django.http import JsonResponse
 
 
 @login_required
@@ -39,14 +40,27 @@ def routing_classification(request):
             grants = grants.filter(importedgrant__routing_classification=classification).distinct()
         return render(request, 'datamad2/routing_classification.html', {'grants': grants})
 
+# @login_required
+# def claim(request, pk):
+#     grant = get_object_or_404(Grant, pk=pk)
+#     user = request.user
+#     grant.claim_status = "Claimed"
+#     grant.assigned_data_centre = user.data_centre
+#     grant.save()
+#     return redirect('grant_list')
+
 @login_required
 def claim(request, pk):
-    grant = get_object_or_404(Grant, pk=pk)
-    user = request.user
-    grant.claim_status = "Claimed"
-    grant.assigned_data_centre = user.data_centre
-    grant.save()
-    return redirect('grant_list')
+    if request.method == 'GET':
+        user = request.user
+        grant = Grant.objects.get(pk=pk)
+        grant.claim_status = "Claimed"
+        grant.assigned_data_centre = user.data_centre
+        grant.save()
+        return redirect('grant_list')
+        #return JsonResponse({'message':'Grant Claimed!'})
+    else:
+        return JsonResponse({'message':'Claim failed'})
 
 
 @login_required

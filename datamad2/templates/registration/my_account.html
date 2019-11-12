@@ -39,7 +39,10 @@
             </tr>
             <tr>
                 <th></th>
-                <td><a href="{% url 'logout'%}"> <button class="btn btn-primary" id="claim"> Logout </button> </a> </td>
+                <td>
+                    <a href="{% url 'logout'%}"> <button class="btn btn-primary" id="claim"> Logout </button> </a>
+                    <a href="{% url 'password_reset' %}"> <button class="btn btn-primary" id="claim"> Change Password </button> </a>
+                </td>
             </tr>
     </table>
 
