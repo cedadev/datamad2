@@ -86,7 +86,7 @@
                             {%  else  %}
                                 <td> Unassigned </td>
                             {%  endif %}
-                            <td> {{ imported_grant.routing_classification|icon }}</td>
+                            <td> <i class="icon"> {{ imported_grant.routing_classification|icon }} </i></td>
                             <td> {{ imported_grant.creation_date }}</td>
                             {%  if imported_grant.grant.claim_status %}
                                 <td id="claim">CLAIMED </td>

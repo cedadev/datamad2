@@ -1,0 +1,27 @@
+{%  extends 'datamad2/base.html' %}
+{% load staticfiles cookielaw_tags i18n fwtheme_tags %}
+{% load routing_classification_icon %}
+{% is_container_fluid as container_fluid %}
+
+{% block content %}
+    {% block page_special %}
+    {% endblock %}
+
+    {# To make content occupy full width, override the block page_container #}
+    {# with one of the same name which OMITS the div class=container tag #}
+
+    {% block page_container %}
+
+        <div class="container{% if container_fluid %}-fluid{% endif %}">
+        {%  block content_main %}
+           <p> Changes made at:</p>
+
+        {% for imported_grant in grant.importedgrant_set.all %}
+            <p> <a href="{%  url 'grant_detail' pk=imported_grant.pk %}"> {{ imported_grant.creation_date }}</a></p>
+        {% endfor %}
+        {%  endblock content_main %}
+
+</div>
+
+{% endblock page_container %}
+{%  endblock %}
