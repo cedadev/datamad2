@@ -88,3 +88,14 @@ form {
 .column-id {
   width: 60%;
 }
+
+td i {
+    text-align:center;
+}
+
+.icon {
+    display: inline-block;
+    width: 100%;
+}
+
+

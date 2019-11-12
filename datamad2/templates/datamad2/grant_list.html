@@ -8,24 +8,23 @@
 {% endblock %}
 
 {% block head_js_extra %}
-    <script>
-        $( "#claim-button" ).click(function() {
-            $.ajax({
-                type: "GET",
-                url: 'grant/<int:pk>/claim',
-                data: {
-                    'claim_status': "Claimed",
-                    'assigned_data_centre': {{ user.data_centre }}
-                },
-            // handle a successful response
-            success: function (data) {
-            }
-            // handle a non-successful response
-        });
-        });
-
-
-    </script>
+{#    <script>#}
+{#        $( "#claim-button" ).click(function() {#}
+{#            $.ajax({#}
+{#                type: "GET",#}
+{#                url: 'grant/<int:pk>/claim',#}
+{#               ,#}
+{#            // handle a successful response#}
+{#            success: function (data) {#}
+{#            }#}
+{#            // handle a non-successful response#}
+{#           error: function (data) {#}
+{#            }#}
+{#        });#}
+{#        });#}
+{##}
+{##}
+{#    </script>#}
 {% endblock head_js_extra %}
 
 {# To make content occupy full width, override the block page_container #}
@@ -112,7 +111,7 @@
                             {%  else  %}
                                 <td> Unassigned </td>
                             {%  endif %}
-                            <td> {{ imported_grant.routing_classification|icon }}</td>
+                            <td><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
                             <td> {{ imported_grant.creation_date }}</td>
                             {%  if imported_grant.grant.claim_status %}
                                 <td id="claim">CLAIMED </td>
