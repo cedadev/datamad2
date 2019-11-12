@@ -29,6 +29,7 @@ def grant_list(request):
             grants = grants.filter(Q(assigned_data_centre=assignee) | Q(other_data_centre=assignee))
         return render(request, 'datamad2/grant_list.html', {'grants': grants})
 
+
 def routing_classification(request):
     if request.method == 'GET':
         grants = Grant.objects.all()
@@ -39,6 +40,12 @@ def routing_classification(request):
         elif classification:
             grants = grants.filter(importedgrant__routing_classification=classification).distinct()
         return render(request, 'datamad2/routing_classification.html', {'grants': grants})
+
+@login_required
+def grant_history(request, pk):
+    imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+    grant = imported_grant.grant
+    return render(request, 'datamad2/grant_history.html', {'grant': grant})
 
 @login_required
 def claim(request, pk):
