@@ -8,23 +8,6 @@
 {% endblock %}
 
 {% block head_js_extra %}
-{#    <script>#}
-{#        $( "#claim-button" ).click(function() {#}
-{#            $.ajax({#}
-{#                type: "GET",#}
-{#                url: 'grant/<int:pk>/claim',#}
-{#               ,#}
-{#            // handle a successful response#}
-{#            success: function (data) {#}
-{#            }#}
-{#            // handle a non-successful response#}
-{#           error: function (data) {#}
-{#            }#}
-{#        });#}
-{#        });#}
-{##}
-{##}
-{#    </script>#}
 {% endblock head_js_extra %}
 
 {# To make content occupy full width, override the block page_container #}
@@ -113,12 +96,7 @@
                             {%  endif %}
                             <td><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
                             <td> {{ imported_grant.creation_date }}</td>
-                            {%  if imported_grant.grant.claim_status %}
-                                <td id="claim">CLAIMED </td>
-                            {% else %}
-                                <td><a href="{% url 'claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim-button"> CLAIM</button></a></td>
-                            {%  endif %}
-
+                            <td><a href="{% url 'claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary"  id="claim-button"> CLAIM</button></a></td>
                         </tr>
                         {%  endwith %}
                     {%  endfor %}
@@ -129,7 +107,24 @@
         {% endblock content_header %}
     {% endblock content_main %}
 </div>
+<script>
+    $( "#claim-button" ).click(function(){
+        $.ajax({
+            type: "GET",
+            url: 'grant/<int:pk>/claim',
 
+            // handle a successful response
+            success: function () {
+                $("#claim-button").html("<td>CLAIMED<td>");
+            },
+            // handle a non-successful response
+            error: function () {
+                alert('Claim failed');
+            }
+        });
+    });
+</script>
 {% endblock page_container %}
 {%  endblock %}
+
 
