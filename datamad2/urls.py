@@ -1,6 +1,6 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from . import views
+from datamad2 import views
 
 urlpatterns = [
     path('', views.grant_list, name='grant_list'),
