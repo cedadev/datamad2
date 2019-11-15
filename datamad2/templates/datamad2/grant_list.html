@@ -7,8 +7,8 @@
 {% block page_special %}
 {% endblock %}
 
-{% block head_js_extra %}
-{% endblock head_js_extra %}
+    {% block head_js_extra %}
+    {% endblock head_js_extra %}
 
 {# To make content occupy full width, override the block page_container #}
 {# with one of the same name which OMITS the div class=container tag #}
@@ -94,7 +94,7 @@
                             {%  else  %}
                                 <td> Unassigned </td>
                             {%  endif %}
-                            <td><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
+                            <td data-sort="{{imported_grant.routing_classification}} "><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
                             <td> {{ imported_grant.creation_date }}</td>
                             {%  if imported_grant.grant.claim_status %}
                                 <td id="claim">CLAIMED </td>
@@ -115,4 +115,5 @@
 
 {% endblock page_container %}
 {%  endblock %}
+
 
