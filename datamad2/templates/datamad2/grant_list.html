@@ -115,7 +115,6 @@
     $( ".claim-btn" ).click(function(){
         let btn = $(this);
         let url = 'grant/' + $(this).attr('data-id') + '/claim';
-        let user_data_centre = $(this).attr('data-user');
         let cell = btn.parent();
         let data_centre = cell.parent()[0].cells[2];
         console.log(data_centre)
