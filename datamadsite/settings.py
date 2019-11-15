@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'datamad2.apps.Datamad2Config',
+    'datamad2_api.apps.Datamad2ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,8 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cookielaw',
     'fwtheme_django_ceda_serv',
-    'fwtheme_django'
-
+    'fwtheme_django',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,8 @@ LOGOUT_REDIRECT_URL = '/accounts/login'
 
 #for testing emails
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
