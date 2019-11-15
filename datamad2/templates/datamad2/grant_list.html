@@ -94,7 +94,11 @@
                             {%  else  %}
                                 <td> Unassigned </td>
                             {%  endif %}
-                            <td data-sort="{{imported_grant.routing_classification}} "><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
+                            {%  if imported_grant.routing_classification %}
+                                <td data-sort="{{imported_grant.routing_classification}} "><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
+                            {%  else %}
+                                <td data-sort="z"><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
+                            {%  endif %}
                             <td> {{ imported_grant.creation_date }}</td>
                         {%  if imported_grant.grant.claim_status %}
                                 <td id="claim"> CLAIMED </td>
