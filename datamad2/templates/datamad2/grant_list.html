@@ -85,9 +85,9 @@
                             </td>
                             <td> {{ imported_grant.title }}</td>
                             {%  if imported_grant.grant.assigned_data_centre %}
-                                <td> {{ imported_grant.grant.assigned_data_centre }}</td>
+                                <td id="data-centre"> {{ imported_grant.grant.assigned_data_centre }}</td>
                             {%  else  %}
-                                <td> Unassigned </td>
+                                <td id="data-centre"> Unassigned </td>
                             {%  endif %}
                             {%  if imported_grant.grant.other_data_centre %}
                                 <td> {{ imported_grant.grant.other_data_centre }}</td>
@@ -96,12 +96,11 @@
                             {%  endif %}
                             <td><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
                             <td> {{ imported_grant.creation_date }}</td>
-                            {%  if imported_grant.grant.claim_status %}
-                                <td id="claim">CLAIMED </td>
+                        {%  if imported_grant.grant.claim_status %}
+                                <td id="claim"> CLAIMED </td>
                             {% else %}
-                                <td><a href="{% url 'claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim-button"> CLAIM</button></a></td>
-                            {%  endif %}
-
+                            <td><button data-id="{{ imported_grant.grant.pk }}" data-user ="{{  user.data_centre }}" class="btn btn-primary claim-btn"  id="claim-button"> CLAIM </button></td>
+                        {%  endif %}
                         </tr>
                         {%  endwith %}
                     {%  endfor %}
@@ -112,7 +111,34 @@
         {% endblock content_header %}
     {% endblock content_main %}
 </div>
+<script>
+    $( ".claim-btn" ).click(function(){
+        let btn = $(this);
+        let url = 'grant/' + $(this).attr('data-id') + '/claim';
+        let user_data_centre = $(this).attr('data-user');
+        let cell = btn.parent();
+        let data_centre = cell.parent()[0].cells[2];
+        console.log(data_centre)
+        $.ajax({
+            type: "GET",
+            url: url,
 
+            // handle a successful response
+            success: function () {
+                cell.html("CLAIMED");
+                cell.attr('id', 'claim');
+                data_centre.innerHTML = "{{ user.data_centre }}"
+                console.log(cell.parent())
+            },
+            // handle a non-successful response
+            error: function () {
+                alert('Claim failed');
+            }
+        });
+    });
+
+</script>
 {% endblock page_container %}
 {%  endblock %}
+
 
