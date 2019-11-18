@@ -2,8 +2,8 @@ Django==2.2.6
 django-classy-tags==0.9.0
 django-cookie-law==2.0.2
 djangorestframework==3.10.3
-fwtheme-django==0.2
-fwtheme-django-ceda-serv==1.4.0
+git+https://github.com/cedadev/fwtheme-django.git
+git+https://github.com/cedadev/fwtheme-django-ceda-serv.git
 node==0.9.24
 odict==1.7.0
 plumber==1.5
