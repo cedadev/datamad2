@@ -57,25 +57,21 @@ class ImportedGrant(models.Model):
     #ordering by creation date
     class Meta:
       ordering = ['-creation_date']
+
     # Title	Siebel	Name of the grant			PROJECT_TITLE
     title = models.CharField(max_length=1024, default='')
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
     #grant to imported grant relationship
-    grant = models.ForeignKey(to=Grant, on_delete=models.PROTECT, default='', null=True, blank=True)
+    grant = models.ForeignKey(to=Grant, on_delete=models.PROTECT, null=True, blank=True)
     #date imported grant was created
-    creation_date = models.DateTimeField(auto_now_add=True)
-    # def save(self, *args, **kwargs):
-    #     #On save, update timestamps
-    #     if not self.id:
-    #         self.created = timezone.now()
-    #     self.modified = timezone.now()
-    #     return super(ImportedGrant, self).save(*args, **kwargs)
+    #creation_date = models.DateTimeField(auto_now_add=True)
+    creation_date = models.DateTimeField(editable=False)
     # Grant Status	Siebel	Active/Closed			GRANT_STATUS
     grant_status = models.CharField(max_length=50, default="Active",
                                     choices=(("Active", "Active"), ("Closed", "Closed")))
     # AmountAwarded	Siebel	Amount in pounds stirling			AMOUNT
-    amount_awarded = models.IntegerField(null=True, default='', blank=True)
+    amount_awarded = models.IntegerField(null=True, blank=True)
     # Call	Siebel	E.g. Standard Grant DEC06			CALL
     call = models.CharField(max_length=1024, default='', blank=True)
     # Grant Type	Siebel	E.g. RM grants & fees			GRANT_TYPE
@@ -84,7 +80,7 @@ class ImportedGrant(models.Model):
     # Scheme	Siebel	E.g. Standard Grant			SCHEME
     scheme = models.CharField(max_length=1024, default='', blank=True)
     # Lead Grant (Yes / No)	Siebel	Y/N			LEAD_GRANT
-    lead_grant = models.BooleanField(null=True, default='', blank=True)
+    lead_grant = models.BooleanField(null=True, blank=True)
     # Parent Grant	Siebel	Cross reference record to a lead grant record if the grant is covered by an
     # overarching DMP			PARENT_GRANT
     parent_grant = models.ForeignKey(on_delete=models.PROTECT, to='ImportedGrant', null=True, blank=True)
@@ -108,7 +104,7 @@ class ImportedGrant(models.Model):
     work_number = models.CharField(max_length=256, null=True, blank=True, default='')
     # Data Contact Email	Siebel	PI may not always be the contact for data related issues
     # (although responsible for ensuring delivery of the data)			MISSING
-    data_contact_email = models.EmailField(null=True, blank=True, default='')
+    data_contact_email = models.EmailField(null=True, blank=True)
     # Data Contact Phone	Siebel	PI may not always be the contact for data related issues
     # (although responsible for ensuring delivery of the data)			MISSING
     data_contact_phone = models.CharField(max_length=256, null=True, blank=True, default='')
@@ -157,6 +153,13 @@ class ImportedGrant(models.Model):
     # Objectives	Siebel		Truncated
     objectives = models.TextField(default='', blank=True)
     # ordered by newest imported grant first
+
+    def save(self, *args, **kwargs):
+        #On save, update timestamps
+        if not self.creation_date:
+            self.creation_date = timezone.now()
+        return super(ImportedGrant, self).save(*args, **kwargs)
+
 
 
     def __str__(self):
