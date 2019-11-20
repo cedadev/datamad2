@@ -1,0 +1,108 @@
+{%  extends 'datamad2/base.html' %}
+{% load staticfiles cookielaw_tags i18n fwtheme_tags %}
+{% is_container_fluid as container_fluid %}
+
+{%  block content %}
+    {% block page_special %}
+    {% endblock %}
+
+    {% block head_js_extra %}
+    {% endblock head_js_extra %}
+
+    {# To make content occupy full width, override the block page_container #}
+    {# with one of the same name which OMITS the div class=container tag #}
+
+    {% block page_container %}
+
+        <div class="container{% if container_fluid %}-fluid{% endif %}">
+
+            {% block content_main %}
+                {% block content_header %}
+
+                    <div class="page-header" id="banner">
+                    <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2">
+                    {% block page_title %}
+                        <div class="wrapper">
+                        <!-- Sidebar -->
+                        <nav id="sidebar">
+                        <div class="sidebar-header">
+                            <h3>DMP</h3>
+                        </div>
+                        <ul class="list-unstyled components">
+                        <h4>Projects</h4>
+                        </ul>
+                        </nav>
+                        </div>
+                    {% endblock %}
+                </div>
+                    <div class="col">
+                        <table class="row-border" id="grants" style="width:100%">
+                            <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Project Group Links</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Initial Contact</th>
+                                <th>DMP Agreed</th>
+                                <th>Status</th>
+                                <th>Project Status</th>
+                                <th>NDATA</th>
+                                <th>SciSupContact</th>
+                                <th>Grant Links</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for project in projects %}
+                                {%  with grant=project.grant_set.first %}
+                                <tr>
+                                    <td>
+                                        {{ project.title }}
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    <td>
+                                        {{ grant.project.startdate }}
+                                    </td>
+                                    <td>
+                                        {{ grant.project.enddate }}
+                                    </td>
+                                    <td>
+                                        {{ grant.project.initial_contact }}
+                                    </td>
+                                    <td>
+                                        {{ grant.project.dmp_agreed }}
+                                    </td>
+                                    <td>
+                                        {{ grant.project.status }}
+                                    </td>
+                                    <td>
+                                        {{ grant.project.project_status }}
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    <td>
+                                        {{  grant.grant_ref }}
+                                    </td>
+                                </tr>
+                                {%  endwith %}
+                            {%  endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                {% endblock content_header %}
+            {% endblock content_main %}
+            </div>
+            </div>
+        </div>
+    {% endblock page_container %}
+{%  endblock %}
+
+

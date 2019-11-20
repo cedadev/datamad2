@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('datamad2.urls')),
     path('', include('datamad2_api.urls')),
+    path('', include('dmp.urls'))
 ]

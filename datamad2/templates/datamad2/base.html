@@ -105,6 +105,16 @@
                             <a href="{% url 'routing_classification' %}?rc=Terrestrial">Terrestrial</a>
                         </div>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropbtn" >DMP
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        <div class="dropdown-content">
+                            <a href="{%  url 'project_list' %}">Project List</a>
+                            <a href="#">To-do List</a>
+                            <a href="#">DOG Report</a>
+                        </div>
+                    </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropbtn" href="{% url 'grant_list' %}?datacentre={{user.data_centre}}">My Grants</a>

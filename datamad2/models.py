@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
 from django.utils import timezone
 
 class Grant(models.Model):
+    project = models.ForeignKey('dmp.Project', blank=True, null=True, on_delete=models.PROTECT)
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
     # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
@@ -50,7 +51,7 @@ class Grant(models.Model):
     updated_imported_grant = models.BooleanField(null=True, blank=True, editable=False, verbose_name='Grant updated')
 
     def __str__(self):
-        return f"{self.grant_ref[:50]}"
+        return f"{self.grant_ref[:50]}: {self.project.title[:50]}:"
 
 
 class ImportedGrant(models.Model):

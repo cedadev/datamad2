@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'datamad2.apps.Datamad2Config',
     'datamad2_api.apps.Datamad2ApiConfig',
+    'dmp.apps.DmpConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
