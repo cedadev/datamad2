@@ -55,10 +55,13 @@
                             </thead>
                             <tbody>
                             {% for project in projects %}
-                                {%  with grant=project.grant_set.first %}
+                                {%  with grants=project.grant_set %}
+                                    {% for grant in grants %}
+                                     {%  for imported_grant in grant.importedgrant_set %}
+                                         {%  if imported_grant.lead_grant == True %}
                                 <tr>
                                     <td>
-                                        {{ project.title }}
+                                        {{ grant.title }}
                                     </td>
                                     <td>
 
@@ -88,9 +91,13 @@
 
                                     </td>
                                     <td>
-                                        {{  grant.grant_ref }}
+                                        <a href="">
+                                        {{  grant.grant_ref }} <!-- link to lead grant-->
                                     </td>
                                 </tr>
+                                         {% endif %}
+                                         {%  endfor %}
+                                    {%  endfor %}
                                 {%  endwith %}
                             {%  endfor %}
                             </tbody>

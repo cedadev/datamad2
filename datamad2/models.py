@@ -4,8 +4,11 @@ from django.contrib.auth.models import (
 )
 from django.utils import timezone
 
+
 class Grant(models.Model):
-    project = models.ForeignKey('dmp.Project', blank=True, null=True, on_delete=models.PROTECT)
+    #title
+    title = models.CharField(max_length=1024, default='')
+    project = models.ForeignKey(to='dmp.Project', blank=True, null=True, on_delete=models.PROTECT)
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
     # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
@@ -50,15 +53,27 @@ class Grant(models.Model):
     # checks for updated imported grant (more than one version)
     updated_imported_grant = models.BooleanField(null=True, blank=True, editable=False, verbose_name='Grant updated')
 
+    def save(self, *args, **kwargs):
+        #On save, update timestamps
+        from dmp.models import Project
+        created = not self.pk
+        if Project.objects.filter(title=self.title):
+            pass
+            #self.project = Project.objects.filter(title=self.title)
+        else:
+            new_project = Project.objects.create(title=self.title)
+            self.project = new_project
+        return super(Grant, self).save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.grant_ref[:50]}: {self.project.title[:50]}:"
+        return f"{self.grant_ref}: {self.title[:50]}"
+
 
 
 class ImportedGrant(models.Model):
     #ordering by creation date
     class Meta:
       ordering = ['-creation_date']
-
     # Title	Siebel	Name of the grant			PROJECT_TITLE
     title = models.CharField(max_length=1024, default='')
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
@@ -74,7 +89,8 @@ class ImportedGrant(models.Model):
     # AmountAwarded	Siebel	Amount in pounds stirling			AMOUNT
     amount_awarded = models.IntegerField(null=True, blank=True)
     # Call	Siebel	E.g. Standard Grant DEC06			CALL
-    call = models.CharField(max_length=1024, default='', blank=True)
+    # ignore call for now
+    # call = models.CharField(max_length=1024, default='', blank=True)
     # Grant Type	Siebel	E.g. RM grants & fees			GRANT_TYPE
     # The xls file run by RTS also contains Abstract and Objectives I presume these are from the GRANT
     grant_type = models.CharField(max_length=1024, default='', blank=True)
@@ -157,14 +173,17 @@ class ImportedGrant(models.Model):
 
     def save(self, *args, **kwargs):
         #On save, update timestamps
+        created = not self.pk
         if not self.creation_date:
             self.creation_date = timezone.now()
+        if created:
+            new_grant = Grant.objects.create(grant_ref=self.grant_ref, title=self.title)
+            self.grant = new_grant
         return super(ImportedGrant, self).save(*args, **kwargs)
-
-
 
     def __str__(self):
         return f"{self.grant_ref}: {self.title[:50]}: [{self.grant_holder}]"
+
 
 
 class MyUserManager(BaseUserManager):

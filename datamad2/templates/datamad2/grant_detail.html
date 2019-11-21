@@ -101,10 +101,10 @@
                                 <th>Amount Awarded</th>
                                 <td class="column-id" > £ {{ imported_grant.amount_awarded }} </td>
                             </tr>
-                            <tr>
-                                <th>Call</th>
-                                <td class="column-id"  >{{ imported_grant.call }} </td>
-                            </tr>
+{#                            <tr>#}
+{#                                <th>Call</th>#}
+{#                                <td class="column-id"  >{{ imported_grant.call }} </td>#}
+{#                            </tr>#}
                             <tr>
                                 <th>Grant Type</th>
                                 <td class="column-id" >{{ imported_grant.grant_type }} </td>
@@ -115,7 +115,7 @@
                             </tr>
                             <tr>
                                 <th>Lead Grant</th>
-                                <td class="column-id">{{ imported_grant.lead_grant }} </td>
+                                <td class="column-id">{{ imported_grant.lead_grant|yesno:"Yes,No" }} </td>
                             </tr>
                             <tr>
                                 <th>Parent Grant</th>

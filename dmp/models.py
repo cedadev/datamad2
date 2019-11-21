@@ -1,6 +1,23 @@
 from django.db import models
+from datamad2.models import MyUser
 
+
+from datetime import datetime, timedelta, date
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
+# import users
+from django.contrib.auth.models import *
+
+
+class Person(MyUser):
+    class Meta:
+        proxy = True
+        ordering = ('first_name',)
+
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
+
 
 class Project(models.Model):
 
@@ -16,8 +33,8 @@ class Project(models.Model):
     enddate = models.DateField(blank=True, null=True,verbose_name="End Date",help_text="Date format dd/mm/yyyy")
     dmp_agreed = models.DateField(blank=True, null=True, verbose_name="DMP Agreed",help_text="Date format dd/mm/yyyy")
     initial_contact = models.DateField(blank=True, null=True, verbose_name="Initial Contact",help_text="Date format dd/mm/yyyy")
-    #sciSupContact = models.ForeignKey(Person, help_text="CEDA person contact for this Project", blank=True, null=True)
-    #sciSupContact2 = models.ForeignKey(Person, help_text="CEDA person contact for this Project", blank=True, null=True, related_name="sciSupContact2s")
+    sciSupContact = models.ForeignKey(Person, help_text="Data centre contact for this Project", blank=True, null=True, on_delete=models.PROTECT)
+    sciSupContact2 = models.ForeignKey(Person, help_text="Data centre contact for this Project", blank=True, null=True, related_name="sciSupContact2s", on_delete=models.PROTECT)
     PI = models.CharField(max_length=200, blank=True, null=True)
     PIemail = models.EmailField(max_length=200, blank=True, null=True)
     PIinst = models.CharField(max_length=200, blank=True, null=True)
@@ -59,3 +76,84 @@ class Project(models.Model):
     project_usergroup = models.CharField(max_length=200, blank=True, null=True, help_text="Group name for registration for this group")
     #metadata_form = GenericRelation("MetadataForm")
     reassigned = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.title[:50]}"
+
+    def active(self):
+        if self.status in ("Active", "EndedWithDataToCome"): return True
+        elif self.status == "NotStarted" and self.startdate < date.today(): return True
+        elif not self.status: return True
+        else: return False
+
+    # def grants(self):
+    #     return Grant.objects.filter(project=self)
+
+    def alerts(self):
+        # produce alert flag (red, amber, green) and alert text to show needed actions.
+        #
+        # 4 alert types, DMP agreement, contact, end of project, missing info.
+        month = timedelta(days=31)
+        now = date.today()
+        flag = 0  # green - default
+        text = ''  # default alert text
+        if self.status == 'NoData' and not self.initial_contact: return (
+        'ambar', 'Marked as no data, but not contacted?')
+        if not self.active(): return ('green', 'No warnings as not active.')
+
+        # Need to set start and end dates to have alerts
+        if not self.startdate: return ('red', 'Need a start date.')
+        if not self.enddate: return ('red', 'Need an end date.')
+
+        # check DMP status
+        if self.startdate + 3 * month < now and not self.dmp_agreed:
+            flag = max(flag, 2)
+            text += 'DMP not agreed after 3 months from project start. '
+        elif self.startdate + 2 * month < now and not self.dmp_agreed:
+            flag = max(flag, 1)
+            text += 'DMP not agreed after 2 months from project start. '
+
+        # check contact status
+        if self.startdate + 2 * month < now and not self.initial_contact:
+            flag = max(flag, 2)
+            text += 'No contact in the first 2 months of the project. '
+        elif self.startdate + 1 * month < now and not self.initial_contact:
+            flag = max(flag, 1)
+            text += 'No contact in the first 1 months of the project. '
+
+        # check contact status
+        if self.startdate < now and self.status == "NotStarted":
+            flag = max(flag, 1)
+            text += 'Change status to active? '
+
+        # end of project
+        if self.enddate < now:
+            flag = max(flag, 2)
+            text += 'Project ended but not marked as complete. '
+        elif self.enddate - 3 * month < now:
+            flag = max(flag, 1)
+            text += '3 months before project end.  '
+
+        # check critical fields
+        if not self.title:
+            flag = max(flag, 2)
+            text += 'Needs a title. '
+        if not self.sciSupContact:
+            flag = max(flag, 1)
+            text += 'Needs a science support contact. '
+        if not self.PI:
+            flag = max(flag, 2)
+            text += 'Needs a PI name. '
+        if not self.status:
+            flag = max(flag, 1)
+            text += 'Needs a status. '
+
+        flag = ('green', 'ambar', 'red')[flag]
+        return (flag, text)
+
+
+class Programme(models.Model):
+
+    # grants have a programme
+
+    title = models.CharField(max_length=200)
