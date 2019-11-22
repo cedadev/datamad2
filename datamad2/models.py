@@ -35,6 +35,8 @@ class Grant(models.Model):
                                                   ("PDC", "PDC"),
                                                   ("ADS", "ADS"),
                                                   ))
+    # Lead Grant (Yes / No)	Siebel	Y/N			LEAD_GRANT
+    lead_grant = models.BooleanField(null=True, blank=True)
     # Hide Record	Sharepoint
     hide_record = models.BooleanField(null=True, blank=True)
     # DateContact with PI	Sharepoint	Date or Null
@@ -52,18 +54,20 @@ class Grant(models.Model):
     claim_status = models.CharField(max_length=256, null=True, blank=True)
     # checks for updated imported grant (more than one version)
     updated_imported_grant = models.BooleanField(null=True, blank=True, editable=False, verbose_name='Grant updated')
+    #programme - one programme can have many grants
+    programme = models.ForeignKey(to='dmp.Programme', blank=True, null=True, on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
         #On save, update timestamps
         from dmp.models import Project
-        created = not self.pk
-        if Project.objects.filter(title=self.title):
-            pass
-            #self.project = Project.objects.filter(title=self.title)
+        exists = Project.objects.filter(title=self.title).exists()
+        if exists:
+            self.project = Project.objects.get(title=self.title)
         else:
             new_project = Project.objects.create(title=self.title)
             self.project = new_project
         return super(Grant, self).save(*args, **kwargs)
+
 
     def __str__(self):
         return f"{self.grant_ref}: {self.title[:50]}"
@@ -173,11 +177,13 @@ class ImportedGrant(models.Model):
 
     def save(self, *args, **kwargs):
         #On save, update timestamps
-        created = not self.pk
+        exists = Grant.objects.filter(grant_ref=self.grant_ref).exists()
         if not self.creation_date:
             self.creation_date = timezone.now()
-        if created:
-            new_grant = Grant.objects.create(grant_ref=self.grant_ref, title=self.title)
+        if exists:
+            self.grant = Grant.objects.get(grant_ref=self.grant_ref)
+        else:
+            new_grant = Grant.objects.create(grant_ref=self.grant_ref, title=self.title, lead_grant=self.lead_grant)
             self.grant = new_grant
         return super(ImportedGrant, self).save(*args, **kwargs)
 

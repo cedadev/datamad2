@@ -1,0 +1,153 @@
+{%  extends 'datamad2/base.html' %}
+{% load staticfiles cookielaw_tags i18n fwtheme_tags %}
+{% is_container_fluid as container_fluid %}
+{% load lead_grant  %}
+
+
+
+{% block content %}
+    {% block page_special %}
+    {% endblock %}
+
+    {# To make content occupy full width, override the block page_container #}
+    {# with one of the same name which OMITS the div class=container tag #}
+
+    {% block page_container %}
+
+              <div class="container{% if container_fluid %}-fluid{% endif %}">
+
+            {% block content_main %}
+                {% block content_header %}
+
+                    <div class="page-header" id="banner">
+                    <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2">
+                    {% block page_title %}
+                        <div class="wrapper">
+                        <!-- Sidebar -->
+                        <nav id="sidebar">
+                        <div class="sidebar-header">
+                            <h3>DMP</h3>
+                        </div>
+                        <ul class="list-unstyled components">
+                        <h4>Projects</h4>
+                        </ul>
+                        </nav>
+                        </div>
+                    {% endblock %}
+                </div>
+                <div class="col-lg-8">
+                <div>
+                {%  for grant in project.grant_set.all %}
+                    {% if grant|lead %}
+                        <a href="{%  url 'grant_detail' pk=grant.importedgrant_set.first.pk  %}">
+                        <button title='Lead Grant' data-toggle='tooltip' class="btn btn-primary claim-btn" id="grant-button-lead"> {{ grant.grant_ref }} </button>
+                        </a>
+                    {%  else %}
+                        <a href="{%  url 'grant_detail' pk=grant.importedgrant_set.first.pk  %}">
+                        <button class="btn btn-primary claim-btn" id="grant-button"> {{ grant.grant_ref }} </button>
+                        </a>
+                    {%  endif %}
+                {%  endfor %}
+                </div>
+                    <div class="w3-card">
+                        <table  id="grants" style="width:100%">
+                            <tr>
+                                <th> <h3>{{ project.title }} </h3></th>
+                            </tr>
+                            <tr>
+                                <th>PI</th>
+                                <td class="column-id" > {{ project.PI }} </td>
+                            </tr>
+
+                            <tr>
+                                <th>PI email</th>
+                                <td class="column-id" >{{ project.PIemail }} </td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td class="column-id"  >{{ project.desc }} </td>
+                            </tr>
+                            <tr>
+                                <th>Start Date</th>
+                                <td class="column-id" > {{ project.startdate }} </td>
+                            </tr>
+                            <tr>
+                                <th>End Date</th>
+                                <td class="column-id" >{{ project.enddate }} </td>
+                            </tr>
+                            <tr>
+                                <th>Project Status</th>
+                                <td class="column-id">{{ project.project_status }} </td>
+                            </tr>
+                            <tr>
+                                <th>Initial Contact </th>
+                                <td class="column-id">{{ project.initial_contact }} </td>
+                            </tr>
+                            <tr>
+                                <th>DMP Agreed on</th>
+                                <td class="column-id" >{{ project.dmp_agreed }} </td>
+                            </tr>
+                            <tr>
+                                <th>SciSupContact</th>
+                                <td class="column-id" >{{ project.sciSupContact }} </td>
+                            </tr>
+                            <tr>
+                                <th>SciSupContact2</th>
+                                <td class="column-id" >{{ project.sciSupContact2 }} </td>
+                            </tr>
+                            <tr>
+                                <th>Primary Datacentre</th>
+                                <td class="column-id" >{{ project.primary_dataCentre }} </td>
+                            </tr>
+                            <tr>
+                                <th>Other Datacentre</th>
+                                <td class="column-id" >{{ project.other_dataCentres }} </td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td class="column-id" >{{ project.status }} </td>
+                            </tr>
+                            <tr>
+                                <th>DMP URL</th>
+                                <td class="column-id" >{{ project.dmp_URL }} </td>
+                            </tr>
+                            <tr>
+                                <th>ODMP URL</th>
+                                <td class="column-id" >{{ project.ODMP_URL }} </td>
+                            </tr>
+                        </table>
+                    </div>
+                      <div class="w3-card" id="spaced-card">
+                            <tr>
+                                <table class="row-border" id="grants" style="width:100%">
+                                    <tr>
+                                        <th>Data Product</th>
+                                        <th>Contact</th>
+                                        <th>Status</th>
+                                        <th>Delivery Date</th>
+                                        <td><a href="{%  url 'dataproduct_new' %}" title='Add data product' data-toggle='tooltip'><i class="fas fa-plus"></i></a></td>
+                                    </tr>
+                                    <tr>
+                                        {%  for data_product in project.dataproduct_set.all %}
+                                            <td>{{  data_product.title }}</td>
+                                            <td> {{ data_product.contact }}</td>
+                                            <td> {{  data_product.status }}</td>
+                                            <td> {{ data_product.deliverydate }}</td>
+
+                                        {%  endfor %}
+
+                                    </tr>
+                                </table>
+                            </tr>
+                        </div>
+                </div>
+
+
+            {% endblock content_header %}
+        {% endblock content_main %}
+
+    </div>
+
+    {% endblock page_container %}
+{%  endblock %}

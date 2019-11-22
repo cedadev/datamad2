@@ -9,6 +9,8 @@ from django.contrib.contenttypes.models import ContentType
 # import users
 from django.contrib.auth.models import *
 
+from sizefield.models import FileSizeField
+
 
 class Person(MyUser):
     class Meta:
@@ -80,80 +82,62 @@ class Project(models.Model):
     def __str__(self):
         return f"{self.title[:50]}"
 
-    def active(self):
-        if self.status in ("Active", "EndedWithDataToCome"): return True
-        elif self.status == "NotStarted" and self.startdate < date.today(): return True
-        elif not self.status: return True
-        else: return False
-
-    # def grants(self):
-    #     return Grant.objects.filter(project=self)
-
-    def alerts(self):
-        # produce alert flag (red, amber, green) and alert text to show needed actions.
-        #
-        # 4 alert types, DMP agreement, contact, end of project, missing info.
-        month = timedelta(days=31)
-        now = date.today()
-        flag = 0  # green - default
-        text = ''  # default alert text
-        if self.status == 'NoData' and not self.initial_contact: return (
-        'ambar', 'Marked as no data, but not contacted?')
-        if not self.active(): return ('green', 'No warnings as not active.')
-
-        # Need to set start and end dates to have alerts
-        if not self.startdate: return ('red', 'Need a start date.')
-        if not self.enddate: return ('red', 'Need an end date.')
-
-        # check DMP status
-        if self.startdate + 3 * month < now and not self.dmp_agreed:
-            flag = max(flag, 2)
-            text += 'DMP not agreed after 3 months from project start. '
-        elif self.startdate + 2 * month < now and not self.dmp_agreed:
-            flag = max(flag, 1)
-            text += 'DMP not agreed after 2 months from project start. '
-
-        # check contact status
-        if self.startdate + 2 * month < now and not self.initial_contact:
-            flag = max(flag, 2)
-            text += 'No contact in the first 2 months of the project. '
-        elif self.startdate + 1 * month < now and not self.initial_contact:
-            flag = max(flag, 1)
-            text += 'No contact in the first 1 months of the project. '
-
-        # check contact status
-        if self.startdate < now and self.status == "NotStarted":
-            flag = max(flag, 1)
-            text += 'Change status to active? '
-
-        # end of project
-        if self.enddate < now:
-            flag = max(flag, 2)
-            text += 'Project ended but not marked as complete. '
-        elif self.enddate - 3 * month < now:
-            flag = max(flag, 1)
-            text += '3 months before project end.  '
-
-        # check critical fields
-        if not self.title:
-            flag = max(flag, 2)
-            text += 'Needs a title. '
-        if not self.sciSupContact:
-            flag = max(flag, 1)
-            text += 'Needs a science support contact. '
-        if not self.PI:
-            flag = max(flag, 2)
-            text += 'Needs a PI name. '
-        if not self.status:
-            flag = max(flag, 1)
-            text += 'Needs a status. '
-
-        flag = ('green', 'ambar', 'red')[flag]
-        return (flag, text)
-
 
 class Programme(models.Model):
 
     # grants have a programme
 
     title = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"{self.title[:50]}"
+
+
+class DataProduct(models.Model):
+    # Data products are data streams produced by projects
+
+    title = models.CharField(max_length=200)
+    desc = models.TextField(blank=True, null=True)
+    #notes = GenericRelation("Note")
+    datavol = FileSizeField(default=0)
+    project = models.ForeignKey(Project, help_text="Project producing this data", blank=True, null=True, on_delete=models.PROTECT)
+    sciSupContact = models.ForeignKey(MyUser, help_text="CEDA person contact for this data", blank=True, null=True, on_delete=models.PROTECT)
+    contact1 = models.CharField(max_length=200, blank=True, null=True)
+    contact2 = models.CharField(max_length=200, blank=True, null=True)
+    deliverydate = models.DateField(blank=True, null=True)
+    preservation_plan = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        choices=(
+            ("Reference", "Reference data with principal use to provide evidence for publication"),
+            ("Structured", "Structured data with set format and metadata conventions"),
+            ("Interoperable", "Interoperable data with formats and metadata conventions for specific community tools"),
+            ("InProject", "Data management within the project only. No archive involvement"),
+            ("OtherRepositories", "Other Non-NERC repositories"),
+            ("BODC", "British Oceanographic Data Centre"),
+            ("EIDC", "Environmental Information Data Centre "),
+            ("PDC", "Polar Data Centre"),
+            ("NGDC", "National Geoscience Data Centre"),
+            ("OtherDMP", "This data is planned within another project DMP"),
+            ("KeepIndefinitely", "Keep Indefinitely"),
+            ("KeepAsIs", "Keep as is - Even if obsolete"),
+            ("Dispose5years ", "Review for disposal 5 years after project completes"),
+            ("ManageInProject", "Don't Archive - manage the data within the project"),
+            ("Subset", "Plan to keep a subset of the data indefinitely"),
+            ("TBD", "TBD")
+        )
+    )
+    added = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    review_date = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=200, blank=True, null=True,
+                              choices=(("WithProjectTeam", "With Project Team"),
+                                       ("Ingesting", "Ingesting"),
+                                       ("Archived", "Archived and complete"),
+                                       ("Defaulted", "Defaulted - not archived due to project not supplying data"),
+                                       ("NotArchived", "Not going to archive - planned")))
+    data_URL = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.title[:50]}"

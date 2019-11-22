@@ -1,5 +1,6 @@
 {%  extends 'datamad2/base.html' %}
 {% load staticfiles cookielaw_tags i18n fwtheme_tags %}
+{% load lead_grant  %}
 {% is_container_fluid as container_fluid %}
 
 {%  block content %}
@@ -41,7 +42,6 @@
                             <thead>
                             <tr>
                                 <th>Title</th>
-                                <th>Project Group Links</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Initial Contact</th>
@@ -55,50 +55,62 @@
                             </thead>
                             <tbody>
                             {% for project in projects %}
-                                {%  with grants=project.grant_set %}
-                                    {% for grant in grants %}
-                                     {%  for imported_grant in grant.importedgrant_set %}
-                                         {%  if imported_grant.lead_grant == True %}
-                                <tr>
-                                    <td>
-                                        {{ grant.title }}
-                                    </td>
-                                    <td>
+{#                                {%  with grant=project.grant_set.all.first %}#}
+{#                                    {%  for grant in grants %}#}
+{#                                        {% if grant|lead %}#}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'project_detail' pk=project.pk %}">
+                                            {{ project.title }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {{ project.startdate }}
+                                        </td>
+                                        <td>
+                                            {{ project.enddate }}
+                                        </td>
+                                        <td>
+                                            {{ project.initial_contact }}
+                                        </td>
+                                        <td>
+                                            {{ project.dmp_agreed }}
+                                        </td>
+                                        <td>
+                                            {{ project.status }}
+                                        </td>
+                                        <td>
+                                            {{ project.project_status }}
+                                        </td>
+                                        <td>
 
-                                    </td>
-                                    <td>
-                                        {{ grant.project.startdate }}
-                                    </td>
-                                    <td>
-                                        {{ grant.project.enddate }}
-                                    </td>
-                                    <td>
-                                        {{ grant.project.initial_contact }}
-                                    </td>
-                                    <td>
-                                        {{ grant.project.dmp_agreed }}
-                                    </td>
-                                    <td>
-                                        {{ grant.project.status }}
-                                    </td>
-                                    <td>
-                                        {{ grant.project.project_status }}
-                                    </td>
-                                    <td>
+                                        </td>
+                                        <td>
+                                            {{ project.sciSupContact }}
+                                        </td>
+                                        <td >
+                                            {%  with grants=project.grant_set.all %}
+                                                {%  for grant in grants %}
+                                                    {% if grant|lead %}
 
-                                    </td>
-                                    <td>
+                                                        <a id="lead" title='Lead Grant' data-toggle='tooltip' href="{% url 'grant_detail' pk=grant.importedgrant_set.first.pk %}">
+                                                            {{  grant.grant_ref|linebreaks }} <!-- link to lead grant-->
+                                                        </a>
 
-                                    </td>
-                                    <td>
-                                        <a href="">
-                                        {{  grant.grant_ref }} <!-- link to lead grant-->
-                                    </td>
-                                </tr>
-                                         {% endif %}
-                                         {%  endfor %}
-                                    {%  endfor %}
-                                {%  endwith %}
+                                                    {% else %}
+
+                                                        <a href="{% url 'grant_detail' pk=grant.importedgrant_set.first.pk %}">
+                                                            {{  grant.grant_ref|linebreaks }} <!-- link to lead grant-->
+                                                        </a>
+
+                                                    {%  endif %}
+                                                {%  endfor %}
+                                            {%  endwith %}
+                                        </td>
+                                    </tr>
+                                {#                                    {%  endif %}#}
+                                {#                                    {%  endfor %}#}
+{#                                {%  endwith %}#}
                             {%  endfor %}
                             </tbody>
                         </table>
