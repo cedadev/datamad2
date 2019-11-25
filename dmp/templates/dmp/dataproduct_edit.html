@@ -28,21 +28,28 @@
                         <!-- Sidebar -->
                         <nav id="sidebar">
                         <div class="sidebar-header">
-                            <h3>DMP</h3>
                         </div>
                         <ul class="list-unstyled components">
-                        <h4>Projects</h4>
                         </ul>
                         </nav>
                         </div>
                     {% endblock %}
                     </div>
                     <div class="col">
-                        <h2>New Data Product</h2>
-                        <form method="POST" class="post-form">{% csrf_token %}
+                        <h3>New Data Product</h3>
+                    <table>
+                        <form method="POST">
+                            {% csrf_token %}
                             {{ form.as_p }}
-                            <button type="submit" class="save btn btn-default">Save</button>
+                            <button type="submit" class="btn btn-primary" id="claim">Save</button>
                         </form>
+                        {%  if dataproduct.pk %}
+                        <form action="{%  url 'dataproduct_delete' pk=dataproduct.pk %}" method="post">
+                            {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" id="claim">Delete</button>
+                        {%  endif %}
+                        </form>
+                    </table>
                     </div>
 
                 {% endblock content_header %}

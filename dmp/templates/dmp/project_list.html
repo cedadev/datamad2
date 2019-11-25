@@ -59,9 +59,9 @@
 {#                                    {%  for grant in grants %}#}
 {#                                        {% if grant|lead %}#}
                                     <tr>
-                                        <td>
+                                        <td id="title">
                                             <a href="{% url 'project_detail' pk=project.pk %}">
-                                            {{ project.title }}
+                                            {{ project.title}}
                                             </a>
                                         </td>
                                         <td>
@@ -83,7 +83,7 @@
                                             {{ project.project_status }}
                                         </td>
                                         <td>
-
+                                            {{ project.ndata }}
                                         </td>
                                         <td>
                                             {{ project.sciSupContact }}
@@ -92,17 +92,17 @@
                                             {%  with grants=project.grant_set.all %}
                                                 {%  for grant in grants %}
                                                     {% if grant|lead %}
-
+                                                        <div>
                                                         <a id="lead" title='Lead Grant' data-toggle='tooltip' href="{% url 'grant_detail' pk=grant.importedgrant_set.first.pk %}">
-                                                            {{  grant.grant_ref|linebreaks }} <!-- link to lead grant-->
+                                                            {{  grant.grant_ref }} <!-- link to lead grant-->
                                                         </a>
-
+                                                        </div>
                                                     {% else %}
-
+                                                        <div>
                                                         <a href="{% url 'grant_detail' pk=grant.importedgrant_set.first.pk %}">
-                                                            {{  grant.grant_ref|linebreaks }} <!-- link to lead grant-->
+                                                            {{  grant.grant_ref }} <!-- link to lead grant-->
                                                         </a>
-
+                                                        </div>
                                                     {%  endif %}
                                                 {%  endfor %}
                                             {%  endwith %}

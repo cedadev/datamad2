@@ -27,10 +27,10 @@
                         <!-- Sidebar -->
                         <nav id="sidebar">
                         <div class="sidebar-header">
-                            <h3>DMP</h3>
+{#                            <h3>DMP</h3>#}
                         </div>
                         <ul class="list-unstyled components">
-                        <h4>Projects</h4>
+{#                        <h4>Projects</h4>#}
                         </ul>
                         </nav>
                         </div>
@@ -52,9 +52,7 @@
                 </div>
                     <div class="w3-card">
                         <table  id="grants" style="width:100%">
-                            <tr>
-                                <th> <h3>{{ project.title }} </h3></th>
-                            </tr>
+                            <h3>{{ project.title }} </h3>
                             <tr>
                                 <th>PI</th>
                                 <td class="column-id" > {{ project.PI }} </td>
@@ -120,24 +118,27 @@
                     </div>
                       <div class="w3-card" id="spaced-card">
                             <tr>
-                                <table class="row-border" id="grants" style="width:100%">
+                                <table class="row-border" id="dataproduct" style="width:100%">
                                     <tr>
                                         <th>Data Product</th>
                                         <th>Contact</th>
                                         <th>Status</th>
                                         <th>Delivery Date</th>
-                                        <td><a href="{%  url 'dataproduct_new' %}" title='Add data product' data-toggle='tooltip'><i class="fas fa-plus"></i></a></td>
+                                        <td><a href="{%  url 'dataproduct_new' project_id=project.pk %}" title='Add data product' data-toggle='tooltip'><i class="fas fa-plus"></i></a></td>
                                     </tr>
-                                    <tr>
-                                        {%  for data_product in project.dataproduct_set.all %}
-                                            <td>{{  data_product.title }}</td>
+                                    {%  for data_product in project.dataproduct_set.all %}
+                                        <tr>
+                                            <td>
+                                            <a href="{%  url 'dataproduct_detail' pk=data_product.pk %}">
+                                                {{  data_product.title }}
+                                            </a>
+                                            </td>
                                             <td> {{ data_product.contact }}</td>
                                             <td> {{  data_product.status }}</td>
                                             <td> {{ data_product.deliverydate }}</td>
-
-                                        {%  endfor %}
-
-                                    </tr>
+                                            <td> <a title='Edit data product' data-toggle='tooltip' href="{% url 'dataproduct_edit' pk=data_product.pk project_id=project.pk %}"><i class="far fa-edit"></i></a></td>
+                                        </tr>
+                                    {%  endfor %}
                                 </table>
                             </tr>
                         </div>

@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Project, DataProduct
 from .forms import DataProductForm
 from django.db.models import Q
+from django.urls import reverse
 
 
 # Create your views here.
@@ -18,15 +19,51 @@ def project_detail(request, pk):
     return render(request, 'dmp/project_detail.html', {'project': project})
 
 @login_required
-def dataproduct_new(request):
+def dataproduct_new(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
     if request.method == 'POST':
         form = DataProductForm(request.POST)
         if form.is_valid():
             dp = form.save(commit=False)
             dp.sciSupContact = request.user
+            if not dp.sciSupContact:
+                dp.sciSupContact = request.user
+            if not dp.project:
+                dp.project = project
             dp.save()
-            return redirect('project_detail', pk=dp.pk)
-        else:
-            form = DataProductForm()
-        return render(request, 'dmp/dataproduct_edit.html', {'form': form})
+            return redirect(reverse('project_detail', kwargs={'pk': dp.project.pk}) + "#spaced-card")
+    else:
+        form = DataProductForm()
+    return render(request, 'dmp/dataproduct_edit.html', {'form': form})
+
+@login_required
+def dataproduct_edit(request, pk, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    dataproduct = get_object_or_404(DataProduct, pk=pk)
+    if request.method == "POST":
+        form = DataProductForm(request.POST, instance=dataproduct)
+        if form.is_valid():
+            dp = form.save(commit=False)
+            if not dp.sciSupContact:
+                dp.sciSupContact = request.user
+            if not dp.project:
+                dp.project = project
+            dp.save()
+            return redirect(reverse('project_detail', kwargs={'pk': dp.project.pk}) + "#spaced-card")
+    else:
+        form = DataProductForm(instance=dataproduct)
+    return render(request, 'dmp/dataproduct_edit.html', {'form': form, 'dataproduct': dataproduct})
+
+@login_required
+def dataproduct_delete(request, pk):
+    dataproduct = get_object_or_404(DataProduct, pk=pk)
+    if request.method == 'POST':
+        dataproduct.delete()
+        return redirect(reverse('project_detail', kwargs={'pk': dataproduct.project.pk}) + "#spaced-card")
+    return render(request, {'dataproduct': dataproduct})
+
+def dataproduct_detail(request, pk):
+    dataproduct = get_object_or_404(DataProduct, pk=pk)
+    return render(request, 'dmp/dataproduct_detail.html', {'dataproduct': dataproduct})
+
 

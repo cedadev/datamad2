@@ -35,8 +35,8 @@ class Project(models.Model):
     enddate = models.DateField(blank=True, null=True,verbose_name="End Date",help_text="Date format dd/mm/yyyy")
     dmp_agreed = models.DateField(blank=True, null=True, verbose_name="DMP Agreed",help_text="Date format dd/mm/yyyy")
     initial_contact = models.DateField(blank=True, null=True, verbose_name="Initial Contact",help_text="Date format dd/mm/yyyy")
-    sciSupContact = models.ForeignKey(Person, help_text="Data centre contact for this Project", blank=True, null=True, on_delete=models.PROTECT)
-    sciSupContact2 = models.ForeignKey(Person, help_text="Data centre contact for this Project", blank=True, null=True, related_name="sciSupContact2s", on_delete=models.PROTECT)
+    sciSupContact = models.ForeignKey(Person, help_text="Data centre contact for this project", blank=True, null=True, on_delete=models.PROTECT)
+    sciSupContact2 = models.ForeignKey(Person, help_text="Data centre contact for this project", blank=True, null=True, related_name="sciSupContact2s", on_delete=models.PROTECT)
     PI = models.CharField(max_length=200, blank=True, null=True)
     PIemail = models.EmailField(max_length=200, blank=True, null=True)
     PIinst = models.CharField(max_length=200, blank=True, null=True)
@@ -82,6 +82,10 @@ class Project(models.Model):
     def __str__(self):
         return f"{self.title[:50]}"
 
+    def ndata(self):
+        dps = DataProduct.objects.filter(project=self)
+        return len(dps)
+
 
 class Programme(models.Model):
 
@@ -97,14 +101,14 @@ class DataProduct(models.Model):
     # Data products are data streams produced by projects
 
     title = models.CharField(max_length=200)
-    desc = models.TextField(blank=True, null=True)
+    desc = models.TextField(blank=True, null=True, verbose_name='Description')
     #notes = GenericRelation("Note")
-    datavol = FileSizeField(default=0)
+    datavol = FileSizeField(default=0, verbose_name='Data Volume')
     project = models.ForeignKey(Project, help_text="Project producing this data", blank=True, null=True, on_delete=models.PROTECT)
-    sciSupContact = models.ForeignKey(MyUser, help_text="CEDA person contact for this data", blank=True, null=True, on_delete=models.PROTECT)
-    contact1 = models.CharField(max_length=200, blank=True, null=True)
-    contact2 = models.CharField(max_length=200, blank=True, null=True)
-    deliverydate = models.DateField(blank=True, null=True)
+    sciSupContact = models.ForeignKey(Person, help_text="Data centre contact for this data", blank=True, null=True, on_delete=models.PROTECT)
+    contact1 = models.CharField(max_length=200, blank=True, null=True, verbose_name='Contact 1')
+    contact2 = models.CharField(max_length=200, blank=True, null=True, verbose_name='Contact 2')
+    deliverydate = models.DateField(blank=True, null=True, verbose_name='Delivery Date')
     preservation_plan = models.CharField(
         max_length=200,
         blank=True,

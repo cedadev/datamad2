@@ -6,6 +6,7 @@
 #claim-button{
   padding: 5px 32px;
   text-align: center;
+  font-size: 12px;
 }
 
 .login-box {
@@ -107,6 +108,11 @@ td i {
   font-size: 12px;
 }
 
+#dataproduct th, td {
+  font-size: 12px;
+  padding: 5px;
+}
+
 #banner {
   font-size: 14px;
 }
@@ -128,3 +134,10 @@ td i {
   margin: 12px 5px;
 }
 
+#title {
+  width: 150px;
+}
+
+h3 {
+  padding: 5px 10px;
+}

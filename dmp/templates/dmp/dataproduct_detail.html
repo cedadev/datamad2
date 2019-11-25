@@ -1,0 +1,101 @@
+{%  extends 'datamad2/base.html' %}
+{% load staticfiles cookielaw_tags i18n fwtheme_tags %}
+{% is_container_fluid as container_fluid %}
+
+{% block content %}
+    {% block page_special %}
+    {% endblock %}
+
+    {# To make content occupy full width, override the block page_container #}
+    {# with one of the same name which OMITS the div class=container tag #}
+
+    {% block page_container %}
+
+        <div class="container{% if container_fluid %}-fluid{% endif %}">
+
+        {% block content_main %}
+            {% block content_header %}
+
+                <div class="page-header" id="banner">
+                <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    {% block page_title %}
+                        <div class="wrapper">
+                            <!-- Sidebar -->
+                            <nav id="sidebar">
+                            </nav>
+                        </div>
+                    {% endblock %}
+                </div>
+                <div class="col-lg-8">
+                    <div class="w3-card">
+                        <table  id="grants" style="width:100%">
+                                <h3>{{ dataproduct.title }} </h3>
+                            <tr>
+                                <th>Description</th>
+                                <td class="column-id" > {{ dataproduct.desc }} </td>
+                            </tr>
+
+                            <tr>
+                                <th>Data Volume</th>
+                                <td class="column-id" >{{ dataproduct.datavol }} </td>
+                            </tr>
+                            <tr>
+                                <th>Project</th>
+                                <td class="column-id"  >{{ dataproduct.project }} </td>
+                            </tr>
+                            <tr>
+                                <th>SciSupContact</th>
+                                <td class="column-id" >{{ dataproduct.sciSupContact }} </td>
+                            </tr>
+                            <tr>
+                                <th>Contact 1</th>
+                                <td class="column-id" >{{ dataproduct.contact1 }} </td>
+                            </tr>
+                            <tr>
+                                <th>Contact 2</th>
+                                <td class="column-id">{{ dataproduct.contact2 }} </td>
+                            </tr>
+                            <tr>
+                                <th>Delivery Date</th>
+                                <td class="column-id">{{ dataproduct.deliverydate }} </td>
+                            </tr>
+                            <tr>
+                                <th>Preservation Plan </th>
+                                <td class="column-id" >{{ dataproduct.preservation_plan }} </td>
+                            </tr>
+                            <tr>
+                                <th>Added</th>
+                                <td class="column-id" >{{ dataproduct.added }} </td>
+                            </tr>
+                            <tr>
+                                <th>Modified</th>
+                                <td class="column-id" >{{ dataproduct.modified }} </td>
+                            </tr>
+                            <tr>
+                                <th>Review Date</th>
+                                <td class="column-id" >{{ dataproduct.review_date }} </td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td class="column-id" >{{ dataproduct.status }} </td>
+                            </tr>
+                            <tr>
+                                <th>Data URL</th>
+                                <td class="column-id" >{{ dataproduct.data_URL }} </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+            {% endblock content_header %}
+        {% endblock content_main %}
+
+    </div>
+
+    {% endblock page_container %}
+{%  endblock %}
+
+</div>
+</div>
