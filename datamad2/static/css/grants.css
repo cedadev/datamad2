@@ -138,6 +138,16 @@ td i {
   width: 150px;
 }
 
-h3 {
-  padding: 5px 10px;
+#title-detail {
+  padding: 5px;
+}
+
+#delete {
+  padding: 5px 32px;
+  text-align: center;
+  position: absolute;
+}
+
+#edit {
+  position: relative;
 }

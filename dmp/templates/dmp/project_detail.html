@@ -4,7 +4,6 @@
 {% load lead_grant  %}
 
 
-
 {% block content %}
     {% block page_special %}
     {% endblock %}
@@ -52,7 +51,11 @@
                 </div>
                     <div class="w3-card">
                         <table  id="grants" style="width:100%">
-                            <h3>{{ project.title }} </h3>
+                            <h3 id="title-detail">
+                                {{ project.title }}
+                            <a title='Edit Project' data-toggle='tooltip' href="{% url 'project_edit' pk=project.pk %}"><i class="far fa-edit" id="edit"></i></a>
+                            </h3>
+
                             <tr>
                                 <th>PI</th>
                                 <td class="column-id" > {{ project.PI }} </td>
@@ -95,11 +98,11 @@
                                 <td class="column-id" >{{ project.sciSupContact2 }} </td>
                             </tr>
                             <tr>
-                                <th>Primary Datacentre</th>
+                                <th>Primary Data Centre</th>
                                 <td class="column-id" >{{ project.primary_dataCentre }} </td>
                             </tr>
                             <tr>
-                                <th>Other Datacentre</th>
+                                <th>Other Data Centre</th>
                                 <td class="column-id" >{{ project.other_dataCentres }} </td>
                             </tr>
                             <tr>
@@ -113,6 +116,10 @@
                             <tr>
                                 <th>ODMP URL</th>
                                 <td class="column-id" >{{ project.ODMP_URL }} </td>
+                            </tr>
+                            <tr>
+                                <th>Programme</th>
+                                <td class="column-id" >{{ project.programme }} </td>
                             </tr>
                         </table>
                     </div>

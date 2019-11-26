@@ -5,6 +5,7 @@ from datamad2.models import MyUser
 from datetime import datetime, timedelta, date
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.fields import PositiveIntegerField
 
 # import users
 from django.contrib.auth.models import *
@@ -20,6 +21,15 @@ class Person(MyUser):
     def __str__(self):
         return self.first_name + ' ' + self.last_name
 
+class Programme(models.Model):
+
+    # grants have a programme
+
+    title = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"{self.title[:50]}"
+
 
 class Project(models.Model):
 
@@ -29,23 +39,23 @@ class Project(models.Model):
     title = models.CharField(max_length=200)
     date_added = models.DateTimeField(auto_now_add=True)
     desc = models.TextField(blank=True, null=True, verbose_name="Description")
-    #notes = GenericRelation("Note")
+    notes = GenericRelation("Note")
     data_activities = models.TextField(blank=True, null=True, help_text="Short description of data generation activities. eg Data will be collected by FAAM aircraft/ground instruments. Are there intensive measurement campaigns?")
     startdate = models.DateField(blank=True, null=True,verbose_name="Start Date",help_text="Date format dd/mm/yyyy")
     enddate = models.DateField(blank=True, null=True,verbose_name="End Date",help_text="Date format dd/mm/yyyy")
-    dmp_agreed = models.DateField(blank=True, null=True, verbose_name="DMP Agreed",help_text="Date format dd/mm/yyyy")
-    initial_contact = models.DateField(blank=True, null=True, verbose_name="Initial Contact",help_text="Date format dd/mm/yyyy")
+    dmp_agreed = models.DateField(blank=True, null=True, verbose_name="DMP Agreed on",help_text="Date format dd/mm/yyyy")
+    initial_contact = models.DateField(blank=True, null=True, verbose_name="Initial Contact on",help_text="Date format dd/mm/yyyy")
     sciSupContact = models.ForeignKey(Person, help_text="Data centre contact for this project", blank=True, null=True, on_delete=models.PROTECT)
     sciSupContact2 = models.ForeignKey(Person, help_text="Data centre contact for this project", blank=True, null=True, related_name="sciSupContact2s", on_delete=models.PROTECT)
     PI = models.CharField(max_length=200, blank=True, null=True)
-    PIemail = models.EmailField(max_length=200, blank=True, null=True)
+    PIemail = models.EmailField(max_length=200, blank=True, null=True, verbose_name='PI email')
     PIinst = models.CharField(max_length=200, blank=True, null=True)
     Contact1 = models.CharField(max_length=200, blank=True, null=True)
     Contact2 = models.CharField(max_length=200, blank=True, null=True)
     projectcost = models.IntegerField(blank=True, null=True)
     services = models.TextField(blank=True, null=True)
-    primary_dataCentre = models.CharField(max_length=200,blank=True, null=True, verbose_name="Primary Datacentre")
-    other_dataCentres = models.CharField(max_length=200, blank=True, null=True, verbose_name="Other Datacentres")
+    primary_dataCentre = models.CharField(max_length=200,blank=True, null=True, verbose_name="Primary Data Centre")
+    other_dataCentres = models.CharField(max_length=200, blank=True, null=True, verbose_name="Other Data Centres")
     status = models.CharField(max_length=200, blank=True, null=True,
             choices=(("Proposal","Proposal"),
                  ("NotFunded","Not Funded"),
@@ -60,10 +70,10 @@ class Project(models.Model):
                  ("MergedProject/HandledElsewhere", "Merged Project/Handled Elsewhere"),
                      ))
     project_status = models.CharField(max_length=200, blank=True, null=True,
-            choices=(("InitialContact", "Initial contact"),
-                 ("DMPComms","DMP comms"),
+            choices=(("Initial contact", "Initial contact"),
+                 ("DMP comms","DMP comms"),
                  ("Progress","Progress"),
-                 ("DataDelivery", "Data delivery"),
+                 ("Data delivery", "Data delivery"),
                      ))
     modified = models.DateTimeField(auto_now=True)
     #third_party_data = models.ManyToManyField('DataProduct', related_name='requirements+',
@@ -77,6 +87,7 @@ class Project(models.Model):
     helpscout_url = models.URLField(blank=True, null=True, verbose_name="OpMan URL")
     project_usergroup = models.CharField(max_length=200, blank=True, null=True, help_text="Group name for registration for this group")
     #metadata_form = GenericRelation("MetadataForm")
+    programme = models.ForeignKey(Programme, blank=True, null=True, on_delete=models.PROTECT )
     reassigned = models.BooleanField(default=False)
 
     def __str__(self):
@@ -87,14 +98,7 @@ class Project(models.Model):
         return len(dps)
 
 
-class Programme(models.Model):
 
-    # grants have a programme
-
-    title = models.CharField(max_length=200)
-
-    def __str__(self):
-        return f"{self.title[:50]}"
 
 
 class DataProduct(models.Model):
@@ -102,7 +106,7 @@ class DataProduct(models.Model):
 
     title = models.CharField(max_length=200)
     desc = models.TextField(blank=True, null=True, verbose_name='Description')
-    #notes = GenericRelation("Note")
+    notes = GenericRelation("Note")
     datavol = FileSizeField(default=0, verbose_name='Data Volume')
     project = models.ForeignKey(Project, help_text="Project producing this data", blank=True, null=True, on_delete=models.PROTECT)
     sciSupContact = models.ForeignKey(Person, help_text="Data centre contact for this data", blank=True, null=True, on_delete=models.PROTECT)
@@ -145,3 +149,17 @@ class DataProduct(models.Model):
 
     def __str__(self):
         return f"{self.title[:50]}"
+
+
+class Note(models.Model):
+    class Meta:
+        verbose_name_plural = "Notes"
+        ordering = ["added"]
+
+    added = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(Person, null=True, blank=True, on_delete=models.PROTECT)
+    notes = models.TextField(blank=True, null=True)
+
+    content_type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.PROTECT)
+    object_id = PositiveIntegerField(null=True)
+    location = GenericForeignKey('content_type', 'object_id')

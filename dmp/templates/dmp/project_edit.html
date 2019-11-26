@@ -37,7 +37,7 @@
                     </div>
                     <div class="col">
 
-                        <h4>Data Product</h4>
+                        <h4>Edit Project</h4>
 
 
                         <table>
@@ -54,16 +54,6 @@
                         </table>
                         <button type="submit" class="btn btn-primary" id="delete">Save</button>
                         </form>
-                        {%  if dataproduct.pk %}
-                            <form action="{%  url 'dataproduct_delete' pk=dataproduct.pk %}" method="post">
-                            {% csrf_token %}
-
-                            <button type="submit" class="btn btn-primary" id="delete">Delete</button>
-
-                        {%  endif %}
-                        </form>
-
-
                     </div>
 
                 {% endblock content_header %}
@@ -73,5 +63,3 @@
         </div>
     {% endblock page_container %}
 {%  endblock %}
-
-

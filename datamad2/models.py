@@ -55,7 +55,7 @@ class Grant(models.Model):
     # checks for updated imported grant (more than one version)
     updated_imported_grant = models.BooleanField(null=True, blank=True, editable=False, verbose_name='Grant updated')
     #programme - one programme can have many grants
-    programme = models.ForeignKey(to='dmp.Programme', blank=True, null=True, on_delete=models.PROTECT)
+    #programme = models.ForeignKey(to='dmp.Programme', blank=True, null=True, on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
         #On save, update timestamps
