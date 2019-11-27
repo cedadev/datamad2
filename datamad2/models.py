@@ -4,7 +4,10 @@ from django.contrib.auth.models import (
 )
 from django.utils import timezone
 
+
 class Grant(models.Model):
+    #title
+    title = models.CharField(max_length=1024, default='')
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
     # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
@@ -48,16 +51,16 @@ class Grant(models.Model):
     claim_status = models.CharField(max_length=256, null=True, blank=True)
     # checks for updated imported grant (more than one version)
     updated_imported_grant = models.BooleanField(null=True, blank=True, editable=False, verbose_name='Grant updated')
+    #programme - one programme can have many grants
+    #programme = models.ForeignKey(to='dmp.Programme', blank=True, null=True, on_delete=models.PROTECT)
 
     def __str__(self):
-        return f"{self.grant_ref[:50]}"
-
+        return f"{self.grant_ref}: {self.title[:50]}"
 
 class ImportedGrant(models.Model):
     #ordering by creation date
     class Meta:
       ordering = ['-creation_date']
-
     # Title	Siebel	Name of the grant			PROJECT_TITLE
     title = models.CharField(max_length=1024, default='')
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
@@ -73,7 +76,8 @@ class ImportedGrant(models.Model):
     # AmountAwarded	Siebel	Amount in pounds stirling			AMOUNT
     amount_awarded = models.IntegerField(null=True, blank=True)
     # Call	Siebel	E.g. Standard Grant DEC06			CALL
-    call = models.CharField(max_length=1024, default='', blank=True)
+    # ignore call for now
+    # call = models.CharField(max_length=1024, default='', blank=True)
     # Grant Type	Siebel	E.g. RM grants & fees			GRANT_TYPE
     # The xls file run by RTS also contains Abstract and Objectives I presume these are from the GRANT
     grant_type = models.CharField(max_length=1024, default='', blank=True)
@@ -115,6 +119,7 @@ class ImportedGrant(models.Model):
                                                        ("Atmospheric", "Atmospheric"),
                                                        ("Freshwater", "Freshwater"),
                                                        ("Terrestrial", "Terrestrial"),
+                                                       ("Earth Observation", "Earth Observation"),
                                                        ))
     # Secondary Classifications	Siebel	E.g. Co-funded 40%; Cross-Research Council: 100%			MISSING
     secondary_classification = models.CharField(max_length=256, null=True, blank=True)
@@ -156,15 +161,18 @@ class ImportedGrant(models.Model):
 
     def save(self, *args, **kwargs):
         #On save, update timestamps
+        exists = Grant.objects.filter(grant_ref=self.grant_ref).exists()
         if not self.creation_date:
             self.creation_date = timezone.now()
+        if exists:
+            self.grant = Grant.objects.get(grant_ref=self.grant_ref)
+        else:
+            new_grant = Grant.objects.create(grant_ref=self.grant_ref, title=self.title, lead_grant=self.lead_grant)
+            self.grant = new_grant
         return super(ImportedGrant, self).save(*args, **kwargs)
-
-
 
     def __str__(self):
         return f"{self.grant_ref}: {self.title[:50]}: [{self.grant_holder}]"
-
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, data_centre, first_name, last_name, password=None):
