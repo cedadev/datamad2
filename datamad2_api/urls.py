@@ -5,7 +5,7 @@ from datamad2_api import views
 router = routers.DefaultRouter()
 router.register(r'grants', views.GrantViewSet)
 router.register(r'importedgrants', views.ImportedGrantViewSet)
-router.register(r'users', views.MyUserViewSet)
+router.register(r'users', views.UserViewSet)
 
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),

@@ -1,6 +1,6 @@
-from datamad2.models import Grant, ImportedGrant, MyUser
+from datamad2.models import Grant, ImportedGrant, User
 from rest_framework import viewsets
-from datamad2_api.serializers import GrantSerializer, ImportedGrantSerializer, MyUserSerializer
+from datamad2_api.serializers import GrantSerializer, ImportedGrantSerializer, UserSerializer
 
 
 class GrantViewSet(viewsets.ModelViewSet):
@@ -20,9 +20,9 @@ class ImportedGrantViewSet(viewsets.ModelViewSet):
     serializer_class = ImportedGrantSerializer
 
 
-class MyUserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows grants to be viewed or edited.
     """
-    queryset = MyUser.objects.all()
-    serializer_class = MyUserSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

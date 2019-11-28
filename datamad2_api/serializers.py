@@ -1,4 +1,4 @@
-from datamad2.models import Grant, ImportedGrant, MyUser
+from datamad2.models import Grant, ImportedGrant, User
 from rest_framework import serializers
 
 
@@ -14,8 +14,8 @@ class ImportedGrantSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
-class MyUserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = MyUser
+        model = User
         fields = '__all__'
 
