@@ -167,7 +167,7 @@ class ImportedGrant(models.Model):
         if exists:
             self.grant = Grant.objects.get(grant_ref=self.grant_ref)
         else:
-            new_grant = Grant.objects.create(grant_ref=self.grant_ref, title=self.title, lead_grant=self.lead_grant)
+            new_grant = Grant.objects.create(grant_ref=self.grant_ref, title=self.title)
             self.grant = new_grant
         return super(ImportedGrant, self).save(*args, **kwargs)
 
