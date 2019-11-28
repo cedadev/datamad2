@@ -74,9 +74,9 @@
                                         <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> REASSIGN </button></a>
                                     </td>
                                 {% elif  imported_grant.grant.claim_status %}
-                                    <td class="column-id" id ="right">
-                                        CLAIMED
-                                    </td>
+{#                                    <td class="column-id" id ="right">#}
+{#                                        CLAIMED#}
+{#                                    </td>#}
                                 {% else %}
                                     <td class="column-id" id="right">
                                         <a href="{% url 'claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> CLAIM</button></a>

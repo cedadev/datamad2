@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant, User
+from .models import ImportedGrant, Grant
 from .forms import UpdateClaim
 from django.db.models import Q
 from django.http import HttpResponse
@@ -18,7 +18,7 @@ def grant_detail(request, pk):
         grant.save()
     return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
 
-
+@login_required
 def grant_list(request):
     if request.method == 'GET':
         grants = Grant.objects.all()
@@ -55,6 +55,7 @@ def claim(request, pk):
     grant.assigned_data_centre = user.data_centre
     grant.save()
     return HttpResponse(status=200)
+
 
 
 @login_required
