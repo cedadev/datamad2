@@ -98,6 +98,39 @@
                                 <td class="column-id"  >{{ imported_grant.status }} </td>
                             </tr>
                             <tr>
+                                <th>Routing Classification</th>
+                                <td class="column-id"> {{ imported_grant.routing_classification }} </td>
+                            </tr>
+                            <tr>
+                                <th>Secondary Classification</th>
+                                <td class="column-id">{{ imported_grant.secondary_classification }} </td>
+                            </tr>
+                            <tr>
+                                <th>Proposed Start Date</th>
+                                <td class="column-id">{{ imported_grant.proposed_start_date }} </td>
+                            </tr>
+                            <tr>
+                                <th>Proposed End Date</th>
+                                <td class="column-id">{{ imported_grant.proposed_end_date}} </td>
+                            </tr>
+                            <tr>
+                                <th>Actual Start Date</th>
+                                <td class="column-id">{{ imported_grant.actual_start_date }} </td>
+                            </tr>
+                            <tr>
+                                <th>Actual End Date</th>
+                                <td class="column-id">{{ imported_grant.actual_end_date }} </td>
+                            </tr>
+                            <tr>
+                                <th>Abstract</th>
+                                <td class="column-id">{{ imported_grant.abstract|linebreaksbr }} </td>
+                            </tr>
+                            <tr>
+                                <th>Objectives</th>
+                                <td class="column-id">{{ imported_grant.objectives|linebreaksbr }} </td>
+                            </tr>
+                            <tr>
+                            <tr>
                                 <th>Amount Awarded</th>
                                 <td class="column-id" > £ {{ imported_grant.amount_awarded }} </td>
                             </tr>
@@ -166,14 +199,6 @@
                                 <td class="column-id" >{{ imported_grant.data_contact_phone }} </td>
                             </tr>
                             <tr>
-                                <th>Routing Classification</th>
-                                <td class="column-id"> {{ imported_grant.routing_classification }} </td>
-                            </tr>
-                            <tr>
-                                <th>Secondary Classification</th>
-                                <td class="column-id">{{ imported_grant.secondary_classification }} </td>
-                            </tr>
-                            <tr>
                                 <th>Science Area</th>
                                 <td class="column-id">{{ imported_grant.science_area }}</td>
                             </tr>
@@ -197,22 +222,7 @@
                                 <th>Original Proposed End Date</th>
                                 <td class="column-id">{{ imported_grant.original_proposed_end_date}} </td>
                             </tr>{% endcomment %}
-                            <tr>
-                                <th>Proposed Start Date</th>
-                                <td class="column-id">{{ imported_grant.proposed_start_date }} </td>
-                            </tr>
-                            <tr>
-                                <th>Proposed End Date</th>
-                                <td class="column-id">{{ imported_grant.proposed_end_date}} </td>
-                            </tr>
-                            <tr>
-                                <th>Actual Start Date</th>
-                                <td class="column-id">{{ imported_grant.actual_start_date }} </td>
-                            </tr>
-                            <tr>
-                                <th>Actual End Date</th>
-                                <td class="column-id">{{ imported_grant.actual_end_date }} </td>
-                            </tr>
+
 {% comment %}                            <tr>
                                 <th>End Date Changed</th>
                                 <td class="column-id">{{ imported_grant.end_date_changed }} </td>
@@ -221,15 +231,7 @@
                                 <th>Start Date Changed</th>
                                 <td class="column-id">{{ imported_grant.start_date_changed}} </td>
                             </tr>{% endcomment %}
-                            <tr>
-                                <th>Abstract</th>
-                                <td class="column-id">{{ imported_grant.abstract|linebreaksbr }} </td>
-                            </tr>
-                            <tr>
-                                <th>Objectives</th>
-                                <td class="column-id">{{ imported_grant.objectives|linebreaksbr }} </td>
-                            </tr>
-                            <tr>
+
 
 
                             </tr>
