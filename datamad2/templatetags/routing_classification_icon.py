@@ -7,9 +7,9 @@ register = template.Library()
 @register.filter
 def icon(value):
     if value == "Marine":
-        return mark_safe("<a id='science-icon' title='Marine' data-toggle='tooltip'><i class='fa "
-                         "fa-fish fa-lg' "
-                         "style='color:#79e2e8'></i></a>")
+        return mark_safe("<a id='science-icon' title='Marine' data-toggle='tooltip'><i class='fas "
+                         "fa-ship fa-lg' "
+                         "style='color:#81aae3'></i></a>")
 
     elif value == "Earth":
         return mark_safe("<a id='science-icon' title='Earth' data-toggle='tooltip'><i class='fa "
@@ -23,8 +23,8 @@ def icon(value):
 
     elif value == "Freshwater":
         return mark_safe("<a id='science-icon' title='Freshwater' data-toggle='tooltip'><i "
-                         "class='fa fa-water fa-lg' "
-                         "style='color:#81aae3'></i></a>")
+                         "class='fa fa-fish fa-lg' "
+                         "style='color:#79e2e8'></i></a>")
 
     elif value == "Terrestrial":
         return mark_safe("<a id='science-icon' title='Terrestrial' data-toggle='tooltip'><i "
@@ -32,9 +32,9 @@ def icon(value):
                          "fa-globe-americas fa-lg' style='color:#ba9b72'></i></a>")
 
     elif value == "Earth Observation":
-        return mark_safe("<a id='science-icon' title='Terrestrial' data-toggle='tooltip'><i "
-                         "class='fa "
-                         "fa-globe-americas fa-lg' style='color:#ba9b72'></i></a>")
+        return mark_safe("<a id='science-icon' title='Earth Observation' data-toggle='tooltip'><i "
+                         "class='fas "
+                         "fa-satellite fa-lg' style='color:#9e9a8e'></i></a>")
 
     else:
         return mark_safe("<a id='science-icon' title='None' data-toggle='tooltip'><i class='fa "
