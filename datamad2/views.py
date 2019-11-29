@@ -58,7 +58,6 @@ def routing_classification(request):
 def claim(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
     user = request.user
-    grant.claim_status = "Claimed"
     grant.assigned_data_centre = user.data_centre
     grant.save()
     return HttpResponse(status=200)
@@ -68,7 +67,6 @@ def claim(request, pk):
 @login_required
 def unclaim(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
-    grant.claim_status = None
     grant.assigned_data_centre = None
     grant.save()
     return redirect('grant_list')
@@ -81,11 +79,6 @@ def change_claim(request, pk):
         form = UpdateClaim(request.POST, instance=grant)
         if form.is_valid():
             form.save()
-            if form.cleaned_data['assigned_data_centre'] is None:
-                grant.claim_status = ""
-            else:
-                grant.claim_status = "Claimed"
-            grant.save()
         return redirect('grant_list')
     else:
         form = UpdateClaim(instance=grant)

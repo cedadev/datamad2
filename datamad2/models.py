@@ -55,12 +55,20 @@ class Grant(models.Model):
     # C for S found?	Sharepoint	Yes/No/Grant not found
     case_for_support_found = models.BooleanField(null=True, blank=True)
     # claim status
-    claim_status = models.CharField(max_length=256, null=True, blank=True)
+    claimed = models.BooleanField(null=True, blank=True)
     # checks for updated imported grant (more than one version)
     updated_imported_grant = models.BooleanField(null=True, blank=True, editable=False, verbose_name='Grant updated')
 
     # programme - one programme can have many grants
     # programme = models.ForeignKey(to='dmp.Programme', blank=True, null=True, on_delete=models.PROTECT)
+
+    def save(self, *args, **kwargs):
+        if self.assigned_data_centre is None:
+            self.claimed = False
+        else:
+            self.claimed = True
+        return super(Grant, self).save(*args, **kwargs)
+
 
     # def save(self, *args, **kwargs):
     #     if self.importedgrant_set.count() > 1:
@@ -186,7 +194,7 @@ class ImportedGrant(models.Model):
         if exists:
             self.grant = Grant.objects.get(grant_ref=self.grant_ref)
         else:
-            new_grant = Grant.objects.create(grant_ref=self.grant_ref)
+            new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False)
             self.grant = new_grant
         return super(ImportedGrant, self).save(*args, **kwargs)
 
