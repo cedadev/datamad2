@@ -19,6 +19,18 @@ def grant_detail(request, pk):
     return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
 
 @login_required
+def grant_history(request, pk):
+    imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+    grant = imported_grant.grant
+    return render(request, 'datamad2/grant_history.html', {'grant': grant})
+
+# @login_required
+# def grant_history_detail(request, pk, imported_pk):
+#     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+#     return render(request, 'datamad2/grant_history.html', {'imported_grant': imported_grant})
+
+
+@login_required
 def grant_list(request):
     if request.method == 'GET':
         grants = Grant.objects.all()
@@ -41,11 +53,6 @@ def routing_classification(request):
             grants = grants.filter(importedgrant__routing_classification=classification).distinct()
         return render(request, 'datamad2/routing_classification.html', {'grants': grants})
 
-@login_required
-def grant_history(request, pk):
-    imported_grant = get_object_or_404(ImportedGrant, pk=pk)
-    grant = imported_grant.grant
-    return render(request, 'datamad2/grant_history.html', {'grant': grant})
 
 @login_required
 def claim(request, pk):
