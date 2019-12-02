@@ -70,16 +70,16 @@ class ImportedGrantAdmin(admin.ModelAdmin):
 
     def __init__(self, *args, **kwargs):
         admin.ModelAdmin.__init__(self, *args, **kwargs)
-        #self.readonly_fields = [f.name for f in self.model._meta.get_fields()]
-        #self.readonly_fields.remove("importedgrant")
-        #self.readonly_fields.remove("grant")
-        #print(self.readonly_fields)
+        self.readonly_fields = [f.name for f in self.model._meta.get_fields()]
+        self.readonly_fields.remove("importedgrant")
+        self.readonly_fields.remove("grant")
+        print(self.readonly_fields)
 
-    # def has_add_permission(self, request, obj=None):
-    #     return False
-    #
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 admin.site.register(ImportedGrant, ImportedGrantAdmin)
 
 class GrantAdmin(admin.ModelAdmin):
