@@ -1,13 +1,20 @@
 from django.db import models
-from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser
-)
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+
 from django.utils import timezone
 
+# class GrantQuerySet(models.query.QuerySet):
+#     def get(self, **kwargs):
+#         return super().get(**kwargs)
+
+# class GrantManager(models.Manager):
+#     def get_queryset(self):
+#         return super().get_queryset().update(updated_imported_grant=True)
 
 class Grant(models.Model):
-    #title
-    title = models.CharField(max_length=1024, default='')
+
+    # objects = GrantManager()
+
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
     # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
@@ -17,23 +24,23 @@ class Grant(models.Model):
     # Assigned Data Centre	Sharepoint	E.g. NGDC
     assigned_data_centre = models.CharField(max_length=200, blank=True, null=True,
                                             choices=(
-                                                     ("BODC", "BODC"),
-                                                     ("CEDA", "CEDA"),
-                                                     ("EIDC", "EIDC"),
-                                                     ("NGDC", "NGDC"),
-                                                     ("PDC", "PDC"),
-                                                     ("ADS", "ADS"),
-                                                     ))
+                                                ("BODC", "BODC"),
+                                                ("CEDA", "CEDA"),
+                                                ("EIDC", "EIDC"),
+                                                ("NGDC", "NGDC"),
+                                                ("PDC", "PDC"),
+                                                ("ADS", "ADS"),
+                                            ))
     # Other DC's Expecting Datasets	Sharepoint	E.g. PDC
     other_data_centre = models.CharField(max_length=200, blank=True, null=True,
                                          choices=(
-                                                  ("BODC", "BODC"),
-                                                  ("CEDA", "CEDA"),
-                                                  ("EIDC", "EIDC"),
-                                                  ("NGDC", "NGDC"),
-                                                  ("PDC", "PDC"),
-                                                  ("ADS", "ADS"),
-                                                  ))
+                                             ("BODC", "BODC"),
+                                             ("CEDA", "CEDA"),
+                                             ("EIDC", "EIDC"),
+                                             ("NGDC", "NGDC"),
+                                             ("PDC", "PDC"),
+                                             ("ADS", "ADS"),
+                                         ))
     # Hide Record	Sharepoint
     hide_record = models.BooleanField(null=True, blank=True)
     # DateContact with PI	Sharepoint	Date or Null
@@ -47,28 +54,47 @@ class Grant(models.Model):
     sanctions_recommended = models.BooleanField(null=True, blank=True)
     # C for S found?	Sharepoint	Yes/No/Grant not found
     case_for_support_found = models.BooleanField(null=True, blank=True)
-    #claim status
-    claim_status = models.CharField(max_length=256, null=True, blank=True)
+    # claim status
+    claimed = models.BooleanField(null=True, blank=True)
     # checks for updated imported grant (more than one version)
     updated_imported_grant = models.BooleanField(null=True, blank=True, editable=False, verbose_name='Grant updated')
-    #programme - one programme can have many grants
-    #programme = models.ForeignKey(to='dmp.Programme', blank=True, null=True, on_delete=models.PROTECT)
+
+    # programme - one programme can have many grants
+    # programme = models.ForeignKey(to='dmp.Programme', blank=True, null=True, on_delete=models.PROTECT)
+
+    def save(self, *args, **kwargs):
+        if self.assigned_data_centre is None:
+            self.claimed = False
+        else:
+            self.claimed = True
+        return super(Grant, self).save(*args, **kwargs)
+
+
+    # def save(self, *args, **kwargs):
+    #     if self.importedgrant_set.count() > 1:
+    #         self.updated_imported_grant = True
+    #     else:
+    #         self.updated_imported_grant = False
+    #     return super(Grant, self).save(*args, **kwargs)
+
 
     def __str__(self):
-        return f"{self.grant_ref}: {self.title[:50]}"
+        return f"{self.grant_ref}"
+
 
 class ImportedGrant(models.Model):
-    #ordering by creation date
+    # ordering by creation date
     class Meta:
-      ordering = ['-creation_date']
+        ordering = ['-creation_date']
+
     # Title	Siebel	Name of the grant			PROJECT_TITLE
     title = models.CharField(max_length=1024, default='')
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
-    #grant to imported grant relationship
+    # grant to imported grant relationship
     grant = models.ForeignKey(to=Grant, on_delete=models.PROTECT, null=True, blank=True)
-    #date imported grant was created
-    #creation_date = models.DateTimeField(auto_now_add=True)
+    # date imported grant was created
+    # creation_date = models.DateTimeField(auto_now_add=True)
     creation_date = models.DateTimeField(editable=False)
     # Grant Status	Siebel	Active/Closed			GRANT_STATUS
     grant_status = models.CharField(max_length=50, default="Active",
@@ -127,12 +153,12 @@ class ImportedGrant(models.Model):
     science_area = models.CharField(max_length=256, null=True, blank=True)
     # NCAS (Yes/No)	Siebel	Y/N			NCAS
     ncas = models.CharField(max_length=200, blank=True, null=True,
-                                              choices=(("Yes", "Yes"),
-                                                       ("No", "No")))
+                            choices=(("Yes", "Yes"),
+                                     ("No", "No")))
     # NCEO (yes/No)	Siebel	Y/N			NCEO
     nceo = models.CharField(max_length=200, blank=True, null=True,
-                                              choices=(("Yes", "Yes"),
-                                                       ("No", "No")))
+                            choices=(("Yes", "Yes"),
+                                     ("No", "No")))
     # Comments	Siebel	Currently not in use			MISSING
     comments = models.TextField(default='', blank=True)
     # # Original Proposed Start Date Siebel Date field set to the same as Proposed
@@ -157,53 +183,56 @@ class ImportedGrant(models.Model):
     abstract = models.TextField(default='', blank=True)
     # Objectives	Siebel		Truncated
     objectives = models.TextField(default='', blank=True)
+
     # ordered by newest imported grant first
 
     def save(self, *args, **kwargs):
-        #On save, update timestamps
+        # On save, update timestamps
         exists = Grant.objects.filter(grant_ref=self.grant_ref).exists()
         if not self.creation_date:
             self.creation_date = timezone.now()
         if exists:
             self.grant = Grant.objects.get(grant_ref=self.grant_ref)
         else:
-            new_grant = Grant.objects.create(grant_ref=self.grant_ref, title=self.title, lead_grant=self.lead_grant)
+            new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False)
             self.grant = new_grant
         return super(ImportedGrant, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.grant_ref}: {self.title[:50]}: [{self.grant_holder}]"
 
-class MyUserManager(BaseUserManager):
-    def create_user(self, email, data_centre, first_name, last_name, password=None):
+
+class UserManager(BaseUserManager):
+    def _create_user(self, email, password, **extra_fields):
+        """
+        Creates and saves a user with given email and password
+        """
         if not email:
             raise ValueError('Users must have an email address')
 
         user = self.model(
-            email=self.normalize_email(email),
-            data_centre=data_centre,
-            first_name=first_name,
-            last_name=last_name
-        )
-
+            email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, data_centre, first_name, last_name, password):
-        user = self.create_user(
-            email,
-            password=password,
-            data_centre=data_centre,
-            first_name=first_name,
-            last_name=last_name
-        )
-        user.is_admin = True
         user.save(using=self._db)
         return user
 
-class MyUser(AbstractBaseUser):
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
 
+    def create_superuser(self, email, password=None, **extra_fields):
+
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_admin', True)
+
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True')
+
+        return self._create_user(email, password, **extra_fields)
+
+
+class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=200, blank=True, null=True)
     last_name = models.CharField(max_length=200, blank=True, null=True)
     email = models.EmailField(
@@ -212,17 +241,17 @@ class MyUser(AbstractBaseUser):
         unique=True,
     )
     data_centre = models.CharField(max_length=200, blank=True, null=True,
-                                            choices=(("BODC", "BODC"),
-                                                     ("CEDA", "CEDA"),
-                                                     ("EIDC", "EIDC"),
-                                                     ("NGDC", "NGDC"),
-                                                     ("PDC", "PDC"),
-                                                     ("ADS", "ADS"),
-                                                     ))
-    is_active = models.BooleanField(default=True)
+                                   choices=(("BODC", "BODC"),
+                                            ("CEDA", "CEDA"),
+                                            ("EIDC", "EIDC"),
+                                            ("NGDC", "NGDC"),
+                                            ("PDC", "PDC"),
+                                            ("ADS", "ADS"),
+                                            ))
+
     is_admin = models.BooleanField(default=False)
 
-    objects = MyUserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'data_centre']
@@ -230,25 +259,10 @@ class MyUser(AbstractBaseUser):
     def __str__(self):
         return self.email
 
-    def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
-        return True
-
     @property
     def is_staff(self):
         "Is the user a member of staff?"
         return self.is_admin
-
-
-
-
-
 
 
 """

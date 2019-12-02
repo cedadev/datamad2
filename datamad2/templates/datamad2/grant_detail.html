@@ -61,25 +61,25 @@
                 <div class="col-lg-8">
                     {%  if imported_grant.grant.updated_imported_grant == True %}
                         <div class="alert alert-secondary" role="alert">
-                            Some details of this grant have been changed since the original proposal. Click <a href="{% url 'grant_history' pk=imported_grant.pk %}" class="alert-link">here</a> to view the history.
+                            Some details of this grant have been changed since the original proposal. Click <a href="{% url 'grant_history' pk=imported_grant.grant.pk  %}" class="alert-link">here</a> to view the history.
                         </div>
                     {%  endif %}
                     <div class="w3-card">
                         <table  id="grants" style="width:100%">
                             <tr>
                                 <th> <h3>{{ imported_grant.title }} </h3></th>
-                                {%  if imported_grant.grant.claim_status and imported_grant.grant.assigned_data_centre == user.data_centre %}
+                                {%  if imported_grant.grant.claimed == True and imported_grant.grant.assigned_data_centre == user.data_centre %}
                                     <td class="column-id" id="right">
-                                        <a href="{% url 'unclaim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> UNCLAIM </button></a>
+                                        <a><button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary unclaim-btn"  id="claim-button"> UNCLAIM </button></a>
                                         <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> REASSIGN </button></a>
                                     </td>
-                                {% elif  imported_grant.grant.claim_status %}
-                                    <td class="column-id" id ="right">
-                                        CLAIMED
-                                    </td>
+                                {% elif  imported_grant.grant.claimed == True %}
+{#                                    <td class="column-id" id ="right">#}
+{#                                        CLAIMED#}
+{#                                    </td>#}
                                 {% else %}
                                     <td class="column-id" id="right">
-                                        <a href="{% url 'claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> CLAIM</button></a>
+                                        <a><button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary claim-btn"  id="claim-button"> CLAIM</button></a>
                                         <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> ASSIGN </button></a>
                                     </td>
                                 {%  endif %}
@@ -245,6 +245,56 @@
         {% endblock content_main %}
 
     </div>
+        <script>
+    $( ".claim-btn" ).click(function(){
+        let btn = $(this);
+        let url = '/' + 'grant/' + $(this).attr('data-id') + '/claim';
+        let cell = btn.parent();
+        let assign = cell[0].parentElement;
+        $.ajax({
+            type: "GET",
+            url: url,
+
+            // handle a successful response
+            success: function () {
+                assign.innerHTML = "<td class=\"column-id\" id=\"right\">\n" +
+                    "                                        <a><button data-id=\"{{ imported_grant.grant.pk }}\" class=\"btn btn-primary unclaim-btn\"  id=\"claim-button\"> UNCLAIM </button></a>\n" +
+                    "                                        <a href=\"{% url 'change_claim' pk=imported_grant.grant.pk %}\"><button class=\"btn btn-primary\" id=\"claim\"> REASSIGN </button></a>\n" +
+                    "                                    </td>"
+                cell.attr('id', 'claim');
+            },
+            // handle a non-successful response
+            error: function () {
+                alert('Claim failed');
+            }
+        });
+    });
+
+    $( ".unclaim-btn" ).click(function(){
+        let btn = $(this);
+        let url = '/' + 'grant/' + $(this).attr('data-id') + '/unclaim';
+        let cell = btn.parent();
+        let assign = cell[0].parentElement;
+        $.ajax({
+            type: "GET",
+            url: url,
+
+            // handle a successful response
+            success: function () {
+                assign.innerHTML = "<td class=\"column-id\" id=\"right\">\n" +
+                    "                                        <a><button data-id=\"{{ imported_grant.grant.pk }}\" class=\"btn btn-primary claim-btn\"  id=\"claim-button\"> CLAIM</button></a>\n" +
+                    "                                        <a href=\"{% url 'change_claim' pk=imported_grant.grant.pk %}\"><button class=\"btn btn-primary\" id=\"claim\"> ASSIGN </button></a>\n" +
+                    "                                    </td>"
+                cell.attr('id', 'claim');
+            },
+            // handle a non-successful response
+            error: function () {
+                alert('Unclaim failed');
+            }
+        });
+    });
+
+</script>
 
     {% endblock page_container %}
 {%  endblock %}

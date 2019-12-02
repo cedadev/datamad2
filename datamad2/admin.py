@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import ImportedGrant, Grant, MyUser
+from .models import ImportedGrant, Grant, User
 
 # Register your models here.
 
@@ -13,7 +13,7 @@ class UserCreationForm(forms.ModelForm):
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
 
     class Meta:
-        model = MyUser
+        model = User
         fields = ('email', 'first_name', 'last_name', 'data_centre')
 
     def clean_password2(self):
@@ -37,8 +37,8 @@ class UserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField()
 
     class Meta:
-        model = MyUser
-        fields= ('email', 'first_name', 'last_name', 'password', 'data_centre', 'is_active', 'is_admin')
+        model = User
+        fields= ('email', 'first_name', 'last_name', 'password', 'data_centre', 'is_admin')
 
     def clean_password(self):
         return self.initial["password"]
@@ -63,7 +63,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
-admin.site.register(MyUser, UserAdmin)
+admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
 
 class ImportedGrantAdmin(admin.ModelAdmin):
@@ -75,11 +75,11 @@ class ImportedGrantAdmin(admin.ModelAdmin):
         #self.readonly_fields.remove("grant")
         #print(self.readonly_fields)
 
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_add_permission(self, request, obj=None):
+    #     return False
+    #
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 admin.site.register(ImportedGrant, ImportedGrantAdmin)
 
 class GrantAdmin(admin.ModelAdmin):

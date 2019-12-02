@@ -2,6 +2,7 @@
 {% load staticfiles cookielaw_tags i18n fwtheme_tags %}
 {% load routing_classification_icon %}
 {% is_container_fluid as container_fluid %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
@@ -34,7 +35,7 @@
             <div>
                     <form method = "post">{% csrf_token %}
                         <h4><label> Assign to a different data centre: </label></h4>
-                        <p>{{ form.assigned_data_centre }}</p>
+                        <p>{{ form | crispy}}</p>
                         <p><button type="submit" class="save btn btn-primary" id="claim">Save</button></p>
                     </form>
             </div>

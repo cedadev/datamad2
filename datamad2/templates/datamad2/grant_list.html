@@ -100,7 +100,7 @@
                                 <td data-sort="z"><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
                             {%  endif %}
                             <td> {{ imported_grant.creation_date }}</td>
-                        {%  if imported_grant.grant.claim_status %}
+                        {%  if imported_grant.grant.claimed == True %}
                                 <td id="claim"> CLAIMED </td>
                             {% else %}
                             <td><button data-id="{{ imported_grant.grant.pk }}" data-user ="{{  user.data_centre }}" class="btn btn-primary claim-btn"  id="claim-button"> CLAIM </button></td>

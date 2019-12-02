@@ -88,7 +88,7 @@
                             {%  endif %}
                             <td> <i class="icon"> {{ imported_grant.routing_classification|icon }} </i></td>
                             <td> {{ imported_grant.creation_date }}</td>
-                            {%  if imported_grant.grant.claim_status %}
+                            {%  if imported_grant.grant.claimed == True %}
                                 <td id="claim">CLAIMED </td>
                             {% else %}
                                 <td><a href="{% url 'claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> CLAIM</button></a></td>
