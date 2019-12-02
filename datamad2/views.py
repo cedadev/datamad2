@@ -69,7 +69,7 @@ def unclaim(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
     grant.assigned_data_centre = None
     grant.save()
-    return redirect('grant_list')
+    return HttpResponse(status=200)
 
 
 @login_required
