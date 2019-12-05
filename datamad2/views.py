@@ -10,12 +10,12 @@ from django.http import HttpResponse
 def grant_detail(request, pk):
     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
     grant = imported_grant.grant
-    if grant.importedgrant_set.count() > 1:
-        grant.updated_imported_grant = True
-        grant.save()
-    else:
-        grant.updated_imported_grant = False
-        grant.save()
+    # if grant.importedgrant_set.count() > 1:
+    #     grant.updated_imported_grant = True
+    #     grant.save()
+    # else:
+    #     grant.updated_imported_grant = False
+    #     grant.save()
     return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
 
 @login_required
