@@ -9,13 +9,6 @@ from django.http import HttpResponse
 @login_required
 def grant_detail(request, pk):
     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
-    grant = imported_grant.grant
-    if grant.importedgrant_set.count() > 1:
-        grant.updated_imported_grant = True
-        grant.save()
-    else:
-        grant.updated_imported_grant = False
-        grant.save()
     return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
 
 @login_required
@@ -24,10 +17,11 @@ def grant_history(request, pk):
     grant = imported_grant.grant
     return render(request, 'datamad2/grant_history.html', {'grant': grant})
 
-# @login_required
-# def grant_history_detail(request, pk, imported_pk):
-#     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
-#     return render(request, 'datamad2/grant_history.html', {'imported_grant': imported_grant})
+@login_required
+def grant_history_detail(request, pk, imported_pk):
+    grant = get_object_or_404(Grant, pk=pk)
+    imported_grant = get_object_or_404(ImportedGrant, pk=imported_pk)
+    return render(request, 'datamad2/grant_detail.html', {'grant': grant, 'imported_grant': imported_grant})
 
 
 @login_required
