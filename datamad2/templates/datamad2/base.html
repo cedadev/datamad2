@@ -4,50 +4,21 @@
 {% load routing_classification_icon %}
 {% is_container_fluid as container_fluid %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
+    {% block head_title %}All Grants{% endblock %}
 
-    <meta charset="utf-8">
-    <title>{% block head_title %}All Grants{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    {% block blog_feeds %}
-    {% endblock %}
-
-    {% block stylesheets %}
+    {% block stylesheets_pre_extra %}
         <link rel="shortcut icon" href="https://nerc.ukri.org/nerc/includes/themes/MasterSite/images/favicon.ico">
-        <!-- Bootstrap Core
-        CSS -->
-        <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/4/flatly/bootstrap.css" media="screen">
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/_assets/css/custom.min.css">
-        <link rel="stylesheet" href="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_serv/0.2/_assets/css/org-custom.css">
-        <link href="{% static "css/grants.css" %}" rel="stylesheet">
-        <!-- data table CSS -->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-        <!-- Custom Fonts -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/v4-shims.css">
-{#         most further customisations can go here, after org theme styling#}
-        {% block stylesheets_extra %}{% endblock %}
+        <link href="{% static "css/grants.css" %}" rel="stylesheet">
+    {% endblock stylesheets_pre_extra %}
 
-    {% endblock stylesheets %}
 
     {% block head_js %}
         <script src="{% static "cookielaw/js/cookielaw.js" %}"></script>
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
-        <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" src="{% static 'js/table_sorter.js' %}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     {% endblock head_js %}
-
-    {% block head_js_extra %}{% endblock head_js_extra %}
-
-</head>
-<body id="{% block body_id %}body{% endblock body_id %}">
-
 
 {% block navbar_main %}
     <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary" >
@@ -120,14 +91,7 @@
                     </ul>
 
                 </div>
-
-                {#                <a href="https://www.ceda.ac.uk/" class=navbar-brand">#}
-                {#                    <img src="https://artefacts.ceda.ac.uk/themes/orgtheme_ceda_div/0.3.1/_assets/img/ceda_logo_transp_white_h80.png" alt="CEDA logo" style="width:300px;height:80px;">#}
-                {#                </a>#}
-
                 {% endblock navigation %}
-
-
             </div>
         </div>
 
@@ -154,5 +118,10 @@
         </div>
     </footer>
 {% endblock footer %}
-</body>
-</html>
+
+{% block tail_js_extra %}
+        <script src="{% static "cookielaw/js/cookielaw.js" %}"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/table_sorter.js' %}"></script>
+{% endblock tail_js_extra %}
+

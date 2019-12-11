@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'fwtheme_django_ceda_serv',
+    'fwtheme_django',
     'datamad2.apps.Datamad2Config',
     'datamad2_api.apps.Datamad2ApiConfig',
     'django.contrib.admin',
@@ -40,8 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cookielaw',
-    'fwtheme_django_ceda_serv',
-    'fwtheme_django',
     'rest_framework',
     'crispy_forms'
 ]
