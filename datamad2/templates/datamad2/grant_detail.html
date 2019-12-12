@@ -64,7 +64,8 @@
                             Some details of this grant have been changed since the original proposal. Click <a href="{% url 'grant_history' pk=imported_grant.pk  %}" class="alert-link">here</a> to view the history.
                         </div>
                     {%  endif %}
-                    <div class="w3-card">
+                    <div class="card card-shaded">
+                        <div class="card-body">
                         <table  id="grants" style="width:100%">
                             <tr>
                                 <th> <h3>{{ imported_grant.title }} </h3></th>
@@ -79,7 +80,7 @@
 {#                                    </td>#}
                                 {% else %}
                                     <td class="column-id" id="right">
-                                        <a><button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary claim-btn"  id="claim-button"> CLAIM</button></a>
+                                        <a><button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary claim-btn"  id="claim-button"> CLAIM </button></a>
                                         <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> ASSIGN </button></a>
                                     </td>
                                 {%  endif %}
@@ -237,6 +238,7 @@
                             </tr>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
 
