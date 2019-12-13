@@ -68,7 +68,7 @@
                         <div class="card-body">
                         <table  id="grants" style="width:100%">
                             <tr>
-                                <th> <h3>{{ imported_grant.title }} </h3></th>
+                                <th> <h3>{{ imported_grant.title }} {{ imported_grant.changed_fields }}</h3></th>
                                 {%  if imported_grant.grant.claimed == True and imported_grant.grant.assigned_data_centre == user.data_centre %}
                                     <td class="column-id" id="right">
                                         <a><button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary unclaim-btn"  id="claim-button"> UNCLAIM </button></a>

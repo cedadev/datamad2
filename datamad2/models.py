@@ -201,6 +201,38 @@ class ImportedGrant(models.Model):
             self.grant = new_grant
         return super(ImportedGrant, self).save(*args, **kwargs)
 
+    # def compare(self, obj):
+    #     # excluded_keys =  # tuple containing names of attributes to exclude
+    #     return self._compare(self, obj) #, excluded_keys)
+
+    # def get_previous(self):
+    #     previous = self.get_previous_by_creation_date()
+    #     if previous.exists():
+    #         return self._compare(self, previous)
+    #
+    #
+    # def _compare(self, obj1, obj2): #, excluded_keys):
+    #     d1, d2 = obj1.__dict__, obj2.__dict__
+    #     old, new = {}, {}
+    #     for k, v in d1.items():
+    #     #    if k in excluded_keys:
+    #     #     continue
+    #         try:
+    #             if v != d2[k]:
+    #                 old.update({k: v})
+    #                 new.update({k: d2[k]})
+    #         except KeyError:
+    #             old.update({k: v})
+    #
+    #     return old, new
+    def get_diff_fields(self):
+        my_model_fields = ImportedGrant._meta.get_fields()
+        previous = self.get_previous_by_creation_date()
+        if previous:
+            changed_fields = filter(
+                lambda field: getattr(previous, field, None) != getattr(self, field, None), my_model_fields)
+            return changed_fields
+
     def __str__(self):
         return f"{self.grant_ref}: {self.title[:50]}: [{self.grant_holder}]"
 
