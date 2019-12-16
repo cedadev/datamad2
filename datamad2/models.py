@@ -85,7 +85,7 @@ class Grant(models.Model):
 class ImportedGrant(models.Model):
     # ordering by creation date
     class Meta:
-        ordering = ['-creation_date']
+        ordering = ['-modified_date']
 
     # Title	Siebel	Name of the grant			PROJECT_TITLE
     title = models.CharField(max_length=1024, default='')
@@ -96,6 +96,8 @@ class ImportedGrant(models.Model):
     # date imported grant was created
     # creation_date = models.DateTimeField(auto_now_add=True)
     creation_date = models.DateTimeField(editable=False)
+    #Date modified
+    modified_date = models.DateTimeField(editable=False)
     # Grant Status	Siebel	Active/Closed			GRANT_STATUS
     grant_status = models.CharField(max_length=50, default="Active",
                                     choices=(("Active", "Active"), ("Closed", "Closed")))
@@ -186,11 +188,46 @@ class ImportedGrant(models.Model):
 
     # ordered by newest imported grant first
 
+    # def compare(self, obj):
+    #     # excluded_keys =  # tuple containing names of attributes to exclude
+    #     return self._compare(self, obj) #, excluded_keys)
+
+    # def get_previous(self):
+    #     previous = self.get_previous_by_creation_date()
+    #     if previous.exists():
+    #         return self._compare(self, previous)
+    #
+    #
+    # def _compare(self, obj1, obj2): #, excluded_keys):
+    #     d1, d2 = obj1.__dict__, obj2.__dict__
+    #     old, new = {}, {}
+    #     for k, v in d1.items():
+    #     #    if k in excluded_keys:
+    #     #     continue
+    #         try:
+    #             if v != d2[k]:
+    #                 old.update({k: v})
+    #                 new.update({k: d2[k]})
+    #         except KeyError:
+    #             old.update({k: v})
+    #
+    #     return old, new
+
+    def get_diff_fields(self):
+        model_fields = [field.name for field in self._meta.get_fields()]
+        previous = self.grant.importedgrant_set.last()
+        if previous:
+            changed_fields = list(filter(
+                lambda field: getattr(previous, field, None) != getattr(self, field, None), model_fields))
+            return changed_fields
+
     def save(self, *args, **kwargs):
         # On save, update timestamps
         exists = Grant.objects.filter(grant_ref=self.grant_ref).exists()
         if not self.creation_date:
             self.creation_date = timezone.now()
+        self.modified_date = timezone.now()
+
         if exists:
             existing_grant = Grant.objects.get(grant_ref=self.grant_ref)
             self.grant = existing_grant
