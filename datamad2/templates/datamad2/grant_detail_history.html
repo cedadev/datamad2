@@ -59,6 +59,7 @@
                     {% endblock %}
                 </div>
                 <div class="col-lg-8">
+{#                    <a href="{% url 'grant_history' pk=imported_grant.pk %}" class="alert-link"><i class="fas fa-caret-right"></i></a>#}
                     <div class="alert alert-secondary" role="alert">
                         Fields that are highlighted in red show changes made since the creation of the grant.
                         Click <a href="{% url 'grant_history' pk=imported_grant.pk  %}" class="alert-link">here</a> to return to list of changes.
