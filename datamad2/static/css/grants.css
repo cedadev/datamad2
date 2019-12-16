@@ -99,3 +99,8 @@ td i {
 .highlight {
     color: #ce8483;
 }
+
+@media (max-width: 1232px) {
+    .hide-sidebar {
+        display: none;
+    }
