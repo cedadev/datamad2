@@ -21,7 +21,7 @@ def grant_history(request, pk):
 def grant_history_detail(request, pk, imported_pk):
     grant = get_object_or_404(Grant, pk=pk)
     imported_grant = get_object_or_404(ImportedGrant, pk=imported_pk)
-    return render(request, 'datamad2/grant_detail.html', {'grant': grant, 'imported_grant': imported_grant})
+    return render(request, 'datamad2/grant_detail_history.html', {'grant': grant, 'imported_grant': imported_grant})
 
 
 @login_required
@@ -55,7 +55,6 @@ def claim(request, pk):
     grant.assigned_data_centre = user.data_centre
     grant.save()
     return HttpResponse(status=200)
-
 
 
 @login_required
