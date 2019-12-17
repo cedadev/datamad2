@@ -185,6 +185,9 @@ class ImportedGrant(models.Model):
     abstract = models.TextField(default='', blank=True)
     # Objectives	Siebel		Truncated
     objectives = models.TextField(default='', blank=True)
+    # ticket created
+    ticket = models.BooleanField(null=True, blank=True) #, editable=False, verbose_name='Ticket created')
+
 
     # ordered by newest imported grant first
 

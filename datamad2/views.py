@@ -4,18 +4,31 @@ from .models import ImportedGrant, Grant
 from .forms import UpdateClaim
 from django.db.models import Q
 from django.http import HttpResponse
+from .create_issue import make_issue, set_options, check_issue_exists
 
 
 @login_required
 def grant_detail(request, pk):
     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+    user = request.user
+    summary = str(imported_grant.grant_ref) + ' : ' + str(imported_grant.title)
+    if request.method == 'POST'and check_issue_exists(user, summary) is None:
+        # call function
+        set_options(user)
+        link = make_issue(user, imported_grant)
+        imported_grant.ticket = True
+        imported_grant.save()
+        # return user to required page
+        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant, 'link': link})
     return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
+
 
 @login_required
 def grant_history(request, pk):
     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
     grant = imported_grant.grant
     return render(request, 'datamad2/grant_history.html', {'grant': grant})
+
 
 @login_required
 def grant_history_detail(request, pk, imported_pk):
