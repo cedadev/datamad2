@@ -3,6 +3,8 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 
 from django.utils import timezone
 
+from itertools import tee
+
 # class GrantQuerySet(models.query.QuerySet):
 #     def get(self, **kwargs):
 #         return super().get(**kwargs)
