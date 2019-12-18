@@ -4,23 +4,32 @@ from .models import ImportedGrant, Grant
 from .forms import UpdateClaim
 from django.db.models import Q
 from django.http import HttpResponse
-from .create_issue import make_issue, set_options, check_issue_exists
+from .create_issue import make_issue, set_options, get_link
 
 
 @login_required
 def grant_detail(request, pk):
     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
     user = request.user
-    summary = str(imported_grant.grant_ref) + ' : ' + str(imported_grant.title)
-    if request.method == 'POST'and check_issue_exists(user, summary) is None:
+    grant_ref = str(imported_grant.grant_ref).replace('/', '\\u002f')
+    if request.method == 'POST' and 'jira-issue' and imported_grant.ticket is False:
         # call function
         set_options(user)
-        link = make_issue(user, imported_grant)
+        make_issue(user, imported_grant)
         imported_grant.ticket = True
         imported_grant.save()
         # return user to required page
+        return redirect('grant_detail', pk=pk)
+    elif imported_grant.ticket is True:
+        link = get_link(user, grant_ref)
+        if link is None:
+            imported_grant.ticket = False
+            imported_grant.save()
         return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant, 'link': link})
-    return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
+    else:
+        imported_grant.ticket = False
+        imported_grant.save()
+        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
 
 
 @login_required

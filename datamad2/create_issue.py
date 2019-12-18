@@ -30,16 +30,25 @@ def make_issue(user, imported_grant):
     }
     new_issue = jira.create_issue(fields=issue_dict)
     jira.assign_issue(new_issue, str(user))
-    link = new_issue.permalink()
-    return link
+    return new_issue
+
+# def check_issue_exists(user, summary):
+#     jira = set_options(user)
+#     try:
+#         issue = jira.search_issues(f'summary={summary}')
+#         print(issue)
+#         return True
+#     except JIRAError as err:
+#         print('issue not found')
+#         return False
 
 
-def check_issue_exists(user, summary):
-    try:
-        jira = set_options(user)
-        issue = jira.issue(str(summary))
-    except JIRAError as err:
-        return False
+def get_link(user, grant_ref):
+    jira = set_options(user)
+    issues = jira.search_issues(f'summary~{grant_ref}')
+    for issue in issues:
+        link = issue.permalink()
+        return link
 
 
 
