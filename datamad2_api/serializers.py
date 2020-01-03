@@ -15,6 +15,7 @@ class ImportedGrantSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='user-detail')
     class Meta:
         model = User
         fields = '__all__'
