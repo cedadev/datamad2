@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cookielaw',
     'rest_framework',
-    'crispy_forms'
+    'crispy_forms',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
