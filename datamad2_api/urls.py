@@ -13,11 +13,11 @@ router.register(r'permission', views.PermissionViewSet)
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('', include(router.urls)),
-    path('openapi', get_schema_view(
-        title="DataMAD",
-        url='http://127.0.0.1:8000',
-        urlconf='datamad2_api.urls',
-        description="API for dataMAD",
-        version="1.0.0"
-    ), name='openapi-schema')
+    # path('openapi', get_schema_view(
+    #     title="DataMAD",
+    #     url='http://127.0.0.1:8000',
+    #     urlconf='datamad2_api.urls',
+    #     description="API for dataMAD",
+    #     version="1.0.0"
+    # ), name='openapi-schema')
 ]

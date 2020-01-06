@@ -1,6 +1,7 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from datamad2 import views
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', views.grant_list, name='grant_list'),
@@ -12,5 +13,6 @@ urlpatterns = [
     path('grant/<int:pk>/change_claim/', views.change_claim, name='change_claim'),
     path('grant/<int:pk>/unclaim', views.unclaim, name='unclaim'),
     path('grant/<int:pk>/history/', views.grant_history, name='grant_history'),
-    path('grant/<int:pk>/history/<int:imported_pk>', views.grant_history_detail, name='grant_history_detail')
+    path('grant/<int:pk>/history/<int:imported_pk>', views.grant_history_detail, name='grant_history_detail'),
+    path('swagger-ui/', TemplateView.as_view(template_name='swagger-ui.html'), name='swagger-ui')
 ]
