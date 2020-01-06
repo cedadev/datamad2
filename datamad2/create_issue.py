@@ -23,11 +23,19 @@ def set_options(user):
 def make_issue(user, imported_grant):
     jira = set_options(user)
     issue_dict = {
-        'project': 'CEDA',
+        'project': str(user.data_centre),
         'summary': str(imported_grant.grant_ref) + ' : ' + str(imported_grant.title),
         'description': str(imported_grant.abstract),
         'issuetype': {'name': 'Data Management Tracking'},
+        #'customfield_11660': str(imported_grant.actual_start_date), # grant start
+        #'customfield_11662': str(imported_grant.grant.date_contacted_pi), # initial contact
+        'customfield_11658': str(imported_grant.grant_ref),# NERC reference
+        'customfield_11659': str(imported_grant.grant_holder),# PI
+        'customfield_11862': str(imported_grant.research_org), # Research organisation
+        'customfield_11663': {'value': str(user.data_centre)},  # primary data centre
+        #'customfield_11664': [{'value': str(imported_grant.grant.other_data_centre)},]# secondary data centre
     }
+
     new_issue = jira.create_issue(fields=issue_dict)
     jira.assign_issue(new_issue, str(user))
     return new_issue
