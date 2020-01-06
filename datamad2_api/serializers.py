@@ -1,6 +1,6 @@
 from datamad2.models import Grant, ImportedGrant, User
 from rest_framework import serializers
-
+from django.contrib.auth.models import Permission
 
 class GrantSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -15,8 +15,12 @@ class ImportedGrantSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='user-detail')
     class Meta:
         model = User
         fields = '__all__'
+
+
+class PermissionSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Permission
 
