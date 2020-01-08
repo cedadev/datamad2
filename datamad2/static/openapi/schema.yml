@@ -3,11 +3,19 @@ info:
   description: DataMAD API
   version: 1.0.0
   title: Swagger DataMAD
-  termsOfService: 'http://swagger.io/terms/'
   contact:
     email: eleanor.smith@stfc.ac.uk
-host: '127.0.0.1:8000'
+host: 127.0.0.1:8000
 basePath: /
+consumes:
+  - application/json
+produces:
+  - applcation/json
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+  - Basic: []
 tags:
   - name: grants
     description: Information about Grants
@@ -17,7 +25,6 @@ tags:
     description: Information about users of DataMAD
 schemes:
   - http
-  - https
 paths:
   /grants/:
     get:
@@ -64,6 +71,28 @@ paths:
       responses:
         '405':
           description: Invalid input
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Grant'
 
     put:
       tags:
@@ -352,9 +381,7 @@ paths:
           description: Invalid username supplied
         '404':
           description: User not found
-securityDefinitions:
-  grants_auth:
-    type: basic
+
 definitions:
   Grant:
     type: object
@@ -442,8 +469,8 @@ definitions:
         type: boolean
       parent_grant:
         type: string
-        pattern: '^\d{2}/\d{7}/\d{1}$'
-        example: NE/I076542/1
+        format: uri
+        example: http://127.0.0.1:8000/grant/14/
       grant_holder:
         type: string
         example: Professor Example
