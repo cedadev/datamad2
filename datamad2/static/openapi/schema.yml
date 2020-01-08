@@ -470,7 +470,7 @@ definitions:
       parent_grant:
         type: string
         format: uri
-        example: http://127.0.0.1:8000/grant/14/
+        example: http://127.0.0.1:8000/grants/1/
       grant_holder:
         type: string
         example: Professor Example
