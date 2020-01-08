@@ -10,7 +10,7 @@ basePath: /
 consumes:
   - application/json
 produces:
-  - applcation/json
+  - application/json
 securityDefinitions:
   Basic:
     type: basic
@@ -32,12 +32,6 @@ paths:
         - grants
       summary: Find grants by page number, assigned data centre or grant references.
       description: ''
-      consumes:
-        - application/json
-        - application/xml
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: query
           type: string
@@ -94,47 +88,110 @@ paths:
                 items:
                   $ref: '#/definitions/Grant'
 
-    put:
-      tags:
-        - grants
-      summary: Update an existing grant by grant reference
-      description: ''
-      operationId: updateGrant
-      consumes:
-        - application/json
-        - application/xml
-      produces:
-        - application/json
-        - application/xml
-      parameters:
-        - in: query
-          name: grant_ref
-          description: Grant reference of grant to update
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: Grant object to be updated
-          required: true
-          schema:
-            $ref: '#/definitions/Grant'
-      responses:
-        '400':
-          description: Invalid grant reference supplied
-        '404':
-          description: Grant not found
-        '405':
-          description: Validation exception
+#    put:
+#      tags:
+#        - grants
+#      summary: Update an existing grant by grant reference
+#      description: ''
+#      operationId: updateGrant
+#      parameters:
+#        - in: query
+#          name: grant_ref
+#          description: Grant reference of grant to update
+#          required: true
+#          type: string
+#        - in: body
+#          name: body
+#          description: Grant object to be updated
+#          required: true
+#          schema:
+#            $ref: '#/definitions/Grant'
+#      responses:
+#        '400':
+#          description: Invalid grant reference supplied
+#        '404':
+#          description: Grant not found
+#        '405':
+#          description: Validation exception
 
   /grants/{id}/:
     get:
       tags:
       - grants
       summary: Find grant by id
-      produces:
-        - application/json
-        - application/xml
       operationId: findGrantById
+      parameters:
+      - in: path
+        type: integer
+        name: id
+        required: true
+      responses:
+        '400':
+          description: Invalid ID supplied
+
+#    delete:
+#      tags:
+#      - grants
+#      summary: Delete grant by id
+#      operationId: grants_delete
+#      parameters:
+#      - in: path
+#        type: integer
+#        name: id
+#        required: true
+#      responses:
+#        '400':
+#          description: Invalid ID supplied
+
+  /importedgrants/:
+    get:
+      tags:
+        - importedgrants
+      summary: Find an imported grant by page number, grant reference or title
+      description: ''
+      parameters:
+        - in: query
+          type: string
+          name: page
+          #required: true
+        - in: query
+          type: array
+          collectionFormat: csv
+          name: grant_ref
+          description: Grant reference of the imported grant you want to find.
+          items:
+            type: string
+          #required: true
+        - in: query
+          name: title
+          description: Title of the imported grant you want to find
+          #required: true
+      responses:
+        '405':
+          description: Invalid input
+    post:
+      tags:
+        - importedgrants
+      summary: Add a new imported grant
+      description: ''
+      operationId: addImportedGrant
+      parameters:
+        - in: body
+          name: body
+          description: Imported grant object to be added
+          required: true
+          schema:
+            $ref: '#/definitions/ImportedGrant'
+      responses:
+        '405':
+          description: Invalid input
+
+  /importedgrants/{id}/:
+    get:
+      tags:
+      - importedgrants
+      summary: Find imported grant by id
+      operationId: findImportedGrantById
       parameters:
       - in: path
         type: integer
@@ -146,15 +203,9 @@ paths:
 
     delete:
       tags:
-      - grants
-      summary: Delete grant by id
-      consumes:
-        - application/json
-        - application/xml
-      produces:
-        - application/json
-        - application/xml
-      operationId: grants_delete
+      - importedgrants
+      summary: Delete imported grant by id
+      operationId: importedgrants_delete
       parameters:
       - in: path
         type: integer
@@ -164,107 +215,116 @@ paths:
         '400':
           description: Invalid ID supplied
 
+#    put:
+#      tags:
+#        - importedgrants
+#      summary: Update an existing imported grant
+#      description: ''
+#      operationId: updateImportedGrant
+#      parameters:
+#        - in: body
+#          name: body
+#          description: Imported grant object to be edited
+#          required: true
+#          schema:
+#            $ref: '#/definitions/ImportedGrant'
+#      responses:
+#        '400':
+#          description: Invalid ID supplied
+#        '404':
+#          description: Grant not found
+#        '405':
+#          description: Validation exception
 
-
-
-  /importedgrants/:
+  /users/:
     get:
       tags:
-        - importedgrants
-      summary: Find an imported grant
-      description: ''
-      consumes:
-        - application/json
-        - application/xml
-      produces:
-        - application/json
-        - application/xml
-      parameters:
-        - in: query
-          type: string
-          name: page
-          required: true
-      responses:
-        '405':
-          description: Invalid input
-    post:
-      tags:
-        - importedgrants
-      summary: Add a new imported grant
-      description: ''
-      operationId: addImportedGrant
-      consumes:
-        - application/json
-        - application/xml
-      produces:
-        - application/json
-        - application/xml
-      parameters:
-        - in: body
-          name: body
-          description: Imported grant object to be added
-          required: true
-          schema:
-            $ref: '#/definitions/ImportedGrant'
-      responses:
-        '405':
-          description: Invalid input
-    put:
-      tags:
-        - importedgrants
-      summary: Update an existing imported grant
-      description: ''
-      operationId: updateImportedGrant
-      consumes:
-        - application/json
-        - application/xml
-      produces:
-        - application/json
-        - application/xml
-      parameters:
-        - in: body
-          name: body
-          description: Imported grant object to be edited
-          required: true
-          schema:
-            $ref: '#/definitions/ImportedGrant'
-      responses:
-        '400':
-          description: Invalid ID supplied
-        '404':
-          description: Grant not found
-        '405':
-          description: Validation exception
-  /users:
-    post:
-      tags:
         - users
-      summary: Create user
-      description: This can only be done when a user with admin rights is logged in.
-      operationId: createUser
-      produces:
-        - application/json
-        - application/xml
+      summary: Get user by email address
+      description: ''
+      operationId: getUserByEmailAddress
       parameters:
-        - in: body
-          name: body
-          description: Created user object
+        - name: email
+          in: query
+          description: 'The email address of the user that needs to be fetched '
           required: true
+          type: string
+          format: email
+      responses:
+        '200':
+          description: successful operation
           schema:
             $ref: '#/definitions/User'
-      responses:
-        default:
-          description: successful operation
-  /users/accounts/login:
+        '400':
+          description: Invalid email address supplied
+        '404':
+          description: User not found
+#    put:
+#      tags:
+#        - users
+#      summary: Update user
+#      description: This can only be done when a user with admin rights is logged in.
+#      operationId: updateUser
+#      parameters:
+#        - name: emailAddress
+#          in: path
+#          description: name that need to be updated
+#          required: true
+#          type: string
+#          format: email
+#        - in: body
+#          name: body
+#          description: Updated user object
+#          required: true
+#          schema:
+#            $ref: '#/definitions/User'
+#      responses:
+#        '400':
+#          description: Invalid user supplied
+#        '404':
+#          description: User not found
+#    delete:
+#      tags:
+#        - users
+#      summary: Delete user
+#      description: This can only be done when a user with admin rights is logged in.
+#      operationId: deleteUser
+#      parameters:
+#        - name: emailAddress
+#          in: path
+#          description: The email address of the user that needs to be deleted
+#          required: true
+#          type: string
+#          format: email
+#      responses:
+#        '400':
+#          description: Invalid username supplied
+#        '404':
+#          description: User not found
+#    post:
+#      tags:
+#        - users
+#      summary: Create user
+#      description: This can only be done when a user with admin rights is logged in.
+#      operationId: createUser
+#      parameters:
+#        - in: body
+#          name: body
+#          description: Created user object
+#          required: true
+#          schema:
+#            $ref: '#/definitions/User'
+#      responses:
+#        default:
+#          description: successful operation
+
+  /accounts/login/:
     get:
       tags:
         - users
       summary: Logs user into the system
       description: ''
       operationId: loginUser
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - name: username
           in: query
@@ -293,94 +353,19 @@ paths:
               description: date in UTC when token expires
         '400':
           description: Invalid username/password supplied
-  /users/accounts/logout:
+
+  /accounts/logout/:
     get:
       tags:
         - users
       summary: Logs out current logged in user session
       description: ''
       operationId: logoutUser
-      produces:
-        - application/json
-        - application/xml
       parameters: []
       responses:
         default:
           description: successful operation
-  '/users/{emailAddress}':
-    get:
-      tags:
-        - users
-      summary: Get user by email address
-      description: ''
-      operationId: getUserByEmailAddress
-      produces:
-        - application/json
-        - application/xml
-      parameters:
-        - name: emailAddress
-          in: path
-          description: 'The email address of the user that needs to be fetched '
-          required: true
-          type: string
-          format: email
-      responses:
-        '200':
-          description: successful operation
-          schema:
-            $ref: '#/definitions/User'
-        '400':
-          description: Invalid email address supplied
-        '404':
-          description: User not found
-    put:
-      tags:
-        - users
-      summary: Update user
-      description: This can only be done when a user with admin rights is logged in.
-      operationId: updateUser
-      produces:
-        - application/json
-        - application/xml
-      parameters:
-        - name: emailAddress
-          in: path
-          description: name that need to be updated
-          required: true
-          type: string
-          format: email
-        - in: body
-          name: body
-          description: Updated user object
-          required: true
-          schema:
-            $ref: '#/definitions/User'
-      responses:
-        '400':
-          description: Invalid user supplied
-        '404':
-          description: User not found
-    delete:
-      tags:
-        - users
-      summary: Delete user
-      description: This can only be done when a user with admin rights is logged in.
-      operationId: deleteUser
-      produces:
-        - application/json
-        - application/xml
-      parameters:
-        - name: emailAddress
-          in: path
-          description: The email address of the user that needs to be deleted
-          required: true
-          type: string
-          format: email
-      responses:
-        '400':
-          description: Invalid username supplied
-        '404':
-          description: User not found
+
 
 definitions:
   Grant:
@@ -421,7 +406,6 @@ definitions:
         example: CEDA
       hide_record:
         type: boolean
-        default: 'False'
       date_contacted_pi:
         type: string
         format: date
@@ -562,6 +546,5 @@ definitions:
           - ADS
       is_admin:
         type: boolean
-        default: 'False'
     xml:
       name: User

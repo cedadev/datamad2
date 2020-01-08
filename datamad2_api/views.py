@@ -19,7 +19,7 @@ class ImportedGrantViewSet(viewsets.ModelViewSet):
     """
     queryset = ImportedGrant.objects.all()
     serializer_class = ImportedGrantSerializer
-
+    filterset_fields = ['title', 'grant_ref']
 
 class UserViewSet(viewsets.ModelViewSet):
     """
