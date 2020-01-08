@@ -137,3 +137,7 @@ REST_FRAMEWORK = {
 }
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+SWAGGER_SETTINGS = {
+    'VALIDATOR_URL': 'http://localhost:8000'
+}
