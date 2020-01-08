@@ -10,6 +10,7 @@ class GrantViewSet(viewsets.ModelViewSet):
     """
     queryset = Grant.objects.all()
     serializer_class = GrantSerializer
+    filterset_fields = ['assigned_data_centre', 'grant_ref']
 
 
 class ImportedGrantViewSet(viewsets.ModelViewSet):
@@ -26,7 +27,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
+    filterset_fields = ['email']
 
 class PermissionViewSet(viewsets.ModelViewSet):
     """

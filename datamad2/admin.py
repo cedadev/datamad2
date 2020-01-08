@@ -85,11 +85,11 @@ admin.site.register(ImportedGrant, ImportedGrantAdmin)
 class GrantAdmin(admin.ModelAdmin):
     readonly_fields = ['updated_imported_grant']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_add_permission(self, request, obj=None):
+    #     return False
+    #
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
     pass
 
 admin.site.register(Grant, GrantAdmin)
