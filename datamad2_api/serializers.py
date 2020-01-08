@@ -12,7 +12,6 @@ class ImportedGrantSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ImportedGrant
         fields = '__all__'
-        depth = 1
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
