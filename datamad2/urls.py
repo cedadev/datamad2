@@ -12,5 +12,6 @@ urlpatterns = [
     path('grant/<int:pk>/change_claim/', views.change_claim, name='change_claim'),
     path('grant/<int:pk>/unclaim', views.unclaim, name='unclaim'),
     path('grant/<int:pk>/history/', views.grant_history, name='grant_history'),
-    path('grant/<int:pk>/history/<int:imported_pk>', views.grant_history_detail, name='grant_history_detail')
+    path('grant/<int:pk>/history/<int:imported_pk>', views.grant_history_detail, name='grant_history_detail'),
+    path('grantinfo/edit/<int:pk>/<int:imported_pk>', views.grantinfo_edit, name='grantinfo_edit'),
 ]
