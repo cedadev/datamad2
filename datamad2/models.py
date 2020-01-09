@@ -49,7 +49,7 @@ class Grant(models.Model):
     will_grant_produce_data = models.BooleanField(null=True, blank=True)
     # Datasets Delivered as per DMP?	Sharepoint	Yes, No or Null
     datasets_delivered = models.BooleanField(null=True, blank=True,
-                                             help_text="Datasets Delivered as per DMP?	Sharepoint	Yes, No or Null")
+                                             help_text="Datasets Delivered as per DMP?")
     # Sanctions Recommended	Sharepoint	Yes, No or Null
     sanctions_recommended = models.BooleanField(null=True, blank=True)
     # C for S found?	Sharepoint	Yes/No/Grant not found

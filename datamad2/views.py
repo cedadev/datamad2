@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant
-from .forms import UpdateClaim
+from .forms import UpdateClaim, GrantInfoForm
 from django.db.models import Q
 from django.http import HttpResponse
 from .create_issue import make_issue, set_options, get_link
+from django.urls import reverse
 
 
 @login_required
@@ -103,3 +104,18 @@ def change_claim(request, pk):
 @login_required
 def my_account(request):
     return render(request, 'registration/my_account.html', {'my_account': my_account})
+
+
+@login_required
+def grantinfo_edit(request, pk, imported_pk):
+    grant = get_object_or_404(Grant, pk=pk)
+    imported_grant = get_object_or_404(ImportedGrant, pk=imported_pk)
+    if request.method == "POST":
+        form = GrantInfoForm(request.POST, instance=grant)
+        if form.is_valid():
+            grantinfo = form.save(commit=False)
+            grantinfo.save()
+            return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}) + "#spaced-card")
+    else:
+        form = GrantInfoForm(instance=grant)
+    return render(request, 'datamad2/grantinfo_edit.html', {'form': form, 'grant': grant})
