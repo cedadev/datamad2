@@ -59,17 +59,23 @@
                     {% endblock %}
                 </div>
                 <div class="col-lg-8">
+                {%  with things=imported_grant.get_diff_fields %}
+                    {%  if 'creation_date' in things %}
                     <div class="alert alert-secondary" role="alert">
-                        Fields that are highlighted in red show changes made since the previous of this grant.
+                        Fields that are highlighted in red show changes made since the previous update of this grant.
                         Click <a href="{% url 'grant_history' pk=imported_grant.pk  %}" class="alert-link">here</a> to return to list of changes.
                     </div>
+                    {% else %}
+                    <div class="alert alert-secondary" role="alert">
+                        This is the first uploaded version of this grant.
+                    </div>
+                    {% endif %}
                     <div class="card card-shaded">
                         <div class="card-body">
-                        <table  id="grants" style="width:100%"></table>
+                        <table  id="grants" style="width:100%">
 
 
                             <tr>
-                            {%  with things=imported_grant.get_diff_fields %}
                                 <tr>
                                 {%  if 'title' in things %}
                                     <th class="highlight"> <h3>{{ imported_grant.title }} </h3></th>
@@ -104,7 +110,7 @@
 
                             <tr>
                                 {%  if 'creation_date' in things %}
-                                    <th class="highlight">Date Created</th>
+                                    <th class="highlight">Date Updated</th>
                                     <td class="column-id highlight"> {{ imported_grant.creation_date }} </td>
                                 {% else %}
                                     <th>Date Created</th>
@@ -112,10 +118,10 @@
                                 {% endif %}
                             </tr>
 
-                            <tr>
-                                <th>Date Modified </th>
-                                <td class="column-id" > {{ imported_grant.modified_date }} </td>
-                            </tr>
+{#                            <tr>#}
+{#                                <th>Date Modified </th>#}
+{#                                <td class="column-id" > {{ imported_grant.modified_date }} </td>#}
+{#                            </tr>#}
 
                             <tr>
                                 {%  if 'grant_status' in things %}
