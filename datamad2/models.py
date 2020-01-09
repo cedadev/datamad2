@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
-from more_itertools import pairwise
+
 
 # class GrantQuerySet(models.query.QuerySet):
 #     def get(self, **kwargs):
