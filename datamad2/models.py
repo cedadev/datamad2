@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
-
 from django.utils import timezone
+
 
 # class GrantQuerySet(models.query.QuerySet):
 #     def get(self, **kwargs):
@@ -85,7 +85,7 @@ class Grant(models.Model):
 class ImportedGrant(models.Model):
     # ordering by creation date
     class Meta:
-        ordering = ['-modified_date']
+        ordering = ['-creation_date']
 
     # Title	Siebel	Name of the grant			PROJECT_TITLE
     title = models.CharField(max_length=1024, default='')
@@ -97,7 +97,7 @@ class ImportedGrant(models.Model):
     # creation_date = models.DateTimeField(auto_now_add=True)
     creation_date = models.DateTimeField(editable=False)
     #Date modified
-    modified_date = models.DateTimeField(editable=False)
+    #modified_date = models.DateTimeField(editable=False)
     # Grant Status	Siebel	Active/Closed			GRANT_STATUS
     grant_status = models.CharField(max_length=50, default="Active",
                                     choices=(("Active", "Active"), ("Closed", "Closed")))
@@ -218,18 +218,23 @@ class ImportedGrant(models.Model):
 
     def get_diff_fields(self):
         model_fields = [field.name for field in self._meta.get_fields()]
-        previous = self.grant.importedgrant_set.last()
-        if previous:
-            changed_fields = list(filter(
-                lambda field: getattr(previous, field, None) != getattr(self, field, None), model_fields))
-            return changed_fields
+        #imported_grants = self.grant.importedgrant_set.all()
+        date = self.creation_date
+        passed = self.grant.importedgrant_set.filter(creation_date__lt=date).order_by('creation_date')
+        if len(list(passed)) > 0:
+            previous = list(passed)[-1]
+            if previous:
+                changed_fields = list(filter(
+                    lambda field: getattr(previous, field, None) != getattr(self, field, None), model_fields))
+                return changed_fields
+
 
     def save(self, *args, **kwargs):
         # On save, update timestamps
         exists = Grant.objects.filter(grant_ref=self.grant_ref).exists()
         if not self.creation_date:
             self.creation_date = timezone.now()
-        self.modified_date = timezone.now()
+        #self.modified_date = timezone.now()
 
         if exists:
             existing_grant = Grant.objects.get(grant_ref=self.grant_ref)
