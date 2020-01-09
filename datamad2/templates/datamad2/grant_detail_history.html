@@ -60,13 +60,12 @@
                 </div>
                 <div class="col-lg-8">
                     <div class="alert alert-secondary" role="alert">
-                        Fields that are highlighted in red show changes made since the creation of the grant.
+                        Fields that are highlighted in red show changes made since the previous of this grant.
                         Click <a href="{% url 'grant_history' pk=imported_grant.pk  %}" class="alert-link">here</a> to return to list of changes.
                     </div>
                     <div class="card card-shaded">
                         <div class="card-body">
-                        <table  id="grants" style="width:100%">
-
+                        <table  id="grants" style="width:100%"></table>
 
 
                             <tr>

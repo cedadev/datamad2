@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
-
 from django.utils import timezone
+from more_itertools import pairwise
 
 # class GrantQuerySet(models.query.QuerySet):
 #     def get(self, **kwargs):
@@ -218,11 +218,16 @@ class ImportedGrant(models.Model):
 
     def get_diff_fields(self):
         model_fields = [field.name for field in self._meta.get_fields()]
-        previous = self.grant.importedgrant_set.last()
-        if previous:
-            changed_fields = list(filter(
-                lambda field: getattr(previous, field, None) != getattr(self, field, None), model_fields))
-            return changed_fields
+        #imported_grants = self.grant.importedgrant_set.all()
+        date = self.modified_date
+        passed = self.grant.importedgrant_set.filter(modified_date__lt=date).order_by('modified_date')
+        if len(list(passed)) > 0:
+            previous = list(passed)[-1]
+            if previous:
+                changed_fields = list(filter(
+                    lambda field: getattr(previous, field, None) != getattr(self, field, None), model_fields))
+                return changed_fields
+
 
     def save(self, *args, **kwargs):
         # On save, update timestamps
