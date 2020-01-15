@@ -58,9 +58,9 @@ class Grant(models.Model):
     claimed = models.BooleanField(null=True, blank=True)
     # checks for updated imported grant (more than one version)
     updated_imported_grant = models.BooleanField(null=True, blank=True, editable=False, verbose_name='Grant updated')
-
     # programme - one programme can have many grants
     # programme = models.ForeignKey(to='dmp.Programme', blank=True, null=True, on_delete=models.PROTECT)
+
 
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:
@@ -187,34 +187,6 @@ class ImportedGrant(models.Model):
     objectives = models.TextField(default='', blank=True)
     # ticket created
     ticket = models.BooleanField(null=True, blank=True) #, editable=False, verbose_name='Ticket created')
-
-
-    # ordered by newest imported grant first
-
-    # def compare(self, obj):
-    #     # excluded_keys =  # tuple containing names of attributes to exclude
-    #     return self._compare(self, obj) #, excluded_keys)
-
-    # def get_previous(self):
-    #     previous = self.get_previous_by_creation_date()
-    #     if previous.exists():
-    #         return self._compare(self, previous)
-    #
-    #
-    # def _compare(self, obj1, obj2): #, excluded_keys):
-    #     d1, d2 = obj1.__dict__, obj2.__dict__
-    #     old, new = {}, {}
-    #     for k, v in d1.items():
-    #     #    if k in excluded_keys:
-    #     #     continue
-    #         try:
-    #             if v != d2[k]:
-    #                 old.update({k: v})
-    #                 new.update({k: d2[k]})
-    #         except KeyError:
-    #             old.update({k: v})
-    #
-    #     return old, new
 
     def get_diff_fields(self):
         model_fields = [field.name for field in self._meta.get_fields()]

@@ -15,17 +15,25 @@ from jira import JIRA, JIRAError
 
 
 def set_options(user):
+    api_token = "KwX9QToAzbAkZ1ByJJmYECA1"
     options = {'server': 'https://jira.ceh.ac.uk/'}
     jira = JIRA(options, basic_auth=(str(user), 'bananabread'))
     return jira
 
 
-def make_issue(user, imported_grant):
+def make_issue(user, imported_grant, grant):
     jira = set_options(user)
     issue_dict = {
         'project': str(user.data_centre),
         'summary': str(imported_grant.grant_ref) + ' : ' + str(imported_grant.title),
-        'description': str(imported_grant.abstract),
+        'description': 'Alternative data contact email: ' + str(grant.alt_data_contact_email) +
+        '\n Alternative data contact phone number: ' + str(grant.alt_data_contact_phone) +
+        '\n Other data centre: ' + str(grant.other_data_centre) +
+        '\n Date contacted PI: ' + str(grant.date_contacted_pi) +
+        '\n Will the grant produce data? ' + str(grant.will_grant_produce_data) +
+        '\n Datasets delivered? ' + str(grant.sanctions_recommended) +
+        '\n Case for support found? ' + str(grant.case_for_support_found) +
+        '\n Abstract: ' + str(imported_grant.abstract),
         'issuetype': {'name': 'Data Management Tracking'},
         #'customfield_11660': str(imported_grant.actual_start_date), # grant start
         #'customfield_11662': str(imported_grant.grant.date_contacted_pi), # initial contact

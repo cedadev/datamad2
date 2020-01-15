@@ -11,12 +11,13 @@ from django.urls import reverse
 @login_required
 def grant_detail(request, pk):
     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+    grant = imported_grant.grant
     user = request.user
     grant_ref = str(imported_grant.grant_ref).replace('/', '\\u002f')
     if request.method == 'POST' and 'jira-issue' and imported_grant.ticket is False:
         # call function
         set_options(user)
-        make_issue(user, imported_grant)
+        make_issue(user, imported_grant, grant)
         imported_grant.ticket = True
         imported_grant.save()
         # return user to required page
