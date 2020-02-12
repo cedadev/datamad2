@@ -1,4 +1,4 @@
-Django==2.2.8
+Django==2.2.6
 django-classy-tags==0.9.0
 django-cookie-law==2.0.2
 djangorestframework==3.10.3
@@ -19,3 +19,4 @@ zope.interface==4.6.0
 zope.lifecycleevent==4.3
 zope.proxy==4.3.2
 psycopg2-binary
+jira == 2.2.0
