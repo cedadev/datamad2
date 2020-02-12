@@ -14,8 +14,8 @@ django-rest-swagger==2.2.0
 django-sizefield==1.0.0
 djangorestframework==3.10.3
 drf-yasg==1.17.0
-fwtheme-django==0.2
-fwtheme-django-ceda-serv==1.4.0
+git+https://github.com/cedadev/fwtheme-django.git
+git+https://github.com/cedadev/fwtheme-django-ceda-serv.git
 idna==2.8
 inflection==0.3.1
 itypes==1.1.0
