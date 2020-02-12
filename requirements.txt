@@ -19,3 +19,4 @@ zope.interface==4.6.0
 zope.lifecycleevent==4.3
 zope.proxy==4.3.2
 psycopg2-binary
+jira == 2.0.0
