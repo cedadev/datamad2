@@ -115,7 +115,7 @@ class ImportedGrant(models.Model):
     lead_grant = models.BooleanField(null=True, blank=True)
     # Parent Grant	Siebel	Cross reference record to a lead grant record if the grant is covered by an
     # overarching DMP			PARENT_GRANT
-    parent_grant = models.ForeignKey(on_delete=models.PROTECT, to='ImportedGrant', null=True, blank=True)
+    parent_grant = models.ForeignKey(Grant, on_delete=models.PROTECT, null=True, blank=True, related_name='child_grant')
     # Grant Holder	Siebel	Principal investigator (title, first name, surname)			GRANT_HOLDER
     grant_holder = models.CharField(max_length=256, default='', blank=True)
     # Department	Siebel	e.g. School of Geography, Earth and Environmental Sciences			DEPARTMENT
@@ -154,13 +154,9 @@ class ImportedGrant(models.Model):
     # Science Area	Siebel	E.g. Earth: 70% Marine:30%			MISSING
     science_area = models.CharField(max_length=256, null=True, blank=True)
     # NCAS (Yes/No)	Siebel	Y/N			NCAS
-    ncas = models.CharField(max_length=200, blank=True, null=True,
-                            choices=(("Yes", "Yes"),
-                                     ("No", "No")))
+    ncas = models.BooleanField(blank=True, null=True)
     # NCEO (yes/No)	Siebel	Y/N			NCEO
-    nceo = models.CharField(max_length=200, blank=True, null=True,
-                            choices=(("Yes", "Yes"),
-                                     ("No", "No")))
+    nceo = models.BooleanField(blank=True, null=True)
     # Comments	Siebel	Currently not in use			MISSING
     comments = models.TextField(default='', blank=True)
     # # Original Proposed Start Date Siebel Date field set to the same as Proposed
