@@ -1,33 +1,27 @@
 {% extends 'datamad2/grant_list.html' %}
 
-{% block sidebar %}
-    <div class="wrapper">
-        <!-- Sidebar -->
-        <nav id="sidebar">
-            <div class="sidebar-header">
-                <h3>DataMAD</h3>
-            </div>
-            <ul class="list-unstyled components">
-                <h4>Routing Classification</h4>
-                <li>
-                    <a href="{% url 'routing_classification' %}?rc=none">None</a>
-                </li>
-                <li>
-                    <a href="{% url 'routing_classification' %}?rc=Marine">Marine</a>
-                </li>
-                <li>
-                    <a href="{% url 'routing_classification' %}?rc=Earth">Earth</a>
-                </li>
-                <li>
-                    <a href="{% url 'routing_classification' %}?rc=Atmospheric">Atmospheric</a>
-                </li>
-                <li>
-                    <a href="{% url 'routing_classification' %}?rc=Freshwater">Freshwater</a>
-                </li>
-                <li>
-                    <a href="{% url 'routing_classification' %}?rc=Terrestrial">Terrestrial</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-{% endblock sidebar %}
+
+{% block filter_title %}
+    <h4>Routing Classification</h4>
+{% endblock %}
+
+{% block sidebar_items %}
+    <li>
+        <a href="{% url 'routing_classification' %}?rc=none">None</a>
+    </li>
+    <li>
+        <a href="{% url 'routing_classification' %}?rc=Marine">Marine</a>
+    </li>
+    <li>
+        <a href="{% url 'routing_classification' %}?rc=Earth">Earth</a>
+    </li>
+    <li>
+        <a href="{% url 'routing_classification' %}?rc=Atmospheric">Atmospheric</a>
+    </li>
+    <li>
+        <a href="{% url 'routing_classification' %}?rc=Freshwater">Freshwater</a>
+    </li>
+    <li>
+        <a href="{% url 'routing_classification' %}?rc=Terrestrial">Terrestrial</a>
+    </li>
+{% endblock sidebar_items %}

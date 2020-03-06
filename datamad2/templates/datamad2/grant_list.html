@@ -7,47 +7,51 @@
 {% block content %}
     <div class="row">
         <div class="col-12">
-            <h3>Datamad</h3>
+            <h3>DataMAD</h3>
         </div>
     </div>
     <div class="row">
-        <div class="col-2">
+        <div class="col-3">
             {% block sidebar %}
-                <div class="wrapper ">
-                    <!-- Sidebar -->
-                    <nav id="sidebar">
-                        <div class="sidebar-header">
-                            <h4>Grants</h4>
+                <nav id="sidebar">
+                    <div class="card hide-sidebar border-0">
+                        <div class="card-body p-0">
+                            {% block filter_title %}
+                                <h4>Datacentre</h4>
+                            {% endblock %}
+                            <ul class="list-unstyled components ">
+                                {% block sidebar_items %}
+                                    <li>
+                                        <a href="{% url 'grant_list' %}">All</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=EIDC">EIDC</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=NGDC">NGDC</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=PDC">PDC</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'grant_list' %}?datacentre=ADS">ADS</a>
+                                    </li>
+                                {% endblock sidebar_items %}
+                            </ul>
                         </div>
-                        <ul class="list-unstyled components hide-sidebar">
-                            <li>
-                                <a href="{% url 'grant_list' %}">All</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'grant_list' %}?datacentre=EIDC">EIDC</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'grant_list' %}?datacentre=NGDC">NGDC</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'grant_list' %}?datacentre=PDC">PDC</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'grant_list' %}?datacentre=ADS">ADS</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+                    </div>
+                </nav>
             {% endblock sidebar %}
+
         </div>
         <div class="col">
             {% include 'datamad2/includes/grant_table.html' %}
