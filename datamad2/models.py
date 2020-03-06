@@ -260,8 +260,10 @@ class UserManager(BaseUserManager):
 
         user = self.model(
             email=self.normalize_email(email), **extra_fields)
+
+        # Set the username to match the email
+        user.username = self.normalize_email(email)
         user.set_password(password)
-        user.save(using=self._db)
         user.save(using=self._db)
         return user
 
@@ -288,6 +290,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=255,
         unique=True,
     )
+    username = models.EmailField(max_length=255)
     data_centre = models.CharField(max_length=200, blank=True, null=True,
                                    choices=(("BODC", "BODC"),
                                             ("CEDA", "CEDA"),
@@ -302,6 +305,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'data_centre']
 
     def __str__(self):
