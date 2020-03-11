@@ -238,7 +238,7 @@ class ImportedGrant(models.Model):
             existing_grant.updated_imported_grant = True
             existing_grant.save()
         else:
-            new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False)
+            new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False, updated_imported_grant=False)
             self.grant = new_grant
         return super(ImportedGrant, self).save(*args, **kwargs)
 
