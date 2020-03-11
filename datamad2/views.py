@@ -48,10 +48,13 @@ def grant_history_detail(request, pk, imported_pk):
 def grant_list(request):
     if request.method == 'GET':
         grants = Grant.objects.all()
+        grants = grants.filter(assigned_data_centre=None)
         assignee = request.GET.get('datacentre')
         if assignee == 'unassigned':
+            grants = Grant.objects.all()
             grants = grants.filter(assigned_data_centre=None)
         elif assignee:
+            grants = Grant.objects.all()
             grants = grants.filter(Q(assigned_data_centre=assignee) | Q(other_data_centre=assignee))
         return render(request, 'datamad2/grant_list.html', {'grants': grants})
 
