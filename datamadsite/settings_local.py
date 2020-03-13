@@ -5,3 +5,4 @@ LOGOUT_REDIRECT_URL = '/accounts/login'
 
 AUTH_USER_MODEL = 'datamad2.User'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
