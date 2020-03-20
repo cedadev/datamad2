@@ -189,6 +189,10 @@
                                 <td class="column-id" >{{ imported_grant.work_number }} </td>
                             </tr>
                             <tr>
+                                <th>Data Contact</th>
+                                <td class="column-id" >{{ imported_grant.data_contact }} </td>
+                            </tr>
+                            <tr>
                                 <th>Data Contact Email</th>
                                 <td class="column-id" >{{ imported_grant.data_contact_email }} </td>
                             </tr>
@@ -238,6 +242,10 @@
                     <table  id="grant-info" style="width:100%">
                         <tr>
                             <h3> Editable Grant Information <a title='Edit' data-toggle='tooltip' href="{%  url 'grantinfo_edit' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}"><i class="far fa-edit"></i></a> </h3>
+                        </tr>
+                        <tr>
+                            <th>Alternative data contact</th>
+                            <td class="column-id">{{ imported_grant.grant.alt_data_contact}} </td>
                         </tr>
                         <tr>
                             <th>Alternative data contact email address</th>
