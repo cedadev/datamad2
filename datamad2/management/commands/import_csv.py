@@ -59,7 +59,7 @@ import numpy as np
 #     #'Facility',
 #     #'Facility1',
 #     'Abstract': 'abstract',
-#     #'Alt Data Contact',
+#     'Alt Data Contact' : 'alt_data_contact',
 #     'Alt Data Contact Email': 'alt_data_contact_email',
 #     'Alt Data Contact Phone No': 'alt_data_contact_phone',
 #     #'App Created By',
@@ -70,7 +70,7 @@ import numpy as np
 #     #'Content Type',
 #     #'Created',
 #     #'Created By',
-#     #'Data Contact',
+#     'Data Contact' : 'data_contact',
 #     'Data Contact Email': 'data_contact_email',
 #     'Data Contact Phone': 'data_contact_phone',
 #     'Datasets Delivered as per DMP?': 'datasets_delivered',
@@ -275,6 +275,7 @@ date_fields = ('date_contacted_pi',
                'actual_end_date')
 
 grant_fields = ('grant_ref',
+                'alt_data_contact',
                 'alt_data_contact_email',
                 'alt_data_contact_phone',
                 'assigned_data_centre',
@@ -314,7 +315,11 @@ imported_grant_fields = ('grant_ref',
                          'address1',
                          'post_code',
                          'abstract',
-                         'objectives')
+                         'objectives',
+                         'data_contact',
+                         'data_contact_email',
+                         'data_contact_phone',
+                         )
 
 
 

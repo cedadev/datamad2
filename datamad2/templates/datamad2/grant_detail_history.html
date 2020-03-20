@@ -355,6 +355,16 @@
                             </tr>
 
                             <tr>
+                                {%  if 'data_contact' in things %}
+                                    <th class="highlight">Data Contact</th>
+                                    <td class="column-id highlight"> {{ imported_grant.data_contact }} </td>
+                                {% else %}
+                                    <th>Data Contact</th>
+                                    <td class="column-id" >{{ imported_grant.data_contact }} </td>
+                                {% endif %}
+                            </tr>
+
+                            <tr>
                                 {%  if 'data_contact_email' in things %}
                                     <th class="highlight">Data Contact Email</th>
                                     <td class="column-id highlight"> {{ imported_grant.data_contact_email }} </td>
