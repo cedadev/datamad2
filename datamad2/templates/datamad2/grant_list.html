@@ -64,8 +64,7 @@
                     <tr>
                         <th>Grant Reference</th>
                         <th>Title</th>
-                        <th>Assigned Data Centre</th>
-                        <th>Other Data Centre </th>
+                        <th>PI</th>
                         <th>Routing Classification</th>
                         <th>Date Added</th>
                         <th>Claim Status</th>
@@ -81,16 +80,7 @@
                                 </a>
                             </td>
                             <td> {{ imported_grant.title }}</td>
-                            {%  if imported_grant.grant.assigned_data_centre %}
-                                <td id="data-centre"> {{ imported_grant.grant.assigned_data_centre }}</td>
-                            {%  else  %}
-                                <td id="data-centre"> Unassigned </td>
-                            {%  endif %}
-                            {%  if imported_grant.grant.other_data_centre %}
-                                <td> {{ imported_grant.grant.other_data_centre }}</td>
-                            {%  else  %}
-                                <td> Unassigned </td>
-                            {%  endif %}
+                            <td> {{ imported_grant.grant_holder }}</td>
                             {%  if imported_grant.routing_classification %}
                                 <td data-sort="{{imported_grant.routing_classification}} "><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
                             {%  else %}
@@ -117,8 +107,8 @@
         let btn = $(this);
         let url = 'grant/' + $(this).attr('data-id') + '/claim';
         let cell = btn.parent();
-        let data_centre = cell.parent()[0].cells[2];
-        console.log(data_centre)
+        {#let data_centre = cell.parent()[0].cells[2];#}
+        {#console.log(data_centre)#}
         $.ajax({
             type: "GET",
             url: url,
@@ -127,8 +117,8 @@
             success: function () {
                 cell.html("CLAIMED");
                 cell.attr('id', 'claim');
-                data_centre.innerHTML = "{{ user.data_centre }}"
-                console.log(cell.parent())
+                {#data_centre.innerHTML = "{{ user.data_centre }}"#}
+                {#console.log(cell.parent())#}
             },
             // handle a non-successful response
             error: function () {
