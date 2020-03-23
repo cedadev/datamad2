@@ -135,4 +135,3 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'

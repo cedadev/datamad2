@@ -11,25 +11,22 @@ from django.urls import reverse
 @login_required
 def grant_detail(request, pk):
     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+    ig = ImportedGrant.objects.filter(pk=pk)
     user = request.user
     grant_ref = str(imported_grant.grant_ref).replace('/', '\\u002f')
     if request.method == 'POST' and 'jira-issue' and imported_grant.ticket is False:
         # call function
         set_options(user)
         make_issue(user, imported_grant)
-        imported_grant.ticket = True
-        imported_grant.save()
+        ig.update(ticket=True)
         # return user to required page
         return redirect('grant_detail', pk=pk)
     elif imported_grant.ticket is True:
         link = get_link(user, grant_ref)
         if link is None:
-            imported_grant.ticket = False
-            imported_grant.save()
+            ig.update(ticket=False)
         return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant, 'link': link})
     else:
-        imported_grant.ticket = False
-        imported_grant.save()
         return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
 
 
@@ -51,10 +48,13 @@ def grant_history_detail(request, pk, imported_pk):
 def grant_list(request):
     if request.method == 'GET':
         grants = Grant.objects.all()
+        grants = grants.filter(assigned_data_centre=None)
         assignee = request.GET.get('datacentre')
         if assignee == 'unassigned':
+            grants = Grant.objects.all()
             grants = grants.filter(assigned_data_centre=None)
         elif assignee:
+            grants = Grant.objects.all()
             grants = grants.filter(Q(assigned_data_centre=assignee) | Q(other_data_centre=assignee))
         return render(request, 'datamad2/grant_list.html', {'grants': grants})
 

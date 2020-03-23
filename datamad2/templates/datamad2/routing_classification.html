@@ -1,27 +1,9 @@
 {% extends 'datamad2/grant_list.html' %}
 
-
 {% block filter_title %}
     <h4>Routing Classification</h4>
 {% endblock %}
 
 {% block sidebar_items %}
-    <li>
-        <a href="{% url 'routing_classification' %}?rc=none">None</a>
-    </li>
-    <li>
-        <a href="{% url 'routing_classification' %}?rc=Marine">Marine</a>
-    </li>
-    <li>
-        <a href="{% url 'routing_classification' %}?rc=Earth">Earth</a>
-    </li>
-    <li>
-        <a href="{% url 'routing_classification' %}?rc=Atmospheric">Atmospheric</a>
-    </li>
-    <li>
-        <a href="{% url 'routing_classification' %}?rc=Freshwater">Freshwater</a>
-    </li>
-    <li>
-        <a href="{% url 'routing_classification' %}?rc=Terrestrial">Terrestrial</a>
-    </li>
+    {% include 'datamad2/includes/routing_classification_sidebar_items.html' %}
 {% endblock sidebar_items %}

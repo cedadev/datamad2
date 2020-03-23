@@ -17,6 +17,8 @@ class Grant(models.Model):
 
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
+    # alt data contact email
+    alt_data_contact = models.CharField(max_length=256, default='', blank=True)
     # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
     alt_data_contact_email = models.EmailField(null=True, blank=True)
     # Alt Data Contact Phone No	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
@@ -134,6 +136,8 @@ class ImportedGrant(models.Model):
     email = models.EmailField(null=True, blank=True)
     # Work Number	Siebel	Work telephone number			WORK_NUMBER
     work_number = models.CharField(max_length=256, null=True, blank=True, default='')
+    # data contact name
+    data_contact = models.CharField(max_length=256, default='', blank=True)
     # Data Contact Email	Siebel	PI may not always be the contact for data related issues
     # (although responsible for ensuring delivery of the data)			MISSING
     data_contact_email = models.EmailField(null=True, blank=True)
@@ -238,7 +242,7 @@ class ImportedGrant(models.Model):
             existing_grant.updated_imported_grant = True
             existing_grant.save()
         else:
-            new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False)
+            new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False, updated_imported_grant=False)
             self.grant = new_grant
         return super(ImportedGrant, self).save(*args, **kwargs)
 

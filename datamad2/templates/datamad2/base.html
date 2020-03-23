@@ -2,7 +2,8 @@
 
 {% load static %}
 
-{% block head_title %}All Grants{% endblock %}
+
+{% block head_title %}Grants{% endblock %}
 
 {% block stylesheets_pre_extra %}
     <link rel="shortcut icon" href="https://nerc.ukri.org/nerc/includes/themes/MasterSite/images/favicon.ico">
@@ -26,14 +27,13 @@
     </a>
 {% endblock %}
 
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+</button>
 {% block navigation %}
     <div id="navbarResponsive" class="collapse navbar-collapse">
         <ul class="navbar-nav mx-auto">
-            <li class="nav-item dropdown">
-                <div>
-                    <a class="nav-link dropbtn" href="{% url 'grant_list' %}"> All Grants </a>
-                </div>
-            </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropbtn">Grants
                     <i class="fa fa-caret-down"></i>

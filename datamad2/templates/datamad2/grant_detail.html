@@ -157,6 +157,10 @@
                     <td class="column-id">{{ imported_grant.work_number }} </td>
                 </tr>
                 <tr>
+                    <th>Data Contact</th>
+                    <td class="column-id">{{ imported_grant.data_contact }} </td>
+                </tr>
+                <tr>
                     <th>Data Contact Email</th>
                     <td class="column-id">{{ imported_grant.data_contact_email }} </td>
                 </tr>
@@ -197,9 +201,11 @@
                                 <th>Start Date Changed</th>
                                 <td class="column-id">{{ imported_grant.start_date_changed}} </td>
                             </tr>{% endcomment %}
+
             </table>
         </div>
     </div>
+
     <div class="card card-shaded" id="spaced-card">
         <div class="card-body">
             <table id="grant-info" style="width:100%">
@@ -207,6 +213,10 @@
                     <h3> Editable Grant Information <a title='Edit' data-toggle='tooltip'
                                                        href="{% url 'grantinfo_edit' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}"><i
                             class="far fa-edit"></i></a></h3>
+                </tr>
+                <tr>
+                    <th>Alternative data contact</th>
+                    <td class="column-id">{{ imported_grant.grant.alt_data_contact }} </td>
                 </tr>
                 <tr>
                     <th>Alternative data contact email address</th>
@@ -243,6 +253,20 @@
                 </tr>
             </table>
         </div>
+    </div>
+
+    <div>
+        {% if imported_grant.ticket == True %}
+            <a href="{{ link }}">
+                <button class="btn btn-primary jira-btn" id="jira-btn">Link to JIRA issue</button>
+            </a>
+        {% else %}
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" name="jira-issue" class="btn btn-primary jira-btn">Make JIRA issue</button>
+            </form>
+        {% endif %}
+        {#                        <a href="#"><button class="btn btn-primary"  id="jira-btn"> Make JIRA issue </button></a>#}
     </div>
 
     <div>

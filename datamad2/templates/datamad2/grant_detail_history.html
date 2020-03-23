@@ -1,365 +1,386 @@
-{%  extends 'datamad2/grant_detail.html' %}
+{% extends 'datamad2/grant_detail.html' %}
 {% load static %}
 
 {% block content %}
-    {%  with things=imported_grant.get_diff_fields %}
-                    {%  if 'creation_date' in things %}
-                    <div class="alert alert-secondary" role="alert">
-                        Fields that are highlighted in red show changes made since the previous update of this grant.
-                        Click <a href="{% url 'grant_history' pk=imported_grant.pk  %}" class="alert-link">here</a> to return to list of changes.
-                    </div>
-                    {% else %}
-                    <div class="alert alert-secondary" role="alert">
-                        This is the first uploaded version of this grant.
-                    </div>
-                    {% endif %}
-                    <div class="card card-shaded">
-                        <div class="card-body">
-                        <table  id="grants" style="width:100%">
+    {% with things=imported_grant.get_diff_fields %}
+        {% if 'creation_date' in things %}
+            <div class="alert alert-secondary" role="alert">
+                Fields that are highlighted in red show changes made since the previous update of this grant.
+                Click <a href="{% url 'grant_history' pk=imported_grant.pk %}" class="alert-link">here</a> to return to
+                list of changes.
+            </div>
+        {% else %}
+            <div class="alert alert-secondary" role="alert">
+                This is the first uploaded version of this grant.
+            </div>
+        {% endif %}
+        <div class="card card-shaded">
+            <div class="card-body">
+                <table id="grants" style="width:100%">
+                    <tbody>
+                    <tr>
+                        {% if 'title' in things %}
+                            <th class="highlight"><h3>{{ imported_grant.title }} </h3></th>
+                        {% else %}
+                            <th><h3>{{ imported_grant.title }} </h3></th>
+                        {% endif %}
+                        {% if imported_grant.grant.claimed == True and imported_grant.grant.assigned_data_centre == user.data_centre %}
+                            <td class="column-id" id="right">
+                                <a>
+                                    <button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary unclaim-btn"
+                                            id="claim-button"> UNCLAIM
+                                    </button>
+                                </a>
+                                <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}">
+                                    <button class="btn btn-primary" id="claim"> REASSIGN</button>
+                                </a>
+                            </td>
+                        {% elif  imported_grant.grant.claimed == True %}
+                            {#                                    <td class="column-id" id ="right">#}
+                            {#                                        CLAIMED#}
+                            {#                                    </td>#}
+                        {% else %}
+                            <td class="column-id" id="right">
+                                <a>
+                                    <button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary claim-btn"
+                                            id="claim-button"> CLAIM
+                                    </button>
+                                </a>
+                                <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}">
+                                    <button class="btn btn-primary" id="claim"> ASSIGN</button>
+                                </a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        {% if 'grant_ref' in things %}
+                            <th class="highlight">Grant Reference</th>
+                            <td class="column-id highlight"> {{ imported_grant.grant_ref }} </td>
+                        {% else %}
+                            <th>Grant Reference</th>
+                            <td class="column-id"> {{ imported_grant.grant_ref }} </td>
+                        {% endif %}
+                    </tr>
 
+                    <tr>
+                        {% if 'creation_date' in things %}
+                            <th class="highlight">Date Updated</th>
+                            <td class="column-id highlight"> {{ imported_grant.creation_date }} </td>
+                        {% else %}
+                            <th>Date Created</th>
+                            <td class="column-id"> {{ imported_grant.creation_date }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                <tr>
-                                {%  if 'title' in things %}
-                                    <th class="highlight"> <h3>{{ imported_grant.title }} </h3></th>
-                                {% else %}
-                                    <th> <h3>{{ imported_grant.title }} </h3></th>
-                                {% endif %}
-                                {%  if imported_grant.grant.claimed == True and imported_grant.grant.assigned_data_centre == user.data_centre %}
-                                    <td class="column-id" id="right">
-                                        <a><button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary unclaim-btn"  id="claim-button"> UNCLAIM </button></a>
-                                        <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> REASSIGN </button></a>
-                                    </td>
-                                {% elif  imported_grant.grant.claimed == True %}
-{#                                    <td class="column-id" id ="right">#}
-{#                                        CLAIMED#}
-{#                                    </td>#}
-                                {% else %}
-                                    <td class="column-id" id="right">
-                                        <a><button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary claim-btn"  id="claim-button"> CLAIM </button></a>
-                                        <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> ASSIGN </button></a>
-                                    </td>
-                                {%  endif %}
-                            </tr>
-                            <tr>
-                                {%  if 'grant_ref' in things %}
-                                    <th class="highlight">Grant Reference</th>
-                                    <td class="column-id highlight"> {{ imported_grant.grant_ref }} </td>
-                                {% else %}
-                                    <th>Grant Reference</th>
-                                    <td class="column-id" > {{ imported_grant.grant_ref }} </td>
-                                {% endif %}
-                            </tr>
+                    {#                            <tr>#}
+                    {#                                <th>Date Modified </th>#}
+                    {#                                <td class="column-id" > {{ imported_grant.modified_date }} </td>#}
+                    {#                            </tr>#}
 
-                            <tr>
-                                {%  if 'creation_date' in things %}
-                                    <th class="highlight">Date Updated</th>
-                                    <td class="column-id highlight"> {{ imported_grant.creation_date }} </td>
-                                {% else %}
-                                    <th>Date Created</th>
-                                    <td class="column-id" > {{ imported_grant.creation_date }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'grant_status' in things %}
+                            <th class="highlight">Grant Status</th>
+                            <td class="column-id highlight"> {{ imported_grant.grant_status }} </td>
+                        {% else %}
+                            <th>Grant Status</th>
+                            <td class="column-id"> {{ imported_grant.grant_status }} </td>
+                        {% endif %}
+                    </tr>
 
-{#                            <tr>#}
-{#                                <th>Date Modified </th>#}
-{#                                <td class="column-id" > {{ imported_grant.modified_date }} </td>#}
-{#                            </tr>#}
+                    <tr>
+                        {% if 'routing_classification' in things %}
+                            <th class="highlight">Routing Classification</th>
+                            <td class="column-id highlight"> {{ imported_grant.routing_classification }} </td>
+                        {% else %}
+                            <th>Routing Classification</th>
+                            <td class="column-id"> {{ imported_grant.routing_classification }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'grant_status' in things %}
-                                    <th class="highlight">Grant Status</th>
-                                    <td class="column-id highlight"> {{ imported_grant.grant_status }} </td>
-                                {% else %}
-                                    <th>Grant Status</th>
-                                    <td class="column-id"> {{ imported_grant.grant_status }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'secondary_classification' in things %}
+                            <th class="highlight">Secondary Classification</th>
+                            <td class="column-id highlight"> {{ imported_grant.secondary_classification }} </td>
+                        {% else %}
+                            <th>Secondary Classification</th>
+                            <td class="column-id"> {{ imported_grant.secondary_classification }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'routing_classification' in things %}
-                                    <th class="highlight">Routing Classification</th>
-                                    <td class="column-id highlight"> {{ imported_grant.routing_classification }} </td>
-                                {% else %}
-                                    <th>Routing Classification</th>
-                                    <td class="column-id"> {{ imported_grant.routing_classification }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'proposed_start_date' in things %}
+                            <th class="highlight">Proposed Start Date</th>
+                            <td class="column-id highlight"> {{ imported_grant.proposed_start_date }} </td>
+                        {% else %}
+                            <th>Proposed Start Date</th>
+                            <td class="column-id">{{ imported_grant.proposed_start_date }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'secondary_classification' in things %}
-                                    <th class="highlight">Secondary Classification</th>
-                                    <td class="column-id highlight"> {{ imported_grant.secondary_classification }} </td>
-                                {% else %}
-                                    <th>Secondary Classification</th>
-                                    <td class="column-id"> {{ imported_grant.secondary_classification }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'proposed_end_date' in things %}
+                            <th class="highlight">Proposed End Date</th>
+                            <td class="column-id highlight"> {{ imported_grant.proposed_end_date }} </td>
+                        {% else %}
+                            <th>Proposed End Date</th>
+                            <td class="column-id">{{ imported_grant.proposed_end_date }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'proposed_start_date' in things %}
-                                    <th class="highlight">Proposed Start Date</th>
-                                    <td class="column-id highlight"> {{ imported_grant.proposed_start_date }} </td>
-                                {% else %}
-                                    <th>Proposed Start Date</th>
-                                    <td class="column-id">{{ imported_grant.proposed_start_date }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'actual_start_date' in things %}
+                            <th class="highlight">Actual Start Date</th>
+                            <td class="column-id highlight"> {{ imported_grant.actual_start_date }} </td>
+                        {% else %}
+                            <th>Actual Start Date</th>
+                            <td class="column-id">{{ imported_grant.actual_start_date }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'proposed_end_date' in things %}
-                                    <th class="highlight">Proposed End Date</th>
-                                    <td class="column-id highlight"> {{ imported_grant.proposed_end_date }} </td>
-                                {% else %}
-                                    <th>Proposed End Date</th>
-                                    <td class="column-id">{{ imported_grant.proposed_end_date }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'actual_end_date' in things %}
+                            <th class="highlight">Actual End Date</th>
+                            <td class="column-id highlight"> {{ imported_grant.actual_end_date }} </td>
+                        {% else %}
+                            <th>Actual End Date</th>
+                            <td class="column-id">{{ imported_grant.actual_end_date }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'actual_start_date' in things %}
-                                    <th class="highlight">Actual Start Date</th>
-                                    <td class="column-id highlight"> {{ imported_grant.actual_start_date }} </td>
-                                {% else %}
-                                    <th>Actual Start Date</th>
-                                    <td class="column-id">{{ imported_grant.actual_start_date }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'abstract' in things %}
+                            <th class="highlight">Abstract</th>
+                            <td class="column-id highlight"> {{ imported_grant.abstract|linebreaksbr }} </td>
+                        {% else %}
+                            <th>Abstract</th>
+                            <td class="column-id">{{ imported_grant.abstract|linebreaksbr }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'actual_end_date' in things %}
-                                    <th class="highlight">Actual End Date</th>
-                                    <td class="column-id highlight"> {{ imported_grant.actual_end_date }} </td>
-                                {% else %}
-                                    <th>Actual End Date</th>
-                                    <td class="column-id">{{ imported_grant.actual_end_date }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'objectives' in things %}
+                            <th class="highlight">Objectives</th>
+                            <td class="column-id highlight"> {{ imported_grant.objectives|linebreaksbr }} </td>
+                        {% else %}
+                            <th>Objectives</th>
+                            <td class="column-id">{{ imported_grant.objectives|linebreaksbr }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'abstract' in things %}
-                                    <th class="highlight">Abstract</th>
-                                    <td class="column-id highlight"> {{ imported_grant.abstract|linebreaksbr }} </td>
-                                {% else %}
-                                    <th>Abstract</th>
-                                    <td class="column-id">{{ imported_grant.abstract|linebreaksbr }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'amount_awarded' in things %}
+                            <th class="highlight">Amount Awarded</th>
+                            <td class="column-id highlight"> £ {{ imported_grant.amount_awarded }} </td>
+                        {% else %}
+                            <th>Amount Awarded</th>
+                            <td class="column-id"> £ {{ imported_grant.amount_awarded }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'objectives' in things %}
-                                    <th class="highlight">Objectives</th>
-                                    <td class="column-id highlight"> {{ imported_grant.objectives|linebreaksbr }} </td>
-                                {% else %}
-                                    <th>Objectives</th>
-                                    <td class="column-id">{{ imported_grant.objectives|linebreaksbr }} </td>
-                                {% endif %}
-                            </tr>
+                    {#                            <tr>#}
+                    {#                                <th>Call</th>#}
+                    {#                                <td class="column-id"  >{{ imported_grant.call }} </td>#}
+                    {#                            </tr>#}
+                    <tr>
+                        {% if 'grant_type' in things %}
+                            <th class="highlight">Grant Type</th>
+                            <td class="column-id highlight"> {{ imported_grant.grant_type }} </td>
+                        {% else %}
+                            <th>Grant Type</th>
+                            <td class="column-id"> {{ imported_grant.grant_type }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'amount_awarded' in things %}
-                                    <th class="highlight">Amount Awarded</th>
-                                    <td class="column-id highlight"> £ {{ imported_grant.amount_awarded }} </td>
-                                {% else %}
-                                    <th>Amount Awarded</th>
-                                    <td class="column-id" > £ {{ imported_grant.amount_awarded }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'scheme' in things %}
+                            <th class="highlight">Scheme</th>
+                            <td class="column-id highlight"> {{ imported_grant.scheme }} </td>
+                        {% else %}
+                            <th>Scheme</th>
+                            <td class="column-id"> {{ imported_grant.scheme }} </td>
+                        {% endif %}
+                    </tr>
 
-{#                            <tr>#}
-{#                                <th>Call</th>#}
-{#                                <td class="column-id"  >{{ imported_grant.call }} </td>#}
-{#                            </tr>#}
-                            <tr>
-                                {%  if 'grant_type' in things %}
-                                    <th class="highlight">Grant Type</th>
-                                    <td class="column-id highlight"> {{ imported_grant.grant_type }} </td>
-                                {% else %}
-                                    <th>Grant Type</th>
-                                    <td class="column-id" > {{ imported_grant.grant_type }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'lead_grant' in things %}
+                            <th class="highlight">Lead Grant</th>
+                            <td class="column-id highlight"> {{ imported_grant.lead_grant }} </td>
+                        {% else %}
+                            <th>Lead Grant</th>
+                            <td class="column-id"> {{ imported_grant.lead_grant }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'scheme' in things %}
-                                    <th class="highlight">Scheme</th>
-                                    <td class="column-id highlight"> {{ imported_grant.scheme }} </td>
-                                {% else %}
-                                    <th>Scheme</th>
-                                    <td class="column-id" > {{ imported_grant.scheme }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'parent_grant' in things %}
+                            <th class="highlight">Parent Grant</th>
+                            <td class="column-id highlight"> {{ imported_grant.parent_grant }} </td>
+                        {% else %}
+                            <th>Parent Grant</th>
+                            <td class="column-id"> {{ imported_grant.parent_grant }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'lead_grant' in things %}
-                                    <th class="highlight">Lead Grant</th>
-                                    <td class="column-id highlight"> {{ imported_grant.lead_grant }} </td>
-                                {% else %}
-                                    <th>Lead Grant</th>
-                                    <td class="column-id" > {{ imported_grant.lead_grant }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'grant_holder' in things %}
+                            <th class="highlight">Grant Holder</th>
+                            <td class="column-id highlight"> {{ imported_grant.grant_holder }} </td>
+                        {% else %}
+                            <th>Grant Holder</th>
+                            <td class="column-id"> {{ imported_grant.grant_holder }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'parent_grant' in things %}
-                                    <th class="highlight">Parent Grant</th>
-                                    <td class="column-id highlight"> {{ imported_grant.parent_grant }} </td>
-                                {% else %}
-                                    <th>Parent Grant</th>
-                                    <td class="column-id" > {{ imported_grant.parent_grant }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'department' in things %}
+                            <th class="highlight">Department</th>
+                            <td class="column-id highlight"> {{ imported_grant.department }} </td>
+                        {% else %}
+                            <th>Department</th>
+                            <td class="column-id"> {{ imported_grant.department }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'grant_holder' in things %}
-                                    <th class="highlight">Grant Holder</th>
-                                    <td class="column-id highlight"> {{ imported_grant.grant_holder }} </td>
-                                {% else %}
-                                    <th>Grant Holder</th>
-                                    <td class="column-id" > {{ imported_grant.grant_holder }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'research_organisation' in things %}
+                            <th class="highlight">Research Organisation</th>
+                            <td class="column-id highlight"> {{ imported_grant.research_organisation }} </td>
+                        {% else %}
+                            <th>Research Organisation</th>
+                            <td class="column-id">{{ imported_grant.research_organisation }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'department' in things %}
-                                    <th class="highlight">Department</th>
-                                    <td class="column-id highlight"> {{ imported_grant.department }} </td>
-                                {% else %}
-                                    <th>Department</th>
-                                    <td class="column-id" > {{ imported_grant.department }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'address1' in things %}
+                            <th class="highlight">Address</th>
+                            <td class="column-id highlight"> {{ imported_grant.address1 }} </td>
+                        {% else %}
+                            <th>Address</th>
+                            <td class="column-id">{{ imported_grant.address1 }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'research_organisation' in things %}
-                                    <th class="highlight">Research Organisation</th>
-                                    <td class="column-id highlight"> {{ imported_grant.research_organisation }} </td>
-                                {% else %}
-                                    <th>Research Organisation</th>
-                                    <td class="column-id" >{{ imported_grant.research_organisation }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'address2' in things %}
+                            <th class="highlight">Address Line 2</th>
+                            <td class="column-id highlight"> {{ imported_grant.address2 }} </td>
+                        {% else %}
+                            <th>Address Line 2</th>
+                            <td class="column-id">{{ imported_grant.address2 }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'address1' in things %}
-                                    <th class="highlight">Address</th>
-                                    <td class="column-id highlight"> {{ imported_grant.address1 }} </td>
-                                {% else %}
-                                    <th>Address</th>
-                                    <td class="column-id" >{{ imported_grant.address1 }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'city' in things %}
+                            <th class="highlight">City</th>
+                            <td class="column-id highlight"> {{ imported_grant.city }} </td>
+                        {% else %}
+                            <th>City</th>
+                            <td class="column-id">{{ imported_grant.city }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'address2' in things %}
-                                    <th class="highlight">Address Line 2</th>
-                                    <td class="column-id highlight"> {{ imported_grant.address2 }} </td>
-                                {% else %}
-                                    <th>Address Line 2</th>
-                                    <td class="column-id" >{{ imported_grant.address2 }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'post_code' in things %}
+                            <th class="highlight">Post Code</th>
+                            <td class="column-id highlight"> {{ imported_grant.post_code }} </td>
+                        {% else %}
+                            <th>Post Code</th>
+                            <td class="column-id">{{ imported_grant.post_code }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'city' in things %}
-                                    <th class="highlight">City</th>
-                                    <td class="column-id highlight"> {{ imported_grant.city }} </td>
-                                {% else %}
-                                    <th>City</th>
-                                    <td class="column-id" >{{ imported_grant.city }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'email' in things %}
+                            <th class="highlight">Email</th>
+                            <td class="column-id highlight"> {{ imported_grant.email }} </td>
+                        {% else %}
+                            <th>Email</th>
+                            <td class="column-id">{{ imported_grant.email }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'post_code' in things %}
-                                    <th class="highlight">Post Code</th>
-                                    <td class="column-id highlight"> {{ imported_grant.post_code }} </td>
-                                {% else %}
-                                    <th>Post Code</th>
-                                    <td class="column-id" >{{ imported_grant.post_code }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'work_number' in things %}
+                            <th class="highlight">Work Number</th>
+                            <td class="column-id highlight"> {{ imported_grant.work_number }} </td>
+                        {% else %}
+                            <th>Work Number</th>
+                            <td class="column-id">{{ imported_grant.work_number }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'email' in things %}
-                                    <th class="highlight">Email</th>
-                                    <td class="column-id highlight"> {{ imported_grant.email }} </td>
-                                {% else %}
-                                    <th>Email</th>
-                                    <td class="column-id" >{{ imported_grant.email }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'data_contact' in things %}
+                            <th class="highlight">Data Contact</th>
+                            <td class="column-id highlight"> {{ imported_grant.data_contact }} </td>
+                        {% else %}
+                            <th>Data Contact</th>
+                            <td class="column-id">{{ imported_grant.data_contact }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'work_number' in things %}
-                                    <th class="highlight">Work Number</th>
-                                    <td class="column-id highlight"> {{ imported_grant.work_number }} </td>
-                                {% else %}
-                                    <th>Work Number</th>
-                                    <td class="column-id" >{{ imported_grant.work_number }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'data_contact_email' in things %}
+                            <th class="highlight">Data Contact Email</th>
+                            <td class="column-id highlight"> {{ imported_grant.data_contact_email }} </td>
+                        {% else %}
+                            <th>Data Contact Email</th>
+                            <td class="column-id">{{ imported_grant.data_contact_email }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'data_contact_email' in things %}
-                                    <th class="highlight">Data Contact Email</th>
-                                    <td class="column-id highlight"> {{ imported_grant.data_contact_email }} </td>
-                                {% else %}
-                                    <th>Data Contact Email</th>
-                                    <td class="column-id" >{{ imported_grant.data_contact_email }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'data_contact_phone' in things %}
+                            <th class="highlight">Data Contact Phone Number</th>
+                            <td class="column-id highlight"> {{ imported_grant.data_contact_phone }} </td>
+                        {% else %}
+                            <th>Data Contact Phone Number</th>
+                            <td class="column-id">{{ imported_grant.data_contact_phone }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'data_contact_phone' in things %}
-                                    <th class="highlight">Data Contact Phone Number</th>
-                                    <td class="column-id highlight"> {{ imported_grant.data_contact_phone }} </td>
-                                {% else %}
-                                    <th>Data Contact Phone Number</th>
-                                    <td class="column-id" >{{ imported_grant.data_contact_phone }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'science_area' in things %}
+                            <th class="highlight">Science Area</th>
+                            <td class="column-id highlight"> {{ imported_grant.science_area }} </td>
+                        {% else %}
+                            <th>Science Area</th>
+                            <td class="column-id">{{ imported_grant.science_area }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'science_area' in things %}
-                                    <th class="highlight">Science Area</th>
-                                    <td class="column-id highlight"> {{ imported_grant.science_area }} </td>
-                                {% else %}
-                                    <th>Science Area</th>
-                                    <td class="column-id" >{{ imported_grant.science_area  }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'ncas' in things %}
+                            <th class="highlight">NCAS</th>
+                            <td class="column-id highlight"> {{ imported_grant.ncas }} </td>
+                        {% else %}
+                            <th>NCAS</th>
+                            <td class="column-id">{{ imported_grant.ncas }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'ncas' in things %}
-                                    <th class="highlight">NCAS</th>
-                                    <td class="column-id highlight"> {{ imported_grant.ncas }} </td>
-                                {% else %}
-                                    <th>NCAS</th>
-                                    <td class="column-id" >{{ imported_grant.ncas  }} </td>
-                                {% endif %}
-                            </tr>
+                    <tr>
+                        {% if 'nceo' in things %}
+                            <th class="highlight">NCEO</th>
+                            <td class="column-id highlight"> {{ imported_grant.nceo }} </td>
+                        {% else %}
+                            <th>NCEO</th>
+                            <td class="column-id">{{ imported_grant.nceo }} </td>
+                        {% endif %}
+                    </tr>
 
-                            <tr>
-                                {%  if 'nceo' in things %}
-                                    <th class="highlight">NCEO</th>
-                                    <td class="column-id highlight"> {{ imported_grant.nceo }} </td>
-                                {% else %}
-                                    <th>NCEO</th>
-                                    <td class="column-id" >{{ imported_grant.nceo  }} </td>
-                                {% endif %}
-                            </tr>
-
-                            <tr>
-                                {%  if 'comments' in things %}
-                                    <th class="highlight">Comments</th>
-                                    <td class="column-id highlight"> {{ imported_grant.comments }} </td>
-                                {% else %}
-                                    <th>Comments</th>
-                                    <td class="column-id" >{{ imported_grant.comments  }} </td>
-                                {% endif %}
-                            </tr>
-{% comment %}                            <tr>
+                    <tr>
+                        {% if 'comments' in things %}
+                            <th class="highlight">Comments</th>
+                            <td class="column-id highlight"> {{ imported_grant.comments }} </td>
+                        {% else %}
+                            <th>Comments</th>
+                            <td class="column-id">{{ imported_grant.comments }} </td>
+                        {% endif %}
+                    </tr>
+                    {% comment %}                            <tr>
                                 <th>Original Proposed Start Date</th>
                                 <td class="column-id">{{ imported_grant.original_proposed_start_date}} </td>
                             </tr>
@@ -368,7 +389,7 @@
                                 <td class="column-id">{{ imported_grant.original_proposed_end_date}} </td>
                             </tr>{% endcomment %}
 
-{% comment %}                            <tr>
+                    {% comment %}                            <tr>
                                 <th>End Date Changed</th>
                                 <td class="column-id">{{ imported_grant.end_date_changed }} </td>
                             </tr>
@@ -378,13 +399,11 @@
                             </tr>{% endcomment %}
 
 
-                            {%  endwith %}
-                            </tr>
-                            </tbody>
-                        </table>
-                        </div>
-                    </div>
-                </div>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endwith %}
 {% endblock content %}
 
 {% block tail_js_extra %}
