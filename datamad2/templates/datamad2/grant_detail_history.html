@@ -1,65 +1,8 @@
-{%  extends 'datamad2/base.html' %}
-{% load staticfiles cookielaw_tags i18n fwtheme_tags %}
-{% load routing_classification_icon %}
-{% is_container_fluid as container_fluid %}
+{%  extends 'datamad2/grant_detail.html' %}
+{% load static %}
 
 {% block content %}
-    {% block page_special %}
-    {% endblock %}
-
-    {# To make content occupy full width, override the block page_container #}
-    {# with one of the same name which OMITS the div class=container tag #}
-
-    {% block page_container %}
-
-        <div class="container{% if container_fluid %}-fluid{% endif %}">
-
-        {% block content_main %}
-            {% block content_header %}
-
-                <div class="page-header" id="banner">
-                <div class="row">
-                <div class="col-lg-2 col-md-2 col-sm-2">
-                    {% block page_title %}
-                        <div class="wrapper">
-                            <!-- Sidebar -->
-                            <nav id="sidebar">
-                                <div class="sidebar-header">
-                                    <h3>DataMAD</h3>
-                                </div>
-                                <ul class="list-unstyled components hide-sidebar">
-                                    <h4>Grants</h4>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}">All</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=EIDC">EIDC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=NGDC">NGDC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=PDC">PDC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=ADS">ADS</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    {% endblock %}
-                </div>
-                <div class="col-lg-8">
-                {%  with things=imported_grant.get_diff_fields %}
+    {%  with things=imported_grant.get_diff_fields %}
                     {%  if 'creation_date' in things %}
                     <div class="alert alert-secondary" role="alert">
                         Fields that are highlighted in red show changes made since the previous update of this grant.
@@ -442,65 +385,8 @@
                         </div>
                     </div>
                 </div>
+{% endblock content %}
 
-
-            {% endblock content_header %}
-        {% endblock content_main %}
-
-    </div>
-        <script>
-    $( ".claim-btn" ).click(function(){
-        let btn = $(this);
-        let url = '/' + 'grant/' + $(this).attr('data-id') + '/claim';
-        let cell = btn.parent();
-        let assign = cell[0].parentElement;
-        $.ajax({
-            type: "GET",
-            url: url,
-
-            // handle a successful response
-            success: function () {
-                assign.innerHTML = "<td class=\"column-id\" id=\"right\">\n" +
-                    "                                        <a><button data-id=\"{{ imported_grant.grant.pk }}\" class=\"btn btn-primary unclaim-btn\"  id=\"claim-button\"> UNCLAIM </button></a>\n" +
-                    "                                        <a href=\"{% url 'change_claim' pk=imported_grant.grant.pk %}\"><button class=\"btn btn-primary\" id=\"claim\"> REASSIGN </button></a>\n" +
-                    "                                    </td>"
-                cell.attr('id', 'claim');
-            },
-            // handle a non-successful response
-            error: function () {
-                alert('Claim failed');
-            }
-        });
-    });
-
-    $( ".unclaim-btn" ).click(function(){
-        let btn = $(this);
-        let url = '/' + 'grant/' + $(this).attr('data-id') + '/unclaim';
-        let cell = btn.parent();
-        let assign = cell[0].parentElement;
-        $.ajax({
-            type: "GET",
-            url: url,
-
-            // handle a successful response
-            success: function () {
-                assign.innerHTML = "<td class=\"column-id\" id=\"right\">\n" +
-                    "                                        <a><button data-id=\"{{ imported_grant.grant.pk }}\" class=\"btn btn-primary claim-btn\"  id=\"claim-button\"> CLAIM</button></a>\n" +
-                    "                                        <a href=\"{% url 'change_claim' pk=imported_grant.grant.pk %}\"><button class=\"btn btn-primary\" id=\"claim\"> ASSIGN </button></a>\n" +
-                    "                                    </td>"
-                cell.attr('id', 'claim');
-            },
-            // handle a non-successful response
-            error: function () {
-                alert('Unclaim failed');
-            }
-        });
-    });
-
-</script>
-
-    {% endblock page_container %}
-
-    {% endblock %}
-</div>
-</div>
+{% block tail_js_extra %}
+    <script type="text/javascript" src="{% static 'js/claim_button.js' %}"></script>
+{% endblock tail_js_extra %}

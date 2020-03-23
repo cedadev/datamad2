@@ -1,7 +1,6 @@
 {% extends 'fwtheme_django/layout.html' %}
 
 {% load static %}
-{#{% is_container_fluid as container_fluid %}#}
 
 {% block head_title %}All Grants{% endblock %}
 
@@ -89,6 +88,37 @@
     </div>
 {% endblock navigation %}
 
+{% block content_panel %}
+    <div class="row">
+        <div class="col-12">
+            <h3>DataMAD</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            {% block sidebar %}
+                <nav id="sidebar">
+                    <div class="card hide-sidebar border-0">
+                        <div class="card-body p-0">
+                            {% block filter_title %}
+                                <h4>Datacentre</h4>
+                            {% endblock %}
+                            <ul class="list-unstyled components ">
+                                {% block sidebar_items %}
+                                {% endblock sidebar_items %}
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            {% endblock sidebar %}
+        </div>
+        <div class="col">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+{% endblock content_panel %}
+
 
 {% block footer %}
     <footer>
@@ -109,9 +139,4 @@
         </div>
     </footer>
 {% endblock footer %}
-
-{% block tail_js_extra %}
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="{% static 'js/table_sorter.js' %}"></script>
-{% endblock tail_js_extra %}
 

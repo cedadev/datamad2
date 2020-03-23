@@ -5,58 +5,49 @@
 {% block navbar_main %}
 {%  endblock navbar_main %}
 
-{%  block content %}
-    {% block page_container %}
+{% block page_title %}
+{% endblock %}
 
-        <h1 id="site-name"> DataMAD </h1>
-        <div class="login-box">
+{% block content_panel %}
+    <h1 id="site-name"> DataMAD </h1>
+    <div class="login-box">
 
-        {% block content_main %}
+        {% if form.errors %}
+            <p>Your username and password didn't match. Please try again.</p>
+        {% endif %}
 
-            {% if form.errors %}
-                <p>Your username and password didn't match. Please try again.</p>
-            {% endif %}
+        {% if next %}
+            <p>You need to be logged in for this.</p>
+        {% endif %}
 
-            {% if next %}
-{#                {% if user.is_authenticated %}#}
-{#                    <p>Your account doesn't have access to this page. To proceed,#}
-{#                        please login with an account that has access.</p>#}
-{#                {% else %}#}
-                    <p>You need to be logged in for this.</p>
-{#                {% endif %}#}
-            {% endif %}
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>{{ form.username.label_tag }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.username }}</td>
+                </tr>
 
-            <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                <table>
-                    <tr>
-                        <td>{{ form.username.label_tag }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.username }}</td>
-                    </tr>
+                <tr>
+                    <td class="box">{{ form.password.label_tag }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.password }}</td>
+                </tr>
+            </table>
 
-                    <tr>
-                        <td class = "box">{{ form.password.label_tag }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form.password }}</td>
-                    </tr>
-                </table>
+            <button class="submit"> Login</button>
+            <input type="hidden" name="next" value="{{ next }}"/>
+        </form>
 
-                <button class="submit"> Login </button>
-                <input type="hidden" name="next" value="{{ next }}" />
-            </form>
+        {# Assumes you setup the password_reset view in your URLconf #}
+        <p><a href="{% url 'password_reset' %}">Forgotten password?</a></p>
 
-            {# Assumes you setup the password_reset view in your URLconf #}
-            <p><a href="{% url 'password_reset' %}">Forgotten password?</a></p>
-
-    {% endblock content_main %}
 
     </div>
-
-{% endblock page_container %}
-{% endblock  %}
+{% endblock content_panel %}
 
 {% block footer %}
 {% endblock footer %}

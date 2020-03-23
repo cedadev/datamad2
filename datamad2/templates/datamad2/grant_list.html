@@ -1,62 +1,25 @@
 {% extends 'datamad2/base.html' %}
+{% load static %}
 
 
 {% block page_title %}
 {% endblock page_title %}
 
+{% block filter_title %}
+    <h4>Datacentre</h4>
+{% endblock filter_title %}
+
+{% block sidebar_items %}
+    {% include 'datamad2/includes/data_centre_sidebar_items.html' %}
+{% endblock sidebar_items %}
+
 {% block content %}
-    <div class="row">
-        <div class="col-12">
-            <h3>DataMAD</h3>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-3">
-            {% block sidebar %}
-                <nav id="sidebar">
-                    <div class="card hide-sidebar border-0">
-                        <div class="card-body p-0">
-                            {% block filter_title %}
-                                <h4>Datacentre</h4>
-                            {% endblock %}
-                            <ul class="list-unstyled components ">
-                                {% block sidebar_items %}
-                                    <li>
-                                        <a href="{% url 'grant_list' %}">All</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=EIDC">EIDC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=NGDC">NGDC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=PDC">PDC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=ADS">ADS</a>
-                                    </li>
-                                {% endblock sidebar_items %}
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-            {% endblock sidebar %}
-
-        </div>
-        <div class="col">
-            {% include 'datamad2/includes/grant_table.html' %}
-        </div>
-    </div>
-
+    {% include 'datamad2/includes/grant_table.html' %}
 {% endblock content %}
+
+{% block tail_js_extra %}
+    {{ block.super }}
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/table_sorter.js' %}"></script>
+{% endblock tail_js_extra %}
 

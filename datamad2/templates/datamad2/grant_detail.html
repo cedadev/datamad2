@@ -1,221 +1,186 @@
-{%  extends 'datamad2/base.html' %}
-{% load staticfiles cookielaw_tags i18n fwtheme_tags %}
-{% load routing_classification_icon %}
-{% is_container_fluid as container_fluid %}
+{% extends 'datamad2/base.html' %}
+{% load static %}
+
+{% block page_title %}
+{% endblock page_title %}
+
+{% block sidebar_items %}
+    {% include 'datamad2/includes/data_centre_sidebar_items.html' %}
+{% endblock sidebar_items %}
 
 {% block content %}
-    {% block page_special %}
-    {% endblock %}
+    {% if imported_grant.grant.updated_imported_grant == True %}
+        <div class="alert alert-secondary" role="alert">
+            Some details of this grant have been changed since the original proposal. Click <a
+                href="{% url 'grant_history' pk=imported_grant.pk %}" class="alert-link">here</a> to view the
+            history.
+        </div>
+    {% endif %}
 
-    {# To make content occupy full width, override the block page_container #}
-    {# with one of the same name which OMITS the div class=container tag #}
+    <div class="card card-shaded">
+        <div class="card-body">
+            <table id="grants" style="width:100%">
+                <tr>
+                    <th><h3>{{ imported_grant.title }} </h3></th>
+                    {% if imported_grant.grant.claimed == True and imported_grant.grant.assigned_data_centre == user.data_centre %}
+                        <td class="column-id" id="right">
+                            <a>
+                                <button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary unclaim-btn"
+                                        id="claim-button"> UNCLAIM
+                                </button>
+                            </a>
+                            <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}">
+                                <button class="btn btn-primary" id="claim"> REASSIGN</button>
+                            </a>
+                        </td>
+                    {% elif  imported_grant.grant.claimed == True %}
+                        {#                                    <td class="column-id" id ="right">#}
+                        {#                                        CLAIMED#}
+                        {#                                    </td>#}
+                    {% else %}
+                        <td class="column-id" id="right">
+                            <a>
+                                <button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary claim-btn"
+                                        id="claim-button"> CLAIM
+                                </button>
+                            </a>
+                            <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}">
+                                <button class="btn btn-primary" id="claim"> ASSIGN</button>
+                            </a>
+                        </td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <th>Grant Reference</th>
+                    <td class="column-id"> {{ imported_grant.grant_ref }} </td>
+                </tr>
 
-    {% block page_container %}
-
-        <div class="container{% if container_fluid %}-fluid{% endif %}">
-
-        {% block content_main %}
-            {% block content_header %}
-
-                <div class="page-header" id="banner">
-                <div class="row">
-                <div class="col-lg-2 col-md-2 col-sm-2">
-                    {% block page_title %}
-                        <div class="wrapper">
-                            <!-- Sidebar -->
-                            <nav id="sidebar">
-                                <div class="sidebar-header">
-                                    <h3>DataMAD</h3>
-                                </div>
-                                <ul class="list-unstyled components hide-sidebar">
-                                    <h4>Grants</h4>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}">All</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=EIDC">EIDC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=NGDC">NGDC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=PDC">PDC</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'grant_list' %}?datacentre=ADS">ADS</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    {% endblock %}
-                </div>
-                <div class="col-lg-8">
-                    {%  if imported_grant.grant.updated_imported_grant == True %}
-                        <div class="alert alert-secondary" role="alert">
-                            Some details of this grant have been changed since the original proposal. Click <a href="{% url 'grant_history' pk=imported_grant.pk  %}" class="alert-link">here</a> to view the history.
-                        </div>
-                    {%  endif %}
-                    <div class="card card-shaded">
-                        <div class="card-body">
-                        <table  id="grants" style="width:100%">
-                            <tr>
-                                <th> <h3>{{ imported_grant.title }} </h3></th>
-                                {%  if imported_grant.grant.claimed == True and imported_grant.grant.assigned_data_centre == user.data_centre %}
-                                    <td class="column-id" id="right">
-                                        <a><button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary unclaim-btn"  id="claim-button"> UNCLAIM </button></a>
-                                        <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> REASSIGN </button></a>
-                                    </td>
-                                {% elif  imported_grant.grant.claimed == True %}
-{#                                    <td class="column-id" id ="right">#}
-{#                                        CLAIMED#}
-{#                                    </td>#}
-                                {% else %}
-                                    <td class="column-id" id="right">
-                                        <a><button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary claim-btn"  id="claim-button"> CLAIM </button></a>
-                                        <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}"><button class="btn btn-primary" id="claim"> ASSIGN </button></a>
-                                    </td>
-                                {%  endif %}
-                            </tr>
-                            <tr>
-                                <th>Grant Reference</th>
-                                <td class="column-id" > {{ imported_grant.grant_ref }} </td>
-                            </tr>
-
-                            <tr>
-                                <th>Date Created</th>
-                                <td class="column-id" >{{ imported_grant.creation_date }} </td>
-                            </tr>
-                            <tr>
-                                <th>Grant Status</th>
-                                <td class="column-id"  >{{ imported_grant.grant_status }} </td>
-                            </tr>
-                            <tr>
-                                <th>Routing Classification</th>
-                                <td class="column-id"> {{ imported_grant.routing_classification }} </td>
-                            </tr>
-                            <tr>
-                                <th>Secondary Classification</th>
-                                <td class="column-id">{{ imported_grant.secondary_classification }} </td>
-                            </tr>
-                            <tr>
-                                <th>Proposed Start Date</th>
-                                <td class="column-id">{{ imported_grant.proposed_start_date }} </td>
-                            </tr>
-                            <tr>
-                                <th>Proposed End Date</th>
-                                <td class="column-id">{{ imported_grant.proposed_end_date}} </td>
-                            </tr>
-                            <tr>
-                                <th>Actual Start Date</th>
-                                <td class="column-id">{{ imported_grant.actual_start_date }} </td>
-                            </tr>
-                            <tr>
-                                <th>Actual End Date</th>
-                                <td class="column-id">{{ imported_grant.actual_end_date }} </td>
-                            </tr>
-                            <tr>
-                                <th>Abstract</th>
-                                <td class="column-id">{{ imported_grant.abstract|linebreaksbr }} </td>
-                            </tr>
-                            <tr>
-                                <th>Objectives</th>
-                                <td class="column-id">{{ imported_grant.objectives|linebreaksbr }} </td>
-                            </tr>
-                            <tr>
-                            <tr>
-                                <th>Amount Awarded</th>
-                                <td class="column-id" > £ {{ imported_grant.amount_awarded }} </td>
-                            </tr>
-{#                            <tr>#}
-{#                                <th>Call</th>#}
-{#                                <td class="column-id"  >{{ imported_grant.call }} </td>#}
-{#                            </tr>#}
-                            <tr>
-                                <th>Grant Type</th>
-                                <td class="column-id" >{{ imported_grant.grant_type }} </td>
-                            </tr>
-                            <tr>
-                                <th>Scheme</th>
-                                <td class="column-id">{{ imported_grant.scheme }} </td>
-                            </tr>
-                            <tr>
-                                <th>Lead Grant</th>
-                                <td class="column-id">{{ imported_grant.lead_grant }} </td>
-                            </tr>
-                            <tr>
-                                <th>Parent Grant</th>
-                                <td class="column-id" >{{ imported_grant.parent_grant }} </td>
-                            </tr>
-                            <tr>
-                                <th>Grant Holder</th>
-                                <td class="column-id" >{{ imported_grant.grant_holder }} </td>
-                            </tr>
-                            <tr>
-                                <th>Department</th>
-                                <td class="column-id" >{{ imported_grant.department }} </td>
-                            </tr>
-                            <tr>
-                                <th>Research Organisation</th>
-                                <td class="column-id" >{{ imported_grant.research_organisation }} </td>
-                            </tr>
-                            <tr>
-                                <th>Address</th>
-                                <td class="column-id" >{{ imported_grant.address1 }} </td>
-                            </tr>
-                            <tr>
-                                <th>Address line 2</th>
-                                <td class="column-id" >{{ imported_grant.address2 }} </td>
-                            </tr>
-                            <tr>
-                                <th>City</th>
-                                <td class="column-id" >{{ imported_grant.city }} </td>
-                            </tr>
-                            <tr>
-                                <th>Post Code</th>
-                                <td class="column-id" >{{ imported_grant.post_code }} </td>
-                            </tr>
-                            <tr>
-                                <th>Email</th>
-                                <td class="column-id">{{ imported_grant.email }} </td>
-                            </tr>
-                            <tr>
-                                <th>Work number</th>
-                                <td class="column-id" >{{ imported_grant.work_number }} </td>
-                            </tr>
-                            <tr>
-                                <th>Data Contact Email</th>
-                                <td class="column-id" >{{ imported_grant.data_contact_email }} </td>
-                            </tr>
-                            <tr>
-                                <th>Data Contact Phone Number</th>
-                                <td class="column-id" >{{ imported_grant.data_contact_phone }} </td>
-                            </tr>
-                            <tr>
-                                <th>Science Area</th>
-                                <td class="column-id">{{ imported_grant.science_area }}</td>
-                            </tr>
-                            <tr>
-                                <th>NCAS</th>
-                                <td class="column-id">{{ imported_grant.ncas }} </td>
-                            </tr>
-                            <tr>
-                                <th>NCEO</th>
-                                <td class="column-id">{{ imported_grant.nceo }} </td>
-                            </tr>
-                            <tr>
-                                <th>Comments</th>
-                                <td class="column-id">{{ imported_grant.comments }} </td>
-                            </tr>
-                            {% comment %}                            <tr>
+                <tr>
+                    <th>Date Created</th>
+                    <td class="column-id">{{ imported_grant.creation_date }} </td>
+                </tr>
+                <tr>
+                    <th>Grant Status</th>
+                    <td class="column-id">{{ imported_grant.grant_status }} </td>
+                </tr>
+                <tr>
+                    <th>Routing Classification</th>
+                    <td class="column-id"> {{ imported_grant.routing_classification }} </td>
+                </tr>
+                <tr>
+                    <th>Secondary Classification</th>
+                    <td class="column-id">{{ imported_grant.secondary_classification }} </td>
+                </tr>
+                <tr>
+                    <th>Proposed Start Date</th>
+                    <td class="column-id">{{ imported_grant.proposed_start_date }} </td>
+                </tr>
+                <tr>
+                    <th>Proposed End Date</th>
+                    <td class="column-id">{{ imported_grant.proposed_end_date }} </td>
+                </tr>
+                <tr>
+                    <th>Actual Start Date</th>
+                    <td class="column-id">{{ imported_grant.actual_start_date }} </td>
+                </tr>
+                <tr>
+                    <th>Actual End Date</th>
+                    <td class="column-id">{{ imported_grant.actual_end_date }} </td>
+                </tr>
+                <tr>
+                    <th>Abstract</th>
+                    <td class="column-id">{{ imported_grant.abstract|linebreaksbr }} </td>
+                </tr>
+                <tr>
+                    <th>Objectives</th>
+                    <td class="column-id">{{ imported_grant.objectives|linebreaksbr }} </td>
+                </tr>
+                <tr>
+                <tr>
+                    <th>Amount Awarded</th>
+                    <td class="column-id"> £ {{ imported_grant.amount_awarded }} </td>
+                </tr>
+                {#                            <tr>#}
+                {#                                <th>Call</th>#}
+                {#                                <td class="column-id"  >{{ imported_grant.call }} </td>#}
+                {#                            </tr>#}
+                <tr>
+                    <th>Grant Type</th>
+                    <td class="column-id">{{ imported_grant.grant_type }} </td>
+                </tr>
+                <tr>
+                    <th>Scheme</th>
+                    <td class="column-id">{{ imported_grant.scheme }} </td>
+                </tr>
+                <tr>
+                    <th>Lead Grant</th>
+                    <td class="column-id">{{ imported_grant.lead_grant }} </td>
+                </tr>
+                <tr>
+                    <th>Parent Grant</th>
+                    <td class="column-id">{{ imported_grant.parent_grant }} </td>
+                </tr>
+                <tr>
+                    <th>Grant Holder</th>
+                    <td class="column-id">{{ imported_grant.grant_holder }} </td>
+                </tr>
+                <tr>
+                    <th>Department</th>
+                    <td class="column-id">{{ imported_grant.department }} </td>
+                </tr>
+                <tr>
+                    <th>Research Organisation</th>
+                    <td class="column-id">{{ imported_grant.research_organisation }} </td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td class="column-id">{{ imported_grant.address1 }} </td>
+                </tr>
+                <tr>
+                    <th>Address line 2</th>
+                    <td class="column-id">{{ imported_grant.address2 }} </td>
+                </tr>
+                <tr>
+                    <th>City</th>
+                    <td class="column-id">{{ imported_grant.city }} </td>
+                </tr>
+                <tr>
+                    <th>Post Code</th>
+                    <td class="column-id">{{ imported_grant.post_code }} </td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td class="column-id">{{ imported_grant.email }} </td>
+                </tr>
+                <tr>
+                    <th>Work number</th>
+                    <td class="column-id">{{ imported_grant.work_number }} </td>
+                </tr>
+                <tr>
+                    <th>Data Contact Email</th>
+                    <td class="column-id">{{ imported_grant.data_contact_email }} </td>
+                </tr>
+                <tr>
+                    <th>Data Contact Phone Number</th>
+                    <td class="column-id">{{ imported_grant.data_contact_phone }} </td>
+                </tr>
+                <tr>
+                    <th>Science Area</th>
+                    <td class="column-id">{{ imported_grant.science_area }}</td>
+                </tr>
+                <tr>
+                    <th>NCAS</th>
+                    <td class="column-id">{{ imported_grant.ncas }} </td>
+                </tr>
+                <tr>
+                    <th>NCEO</th>
+                    <td class="column-id">{{ imported_grant.nceo }} </td>
+                </tr>
+                <tr>
+                    <th>Comments</th>
+                    <td class="column-id">{{ imported_grant.comments }} </td>
+                </tr>
+                {% comment %}                            <tr>
                                 <th>Original Proposed Start Date</th>
                                 <td class="column-id">{{ imported_grant.original_proposed_start_date}} </td>
                             </tr>
@@ -224,7 +189,7 @@
                                 <td class="column-id">{{ imported_grant.original_proposed_end_date}} </td>
                             </tr>{% endcomment %}
 
-                            {% comment %}                            <tr>
+                {% comment %}                            <tr>
                                 <th>End Date Changed</th>
                                 <td class="column-id">{{ imported_grant.end_date_changed }} </td>
                             </tr>
@@ -232,118 +197,71 @@
                                 <th>Start Date Changed</th>
                                 <td class="column-id">{{ imported_grant.start_date_changed}} </td>
                             </tr>{% endcomment %}
-                        </table>
-                        </div>
-                    </div>
-
-                <div class="card card-shaded" id="spaced-card">
-                <div class="card-body">
-                    <table  id="grant-info" style="width:100%">
-                        <tr>
-                            <h3> Editable Grant Information <a title='Edit' data-toggle='tooltip' href="{%  url 'grantinfo_edit' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}"><i class="far fa-edit"></i></a> </h3>
-                        </tr>
-                        <tr>
-                            <th>Alternative data contact email address</th>
-                            <td class="column-id">{{ imported_grant.grant.alt_data_contact_email}} </td>
-                        </tr>
-                        <tr>
-                            <th>Alternative data contact phone number</th>
-                            <td class="column-id">{{ imported_grant.grant.alt_data_contact_phone}} </td>
-                        </tr>
-                        <tr>
-                            <th>Other data centre</th>
-                            <td class="column-id">{{ imported_grant.grant.other_data_centre}} </td>
-                        </tr>
-                        <tr>
-                            <th>Date contacted PI</th>
-                            <td class="column-id">{{ imported_grant.grant.date_contacted_pi}} </td>
-                        </tr>
-                        <tr>            <tr>
-                        <th>Will the grant produce data?</th>
-                        <td class="column-id">{{ imported_grant.grant.will_grant_produce_data}} </td>
-                    </tr>
-                        <tr>
-                            <th>Date delivered?</th>
-                            <td class="column-id">{{ imported_grant.grant.datasets_delivered}} </td>
-                        </tr>
-                        <tr>
-                            <th>Sanctions recommended?</th>
-                            <td class="column-id">{{ imported_grant.grant.sanctions_recommended}} </td>
-                        </tr>
-                        <tr>
-                            <th>Case for support found?</th>
-                            <td class="column-id">{{ imported_grant.grant.case_for_support_found}} </td>
-                        </tr>
-                    </table>
-                </div>
-                </div>
-
-                        <div>
-                            {%  if imported_grant.ticket == True %}
-                                <a href="{{ link }}"><button class="btn btn-primary jira-btn" id="jira-btn">Link to JIRA issue</button></a>
-                            {% else %}
-                                <form method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" name="jira-issue" class="btn btn-primary jira-btn" >Make JIRA issue</button>
-                                </form>
-                            {%  endif %}
-                            {#                        <a href="#"><button class="btn btn-primary"  id="jira-btn"> Make JIRA issue </button></a>#}
-                        </div>
-                </div>
-            {% endblock content_header %}
-        {% endblock content_main %}
-
+            </table>
+        </div>
     </div>
-        <script>
-    $( ".claim-btn" ).click(function(){
-        let btn = $(this);
-        let url = '/' + 'grant/' + $(this).attr('data-id') + '/claim';
-        let cell = btn.parent();
-        let assign = cell[0].parentElement;
-        $.ajax({
-            type: "GET",
-            url: url,
+    <div class="card card-shaded" id="spaced-card">
+        <div class="card-body">
+            <table id="grant-info" style="width:100%">
+                <tr>
+                    <h3> Editable Grant Information <a title='Edit' data-toggle='tooltip'
+                                                       href="{% url 'grantinfo_edit' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}"><i
+                            class="far fa-edit"></i></a></h3>
+                </tr>
+                <tr>
+                    <th>Alternative data contact email address</th>
+                    <td class="column-id">{{ imported_grant.grant.alt_data_contact_email }} </td>
+                </tr>
+                <tr>
+                    <th>Alternative data contact phone number</th>
+                    <td class="column-id">{{ imported_grant.grant.alt_data_contact_phone }} </td>
+                </tr>
+                <tr>
+                    <th>Other data centre</th>
+                    <td class="column-id">{{ imported_grant.grant.other_data_centre }} </td>
+                </tr>
+                <tr>
+                    <th>Date contacted PI</th>
+                    <td class="column-id">{{ imported_grant.grant.date_contacted_pi }} </td>
+                </tr>
+                <tr>
+                <tr>
+                    <th>Will the grant produce data?</th>
+                    <td class="column-id">{{ imported_grant.grant.will_grant_produce_data }} </td>
+                </tr>
+                <tr>
+                    <th>Date delivered?</th>
+                    <td class="column-id">{{ imported_grant.grant.datasets_delivered }} </td>
+                </tr>
+                <tr>
+                    <th>Sanctions recommended?</th>
+                    <td class="column-id">{{ imported_grant.grant.sanctions_recommended }} </td>
+                </tr>
+                <tr>
+                    <th>Case for support found?</th>
+                    <td class="column-id">{{ imported_grant.grant.case_for_support_found }} </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 
-            // handle a successful response
-            success: function () {
-                assign.innerHTML = "<td class=\"column-id\" id=\"right\">\n" +
-                    "                                        <a><button data-id=\"{{ imported_grant.grant.pk }}\" class=\"btn btn-primary unclaim-btn\"  id=\"claim-button\"> UNCLAIM </button></a>\n" +
-                    "                                        <a href=\"{% url 'change_claim' pk=imported_grant.grant.pk %}\"><button class=\"btn btn-primary\" id=\"claim\"> REASSIGN </button></a>\n" +
-                    "                                    </td>"
-                cell.attr('id', 'claim');
-            },
-            // handle a non-successful response
-            error: function () {
-                alert('Claim failed');
-            }
-        });
-    });
+    <div>
+        {% if imported_grant.ticket == True %}
+            <a href="{{ link }}">
+                <button class="btn btn-primary jira-btn" id="jira-btn">Link to JIRA issue</button>
+            </a>
+        {% else %}
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" name="jira-issue" class="btn btn-primary jira-btn">Make JIRA issue</button>
+            </form>
+        {% endif %}
+        {#                        <a href="#"><button class="btn btn-primary"  id="jira-btn"> Make JIRA issue </button></a>#}
+    </div>
+{% endblock %}
 
-    $( ".unclaim-btn" ).click(function(){
-        let btn = $(this);
-        let url = '/' + 'grant/' + $(this).attr('data-id') + '/unclaim';
-        let cell = btn.parent();
-        let assign = cell[0].parentElement;
-        $.ajax({
-            type: "GET",
-            url: url,
+{% block tail_js_extra %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/claim_button.js' %}"></script>
+{% endblock tail_js_extra %}
 
-            // handle a successful response
-            success: function () {
-                assign.innerHTML = "<td class=\"column-id\" id=\"right\">\n" +
-                    "                                        <a><button data-id=\"{{ imported_grant.grant.pk }}\" class=\"btn btn-primary claim-btn\"  id=\"claim-button\"> CLAIM</button></a>\n" +
-                    "                                        <a href=\"{% url 'change_claim' pk=imported_grant.grant.pk %}\"><button class=\"btn btn-primary\" id=\"claim\"> ASSIGN </button></a>\n" +
-                    "                                    </td>"
-                cell.attr('id', 'claim');
-            },
-            // handle a non-successful response
-            error: function () {
-                alert('Unclaim failed');
-            }
-        });
-    });
-
-</script>
-
-    {% endblock page_container %}
-{%  endblock %}
