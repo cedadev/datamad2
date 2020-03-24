@@ -5,8 +5,7 @@
     <tr>
         <th>Grant Reference</th>
         <th>Title</th>
-        <th>Assigned Data Centre</th>
-        <th>Other Data Centre</th>
+        <th>PI</th>
         <th>Routing Classification</th>
         <th>Date Added</th>
         <th>Claim Status</th>
@@ -22,16 +21,7 @@
                     </a>
                 </td>
                 <td> {{ imported_grant.title }}</td>
-                {% if imported_grant.grant.assigned_data_centre %}
-                    <td id="data-centre"> {{ imported_grant.grant.assigned_data_centre }}</td>
-                {% else %}
-                    <td id="data-centre"> Unassigned</td>
-                {% endif %}
-                {% if imported_grant.grant.other_data_centre %}
-                    <td> {{ imported_grant.grant.other_data_centre }}</td>
-                {% else %}
-                    <td> Unassigned</td>
-                {% endif %}
+                <td> {{ imported_grant.grant_holder }}</td>
                 {% if imported_grant.routing_classification %}
                     <td data-sort="{{ imported_grant.routing_classification }} "><i
                             class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
