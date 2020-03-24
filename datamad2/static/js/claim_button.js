@@ -10,7 +10,7 @@ $(".claim-btn").click(function () {
                 // handle a successful response
                 success: function () {
                     assign.innerHTML = "<td class=\"column-id\" id=\"right\">\n" +
-                        "                                        <a><button data-id=\"{{ imported_grant.grant.pk }}\" class=\"btn btn-primary unclaim-btn\"  id=\"claim-button\"> UNCLAIM </button></a>\n" +
+                        "                                        <a><button data-id=\"{{ imported_grant.grant.pk }}\" class=\"btn btn-primary claim-btn\"  id=\"claim-button\"> UNCLAIM </button></a>\n" +
                         "                                        <a href=\"{% url 'change_claim' pk=imported_grant.grant.pk %}\"><button class=\"btn btn-primary\" id=\"claim\"> REASSIGN </button></a>\n" +
                         "                                    </td>"
                     cell.attr('id', 'claim');
@@ -22,7 +22,7 @@ $(".claim-btn").click(function () {
             });
         });
 
-        $(".unclaim-btn").click(function () {
+        $(".claim-btn").click(function () {
             let btn = $(this);
             let url = '/' + 'grant/' + $(this).attr('data-id') + '/unclaim';
             let cell = btn.parent();

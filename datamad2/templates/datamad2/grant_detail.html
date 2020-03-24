@@ -25,7 +25,7 @@
                     {% if imported_grant.grant.claimed == True and imported_grant.grant.assigned_data_centre == user.data_centre %}
                         <td class="column-id" id="right">
                             <a>
-                                <button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary unclaim-btn"
+                                <button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary claim-btn"
                                         id="claim-button"> UNCLAIM
                                 </button>
                             </a>
