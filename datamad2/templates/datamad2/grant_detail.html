@@ -19,14 +19,14 @@
 
     <div class="card card-shaded">
         <div class="card-body">
-            <table id="grants" style="width:100%">
+            <table id="grant-info" style="width:100%">
                 <tr>
                     <th><h3>{{ imported_grant.title }} </h3></th>
                     {% if imported_grant.grant.claimed == True and imported_grant.grant.assigned_data_centre == user.data_centre %}
                         <td class="column-id" id="right">
                             <a>
                                 <button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary claim-btn"
-                                        id="claim-button"> UNCLAIM
+                                        id="unclaim-button"> UNCLAIM
                                 </button>
                             </a>
                             <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}">

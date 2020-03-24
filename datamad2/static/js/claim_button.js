@@ -1,23 +1,32 @@
 $(".claim-btn").click(function () {
-            let btn = $(this);
-            let url = '/' + 'grant/' + $(this).attr('data-id') + '/claim';
-            let cell = btn.parent();
+            var $btn = $(this);
+            console.log($btn);
+            let url_claim = '/' + 'grant/' + $(this).attr('data-id') + '/claim';
+            let url_unclaim = '/' + 'grant/' + $(this).attr('data-id') + '/unclaim';
+            let cell = $btn.parent();
             let assign = cell[0].parentElement;
+            console.log(assign)
+
+            if ($btn.attr('id') == "claim-button") {
+                url = url_claim;
+                data = "UNCLAIM";
+                data2 = "REASSIGN";
+            } else {
+                url = url_unclaim;
+                data = "CLAIM";
+                data2 = "ASSIGN";
+            }
             $.ajax({
                 type: "GET",
                 url: url,
 
                 // handle a successful response
                 success: function () {
-                    assign.innerHTML = "<td class=\"column-id\" id=\"right\">\n" +
-                        "                                        <a><button data-id=\"{{ imported_grant.grant.pk }}\" class=\"btn btn-primary claim-btn\"  id=\"claim-button\"> UNCLAIM </button></a>\n" +
-                        "                                        <a href=\"{% url 'change_claim' pk=imported_grant.grant.pk %}\"><button class=\"btn btn-primary\" id=\"claim\"> REASSIGN </button></a>\n" +
-                        "                                    </td>"
-                    cell.attr('id', 'claim');
+                    $btn[0].innerHTML = data;
                 },
                 // handle a non-successful response
                 error: function () {
-                    alert('Claim failed');
+                    alert('Failed');
                 }
             });
         });

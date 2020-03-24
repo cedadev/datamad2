@@ -3,7 +3,12 @@
   text-align: center;
 }
 
-#claim-button{
+#claim-button {
+  padding: 5px 32px;
+  text-align: center;
+}
+
+#unclaim-button {
   padding: 5px 32px;
   text-align: center;
 }
@@ -116,12 +121,10 @@ td i {
 }
 
 #grant-info th{
-  width: 55%;
+  width: 50%;
   padding: 10px 0px;
 }
 
-#grants th{
-  padding: 10px 0px;
-}
+
 
 
