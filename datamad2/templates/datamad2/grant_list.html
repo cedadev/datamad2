@@ -1,134 +1,24 @@
-{%  extends 'datamad2/base.html' %}
-{% load staticfiles cookielaw_tags i18n fwtheme_tags %}
-{% load routing_classification_icon %}
-{% is_container_fluid as container_fluid %}
+{% extends 'datamad2/base.html' %}
+{% load static %}
+
+{% block page_title %}
+{% endblock page_title %}
+
+{% block filter_title %}
+    <h4>Datacentre</h4>
+{% endblock filter_title %}
+
+{% block sidebar_items %}
+    {% include 'datamad2/includes/data_centre_sidebar_items.html' %}
+{% endblock sidebar_items %}
 
 {% block content %}
-{% block page_special %}
-{% endblock %}
+    {% include 'datamad2/includes/grant_table.html' %}
+{% endblock content %}
 
-    {% block head_js_extra %}
-    {% endblock head_js_extra %}
-
-{# To make content occupy full width, override the block page_container #}
-{# with one of the same name which OMITS the div class=container tag #}
-
-{% block page_container %}
-
-    <div class="container{% if container_fluid %}-fluid{% endif %}">
-
-    {% block content_main %}
-        {% block content_header %}
-
-            <div class="page-header" id="banner">
-            <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-2">
-                {% block page_title %}
-                    <div class="wrapper ">
-                        <!-- Sidebar -->
-                        <nav id="sidebar">
-                            <div class="sidebar-header">
-                                <h3>DataMAD</h3>
-                                <h4>Grants</h4>
-                            </div>
-                            <ul class="list-unstyled components hide-sidebar">
-                                <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=EIDC">EIDC</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=NGDC">NGDC</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=PDC">PDC</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'grant_list' %}?datacentre=ADS">ADS</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                {% endblock %}
-            </div>
-            <div class="col">
-                <table class="row-border" id="grants" style="width:100%">
-                    <thead>
-                    <tr>
-                        <th>Grant Reference</th>
-                        <th>Title</th>
-                        <th>PI</th>
-                        <th>Routing Classification</th>
-                        <th>Date Added</th>
-                        <th>Claim Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for grant in grants %}
-                        {%  with imported_grant=grant.importedgrant_set.first %}
-                        <tr>
-                            <td>
-                                <a href="{% url 'grant_detail' pk=imported_grant.pk %}">
-                                {{ imported_grant.grant_ref}}
-                                </a>
-                            </td>
-                            <td> {{ imported_grant.title }}</td>
-                            <td> {{ imported_grant.grant_holder }}</td>
-                            {%  if imported_grant.routing_classification %}
-                                <td data-sort="{{imported_grant.routing_classification}} "><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
-                            {%  else %}
-                                <td data-sort="z"><i class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
-                            {%  endif %}
-                            <td> {{ imported_grant.creation_date }}</td>
-                        {%  if imported_grant.grant.claimed == True %}
-                                <td id="claim"> CLAIMED </td>
-                            {% else %}
-                            <td><button data-id="{{ imported_grant.grant.pk }}" data-user ="{{  user.data_centre }}" class="btn btn-primary claim-btn"  id="claim-button"> CLAIM </button></td>
-                        {%  endif %}
-                        </tr>
-                        {%  endwith %}
-                    {%  endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-        {% endblock content_header %}
-    {% endblock content_main %}
-</div>
-<script>
-    $( ".claim-btn" ).click(function(){
-        let btn = $(this);
-        let url = 'grant/' + $(this).attr('data-id') + '/claim';
-        let cell = btn.parent();
-        {#let data_centre = cell.parent()[0].cells[2];#}
-        {#console.log(data_centre)#}
-        $.ajax({
-            type: "GET",
-            url: url,
-
-            // handle a successful response
-            success: function () {
-                cell.html("CLAIMED");
-                cell.attr('id', 'claim');
-                {#data_centre.innerHTML = "{{ user.data_centre }}"#}
-                {#console.log(cell.parent())#}
-            },
-            // handle a non-successful response
-            error: function () {
-                alert('Claim failed');
-            }
-        });
-    });
-
-</script>
-{% endblock page_container %}
-{%  endblock %}
-
+{% block tail_js_extra %}
+    {{ block.super }}
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/table_sorter.js' %}"></script>
+{% endblock tail_js_extra %}
 

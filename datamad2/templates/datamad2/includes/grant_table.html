@@ -1,0 +1,56 @@
+{% load routing_classification_icon %}
+
+<table class="row-border" id="grants" style="width:100%">
+    <thead>
+    <tr>
+        <th>Grant Reference</th>
+        <th>Title</th>
+        <th>Assigned Data Centre</th>
+        <th>Other Data Centre</th>
+        <th>Routing Classification</th>
+        <th>Date Added</th>
+        <th>Claim Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for grant in grants %}
+        {% with imported_grant=grant.importedgrant_set.first %}
+            <tr>
+                <td>
+                    <a href="{% url 'grant_detail' pk=imported_grant.pk %}">
+                        {{ imported_grant.grant_ref }}
+                    </a>
+                </td>
+                <td> {{ imported_grant.title }}</td>
+                {% if imported_grant.grant.assigned_data_centre %}
+                    <td id="data-centre"> {{ imported_grant.grant.assigned_data_centre }}</td>
+                {% else %}
+                    <td id="data-centre"> Unassigned</td>
+                {% endif %}
+                {% if imported_grant.grant.other_data_centre %}
+                    <td> {{ imported_grant.grant.other_data_centre }}</td>
+                {% else %}
+                    <td> Unassigned</td>
+                {% endif %}
+                {% if imported_grant.routing_classification %}
+                    <td data-sort="{{ imported_grant.routing_classification }} "><i
+                            class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
+                {% else %}
+                    <td data-sort="z"><i class="icon"> {{ imported_grant.routing_classification|icon }}</i>
+                    </td>
+                {% endif %}
+                <td> {{ imported_grant.creation_date }}</td>
+                {% if imported_grant.grant.claimed == True %}
+                    <td id="claim"> CLAIMED</td>
+                {% else %}
+                    <td>
+                        <button data-id="{{ imported_grant.grant.pk }}" data-user="{{ user.data_centre }}"
+                                class="btn btn-primary claim-btn" id="claim-button"> CLAIM
+                        </button>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endwith %}
+    {% endfor %}
+    </tbody>
+</table>
