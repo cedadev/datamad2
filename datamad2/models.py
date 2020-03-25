@@ -64,6 +64,8 @@ class Grant(models.Model):
     # programme - one programme can have many grants
     # programme = models.ForeignKey(to='dmp.Programme', blank=True, null=True, on_delete=models.PROTECT)
 
+    science_area = models.CharField(max_length=256, null=True, blank=True)
+
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:
             self.claimed = False
@@ -189,6 +191,7 @@ class ImportedGrant(models.Model):
     ticket = models.BooleanField(null=True, blank=True) #, editable=False, verbose_name='Ticket created')
 
 
+
     # ordered by newest imported grant first
 
     # def compare(self, obj):
@@ -228,6 +231,16 @@ class ImportedGrant(models.Model):
                     lambda field: getattr(previous, field, None) != getattr(self, field, None), model_fields))
                 return changed_fields
 
+    @property
+    def get_science_area(self):
+        science_area = self.science_area
+        science_area = science_area.replace(':', '').replace('%', '').split(' ')
+        science_areas = dict(science_area[i:i + 2] for i in range(0, len(science_area), 2))
+        top_area = max(science_areas, key=science_areas.get)
+        grant = Grant.objects.get(grant_ref=self.grant_ref)
+        grant.science_area = top_area
+        grant.save()
+        return top_area
 
     def save(self, *args, **kwargs):
         # On save, update timestamps
