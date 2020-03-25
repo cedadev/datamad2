@@ -18,7 +18,7 @@ class Grant(models.Model):
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
     # alt data contact email
-    alt_data_contact = models.CharField(max_length=256, default='', blank=True, null=True)
+    alt_data_contact = models.CharField(max_length=256, null=True, blank=True)
     # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
     alt_data_contact_email = models.EmailField(null=True, blank=True)
     # Alt Data Contact Phone No	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
@@ -137,7 +137,7 @@ class ImportedGrant(models.Model):
     # Work Number	Siebel	Work telephone number			WORK_NUMBER
     work_number = models.CharField(max_length=256, null=True, blank=True, default='')
     # data contact name
-    data_contact = models.CharField(max_length=256, default='', blank=True)
+    data_contact = models.CharField(max_length=256, null=True, blank=True)
     # Data Contact Email	Siebel	PI may not always be the contact for data related issues
     # (although responsible for ensuring delivery of the data)			MISSING
     data_contact_email = models.EmailField(null=True, blank=True)

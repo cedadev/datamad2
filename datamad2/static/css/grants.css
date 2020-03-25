@@ -116,9 +116,15 @@ td i {
   right: 2%;
 }
 
-#grant-info th{
+#grant-info th {
   width: 50%;
   padding: 10px 0px;
+  vertical-align:top;
+}
+
+#grant-info td {
+  padding: 10px 0px;
+  vertical-align:top;
 }
 
 
