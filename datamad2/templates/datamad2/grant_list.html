@@ -20,5 +20,28 @@
     {{ block.super }}
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="{% static 'js/table_sorter.js' %}"></script>
+    <script>
+    $( ".claim-btn" ).click(function(){
+        let btn = $(this);
+        let url = 'grant/' + $(this).attr('data-id') + '/claim';
+        let cell = btn.parent();
+
+        $.ajax({
+            type: "GET",
+            url: url,
+
+            // handle a successful response
+            success: function () {
+                cell.html("CLAIMED");
+                cell.attr('id', 'claim');
+            },
+            // handle a non-successful response
+            error: function () {
+                alert('Claim failed');
+            }
+        });
+    });
+
+</script>
 {% endblock tail_js_extra %}
 
