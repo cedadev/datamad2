@@ -22,9 +22,12 @@
                 </td>
                 <td> {{ imported_grant.title }}</td>
                 <td> {{ imported_grant.grant_holder }}</td>
-                {% if imported_grant.routing_classification %}
+                {% if imported_grant.routing_classification is not None %}
                     <td data-sort="{{ imported_grant.routing_classification }} "><i
                             class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
+                {% elif imported_grant.get_science_area is not None %}
+                    <td data-sort="{{ imported_grant.get_science_area }} "><i
+                            class="icon"> {{ imported_grant.get_science_area|icon }}</i></td>
                 {% else %}
                     <td data-sort="z"><i class="icon"> {{ imported_grant.routing_classification|icon }}</i>
                     </td>
