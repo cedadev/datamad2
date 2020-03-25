@@ -29,9 +29,9 @@ $(".claim-btn").click(function (event) {
             event.target.innerHTML = btn_value;
 
             if (claimed){
-                event.target.classList.remove(claim_key)
+                event.target.classList.remove(claim_key);
             } else {
-                event.target.classList.add(claim_key)
+                event.target.classList.add(claim_key);
             }
         },
         // handle a non-successful response

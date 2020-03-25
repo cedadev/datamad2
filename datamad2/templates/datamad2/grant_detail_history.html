@@ -1,5 +1,6 @@
 {% extends 'datamad2/grant_detail.html' %}
 {% load static %}
+{% load  claim_status %}
 
 {% block content %}
     {% with things=imported_grant.get_diff_fields %}
@@ -16,7 +17,7 @@
         {% endif %}
         <div class="card card-shaded">
             <div class="card-body">
-                <table id="grants" style="width:100%">
+                <table class="table-responsive" id="grant-info">
                     <tbody>
                     <tr>
                         {% if 'title' in things %}
@@ -24,33 +25,21 @@
                         {% else %}
                             <th><h3>{{ imported_grant.title }} </h3></th>
                         {% endif %}
-                        {% if imported_grant.grant.claimed == True and imported_grant.grant.assigned_data_centre == user.data_centre %}
-                            <td class="column-id" id="right">
-                                <a>
-                                    <button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary unclaim-btn"
-                                            id="claim-button"> UNCLAIM
-                                    </button>
-                                </a>
-                                <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}">
-                                    <button class="btn btn-primary" id="claim"> REASSIGN</button>
-                                </a>
-                            </td>
-                        {% elif  imported_grant.grant.claimed == True %}
-                            {#                                    <td class="column-id" id ="right">#}
-                            {#                                        CLAIMED#}
-                            {#                                    </td>#}
-                        {% else %}
-                            <td class="column-id text-right">
-                                <a>
-                                    <button data-id="{{ imported_grant.grant.pk }}" class="btn btn-primary claim-btn"
-                                            id="claim-button"> CLAIM
-                                    </button>
-                                </a>
-                                <a href="{% url 'change_claim' pk=imported_grant.grant.pk %}">
-                                    <button class="btn btn-primary" id="claim"> ASSIGN</button>
-                                </a>
-                            </td>
-                        {% endif %}
+                    <td class="column-id text-right">
+                        {% if imported_grant.grant.assigned_data_centre == user.data_centre or not imported_grant.grant.claimed %}
+
+                            <button class="btn btn-primary claim-btn {% if imported_grant.grant.claimed %}claimed{% endif %}"
+                                    data-id="{{ imported_grant.grant.pk }}"
+                                    id="claim-button">
+                                {{ imported_grant.grant.claimed | claim_status }}
+                            </button>
+
+                            <a class="btn btn-primary" id="claim-button"
+                               href="{% url 'change_claim' pk=imported_grant.grant.pk %}">
+                                ASSIGN
+                            </a>
+                    {% endif %}
+                    </td>
                     </tr>
                     <tr>
                         {% if 'grant_ref' in things %}
