@@ -14,7 +14,7 @@ def grant_detail(request, pk):
     ig = ImportedGrant.objects.filter(pk=pk)
     user = request.user
     grant_ref = str(imported_grant.grant_ref).replace('/', '\\u002f')
-    if request.method == 'POST' and 'jira-issue' and imported_grant.ticket is False:
+    if request.method == 'POST' and 'jira-issue':
         # call function
         set_options(user)
         make_issue(user, imported_grant)
