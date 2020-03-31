@@ -16,6 +16,8 @@ import math
 from dateutil.parser import parse
 from tqdm import tqdm
 from django.core.exceptions import ObjectDoesNotExist
+from decimal import Decimal
+
 
 mapping = {
     'PROJECT_TITLE': 'title',
@@ -76,13 +78,35 @@ class Command(BaseCommand):
 
                 elif source_field in ('PROPOSED_ST_DT','PROPOSED_END_DT','ACTUAL_START_DATE','ACTUAL_END_DATE'):
                     # Convert the date
-                    value = parse(value)
+                    value = parse(value, default=None).date()
+
+                elif source_field in ('AMOUNT'):
+                    value = Decimal(value).quantize(Decimal('1.00'))
 
                 # Add to the data dict
                 data[model_field] = value
 
             ig = ImportedGrant(**data)
-            ig.save()
+
+            model_fields = [model_field for source_field, model_field in mapping.items()]
+            grant_ref = row.GRANTREFERENCE
+
+            try:
+                existing_G = Grant.objects.get(grant_ref=grant_ref)
+                existing_ig = existing_G.importedgrant_set.first()
+                changed_fields = list(filter(
+                    lambda field: getattr(existing_ig, field, None) != getattr(ig, field, None), model_fields))
+
+                if len(changed_fields) > 0:
+                    ig.save()
+
+                else:
+                    pass
+
+            except ObjectDoesNotExist:
+                ig = ImportedGrant(**data)
+                ig.save()
+
 
         # Attach parent child relationships
         for row in tqdm(df.itertuples(), desc='Making parent child connections'):

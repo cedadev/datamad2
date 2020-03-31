@@ -67,6 +67,7 @@ admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
 
 class ImportedGrantAdmin(admin.ModelAdmin):
+    search_fields = ['grant_ref', 'title']
 
     def __init__(self, *args, **kwargs):
         admin.ModelAdmin.__init__(self, *args, **kwargs)
@@ -84,6 +85,7 @@ admin.site.register(ImportedGrant, ImportedGrantAdmin)
 
 class GrantAdmin(admin.ModelAdmin):
     readonly_fields = ['updated_imported_grant', 'science_area']
+    search_fields = ['grant_ref']
 
     def has_add_permission(self, request, obj=None):
         return False

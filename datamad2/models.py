@@ -106,7 +106,7 @@ class ImportedGrant(models.Model):
     grant_status = models.CharField(max_length=50, default="Active",
                                     choices=(("Active", "Active"), ("Closed", "Closed")))
     # AmountAwarded	Siebel	Amount in pounds stirling			AMOUNT
-    amount_awarded = models.IntegerField(null=True, blank=True)
+    amount_awarded = models.DecimalField(null=True, blank=True, max_digits=10, decimal_places=2)
     # Call	Siebel	E.g. Standard Grant DEC06			CALL
     # ignore call for now
     # call = models.CharField(max_length=1024, default='', blank=True)
