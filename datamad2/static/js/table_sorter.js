@@ -1,6 +1,7 @@
 $(document).ready(function() {
     var table = $('#grants').DataTable( {
-        stateSave: true
+        stateSave: true,
+        "order": [[4, "asc"]]
     } );
 
     new $.fn.dataTable.FixedHeader( table );
