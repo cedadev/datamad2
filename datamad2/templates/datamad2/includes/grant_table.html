@@ -32,7 +32,7 @@
                     <td data-sort="z"><i class="icon"> {{ imported_grant.routing_classification|icon }}</i>
                     </td>
                 {% endif %}
-                <td> {{ imported_grant.creation_date }}</td>
+                <td> {{ imported_grant.creation_date|date:"d M Y" }}</td>
                 {% if imported_grant.grant.claimed == True %}
                     <td id="claim"> CLAIMED</td>
                 {% else %}

@@ -1,7 +1,8 @@
 $(document).ready(function() {
+    // $.fn.dataTable.moment('DD MMM YYYY');
     var table = $('#grants').DataTable( {
-        stateSave: true,
-        "order": [[4, "asc"]]
+        "order": [[4, 'asc']],
+        stateSave: true
     } );
 
     new $.fn.dataTable.FixedHeader( table );
@@ -32,3 +33,4 @@ $( ".claim-btn" ).click(function(){
             }
         });
     });
+

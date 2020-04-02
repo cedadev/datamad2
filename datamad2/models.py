@@ -99,7 +99,7 @@ class ImportedGrant(models.Model):
     grant = models.ForeignKey(to=Grant, on_delete=models.PROTECT, null=True, blank=True)
     # date imported grant was created
     # creation_date = models.DateTimeField(auto_now_add=True)
-    creation_date = models.DateTimeField(editable=False)
+    creation_date = models.DateField(editable=False)
     #Date modified
     #modified_date = models.DateTimeField(editable=False)
     # Grant Status	Siebel	Active/Closed			GRANT_STATUS

@@ -46,7 +46,7 @@
 
                 <tr>
                     <th>Date Created</th>
-                    <td class="column-id">{{ imported_grant.creation_date|default_if_none:"N/A" }} </td>
+                    <td class="column-id">{{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
                 <tr>
                     <th>Grant Status</th>
@@ -62,19 +62,19 @@
                 </tr>
                 <tr>
                     <th>Proposed Start Date</th>
-                    <td class="column-id">{{ imported_grant.proposed_start_date|default_if_none:"N/A" }} </td>
+                    <td class="column-id">{{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
                 <tr>
                     <th>Proposed End Date</th>
-                    <td class="column-id">{{ imported_grant.proposed_end_date|default_if_none:"N/A" }} </td>
+                    <td class="column-id">{{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
                 <tr>
                     <th>Actual Start Date</th>
-                    <td class="column-id">{{ imported_grant.actual_start_date|default_if_none:"N/A" }} </td>
+                    <td class="column-id">{{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
                 <tr>
                     <th>Actual End Date</th>
-                    <td class="column-id">{{ imported_grant.actual_end_date|default_if_none:"N/A" }} </td>
+                    <td class="column-id">{{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
                 <tr>
                     <th>Abstract</th>
