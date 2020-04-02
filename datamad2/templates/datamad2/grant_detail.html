@@ -78,13 +78,16 @@
                 </tr>
                 <tr>
                     <th>Abstract</th>
-                    <td class="column-id">{{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                   <td class="column-id" colspan="2">{{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
                 </tr>
                 <tr>
                     <th>Objectives</th>
-                    <td class="column-id">{{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
                 </tr>
                 <tr>
+                    <td class="column-id" colspan="2">{{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
+                </tr>
                 <tr>
                     <th>Amount Awarded</th>
                     <td class="column-id"> £ {{ imported_grant.amount_awarded|default_if_none:"N/A" }} </td>

@@ -137,22 +137,24 @@
                     </tr>
 
                     <tr>
-                        {% if 'abstract' in things %}
                             <th class="highlight">Abstract</th>
-                            <td class="column-id highlight"> {{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        {% if 'abstract' in things %}
+                            <td class="column-id highlight" colspan="2"> {{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
                         {% else %}
-                            <th>Abstract</th>
-                            <td class="column-id">{{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
+                            <td class="column-id" colspan="2">{{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
                         {% endif %}
                     </tr>
 
                     <tr>
-                        {% if 'objectives' in things %}
                             <th class="highlight">Objectives</th>
-                            <td class="column-id highlight"> {{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        {% if 'objectives' in things %}
+                            <td class="column-id highlight" colspan="2"> {{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
                         {% else %}
-                            <th>Objectives</th>
-                            <td class="column-id">{{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
+                            <td class="column-id" colspan="2">{{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
                         {% endif %}
                     </tr>
 
@@ -166,10 +168,6 @@
                         {% endif %}
                     </tr>
 
-                    {#                            <tr>#}
-                    {#                                <th>Call</th>#}
-                    {#                                <td class="column-id"  >{{ imported_grant.call }} </td>#}
-                    {#                            </tr>#}
                     <tr>
                         {% if 'grant_type' in things %}
                             <th class="highlight">Grant Type</th>
