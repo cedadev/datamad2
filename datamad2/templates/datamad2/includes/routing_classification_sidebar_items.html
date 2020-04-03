@@ -1,7 +1,6 @@
-<a class="nav-link {% if not request.GET.rc %}active{% endif %}" href="{% url 'routing_classification' %}">All</a>
-<a class="nav-link {% if request.GET.rc == 'none' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=none">None</a>
-<a class="nav-link {% if request.GET.rc == 'Marine' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Marine">Marine</a>
-<a class="nav-link {% if request.GET.rc == 'Earth' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Earth">Earth</a>
-<a class="nav-link {% if request.GET.rc == 'Atmospheric' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Atmospheric">Atmospheric</a>
-<a class="nav-link {% if request.GET.rc == 'Freshwater' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Freshwater">Freshwater</a>
-<a class="nav-link {% if request.GET.rc == 'Terrestrial' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Terrestrial">Terrestrial</a>
+<a class="nav-link pl-2 {% if request.GET.rc == 'none' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=none">None</a>
+<a class="nav-link pl-2 {% if request.GET.rc == 'Marine' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Marine">Marine</a>
+<a class="nav-link pl-2 {% if request.GET.rc == 'Earth' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Earth">Earth</a>
+<a class="nav-link pl-2 {% if request.GET.rc == 'Atmospheric' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Atmospheric">Atmospheric</a>
+<a class="nav-link pl-2 {% if request.GET.rc == 'Freshwater' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Freshwater">Freshwater</a>
+<a class="nav-link pl-2 {% if request.GET.rc == 'Terrestrial' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Terrestrial">Terrestrial</a>
