@@ -1,0 +1,15 @@
+{% load claim_status %}
+
+{% if imported_grant.grant.assigned_data_centre == user.data_centre or not imported_grant.grant.claimed %}
+
+    <a class="btn btn-primary float-right" id="claim-button"
+       href="{% url 'change_claim' pk=imported_grant.grant.pk %}">
+        ASSIGN
+    </a>
+    <button class="btn btn-primary claim-btn {% if imported_grant.grant.claimed %}claimed{% endif %} float-right mr-1"
+            data-id="{{ imported_grant.grant.pk }}"
+            id="claim-button">
+        {{ imported_grant.grant.claimed | claim_status }}
+    </button>
+
+{% endif %}

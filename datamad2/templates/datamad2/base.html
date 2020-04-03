@@ -95,23 +95,23 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-2">
             {% block sidebar %}
-                <nav id="sidebar">
-                    <div class="card hide-sidebar border-0">
-                        <div class="card-body p-0">
-                            {% block filter_title %}
-                                <h4>Data Centre</h4>
-                            {% endblock %}
-                            <div class="nav flex-column nav-pills">
-                                {% block sidebar_items %}
-                                {% endblock sidebar_items %}
+                <div class="col-2">
+                    <nav id="sidebar">
+                        <div class="card hide-sidebar border-0">
+                            <div class="card-body p-0">
+                                {% block filter_title %}
+                                    <h4>Data Centre</h4>
+                                {% endblock %}
+                                <div class="nav flex-column nav-pills">
+                                    {% block sidebar_items %}
+                                    {% endblock sidebar_items %}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </nav>
+                    </nav>
+                </div>
             {% endblock sidebar %}
-        </div>
         <div class="col">
             {% block content %}
             {% endblock content %}
