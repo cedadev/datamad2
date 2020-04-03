@@ -127,6 +127,10 @@ td i {
   vertical-align:top;
 }
 
-
+.nav-link-edit {
+  padding: 5px 10px;
+  text-align: left;
+  width: 45%;
+}
 
 
