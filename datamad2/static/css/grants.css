@@ -86,10 +86,6 @@ form {
   left: 4%
 }
 
-.column-id {
-  width: 60%;
-}
-
 td i {
     text-align:center;
 }
@@ -117,7 +113,7 @@ td i {
 }
 
 #grant-info th {
-  width: 50%;
+  width: 30%;
   padding: 10px 0px;
   vertical-align:top;
 }
