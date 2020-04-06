@@ -1,7 +1,16 @@
 $(document).ready(function() {
-    // $.fn.dataTable.moment('DD MMM YYYY');
     var table = $('#grants').DataTable( {
-        "order": [[4, 'asc']],
+        // columnDefs: [{
+        //     targets: [4],
+        //     render: function (data, type) {
+        //         if (data !== null) {
+        //             var wrapper = moment(new Date(parseInt(data.substr(6))));
+        //             return wrapper.format("M/D/YYYY h:mm:ss A");
+        //         }
+        //     }
+        // }],
+        columnDefs: [{ 'targets': 4, type: 'date-euro' }],
+        order: [[4, 'desc']],
         stateSave: true
     } );
 
