@@ -61,6 +61,10 @@
                     <td class="column-id">{{ imported_grant.secondary_classification }} </td>
                 </tr>
                 <tr>
+                    <th>Science Area</th>
+                    <td class="column-id">{{ imported_grant.science_area }}</td>
+                </tr>
+                <tr>
                     <th>Proposed Start Date</th>
                     <td class="column-id">{{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
@@ -156,10 +160,6 @@
                 <tr>
                     <th>Data Contact Phone Number</th>
                     <td class="column-id">{{ imported_grant.data_contact_phone|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Science Area</th>
-                    <td class="column-id">{{ imported_grant.science_area }}</td>
                 </tr>
                 <tr>
                     <th>NCAS</th>
