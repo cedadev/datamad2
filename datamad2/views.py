@@ -47,26 +47,33 @@ def grant_history_detail(request, pk, imported_pk):
 @login_required
 def grant_list(request):
     if request.method == 'GET':
+
+        # Get grant objects
         grants = Grant.objects.all()
-        grants = grants.filter(assigned_data_centre=None)
-        assignee = request.GET.get('datacentre')
+
+        # Default the view to serve all unassigned grants
+        assignee = request.GET.get('datacentre', 'unassigned')
+
         if assignee == 'unassigned':
-            grants = Grant.objects.all()
             grants = grants.filter(assigned_data_centre=None)
-        elif assignee:
-            grants = Grant.objects.all()
+
+        # If the user has not asked for all, filter
+        elif assignee != 'all':
             grants = grants.filter(Q(assigned_data_centre=assignee) | Q(other_data_centre=assignee))
-        return render(request, 'datamad2/grant_list.html', {'grants': grants})
+
+        return render(request, 'datamad2/grant_list.html', {'grants': grants, 'assignee': assignee})
 
 
 def routing_classification(request):
     if request.method == 'GET':
         grants = Grant.objects.all()
+
         classification = request.GET.get('rc')
         if classification == 'none':
             grants = grants.filter(importedgrant__routing_classification=None).filter(importedgrant__science_area=None).distinct()
         elif classification:
             grants = grants.filter(Q(importedgrant__routing_classification=classification) | Q(science_area=classification)).distinct()
+
         return render(request, 'datamad2/routing_classification.html', {'grants': grants})
 
 

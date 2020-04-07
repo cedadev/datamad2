@@ -313,6 +313,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                             ("ADS", "ADS"),
                                             ))
 
+    is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
     objects = UserManager()
