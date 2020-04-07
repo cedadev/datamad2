@@ -32,7 +32,7 @@
 
                 <tr>
                     <th>Date Created</th>
-                    <td >{{ imported_grant.creation_date|default_if_none:"N/A" }} </td>
+                    <td>{{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
                 <tr>
                     <th>Grant Status</th>
@@ -47,20 +47,24 @@
                     <td >{{ imported_grant.secondary_classification }} </td>
                 </tr>
                 <tr>
+                    <th>Science Area</th>
+                    <td class="column-id">{{ imported_grant.science_area }}</td>
+                </tr>
+                <tr>
                     <th>Proposed Start Date</th>
-                    <td >{{ imported_grant.proposed_start_date|default_if_none:"N/A" }} </td>
+                    <td >{{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
                 <tr>
                     <th>Proposed End Date</th>
-                    <td >{{ imported_grant.proposed_end_date|default_if_none:"N/A" }} </td>
+                    <td >{{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
                 <tr>
                     <th>Actual Start Date</th>
-                    <td >{{ imported_grant.actual_start_date|default_if_none:"N/A" }} </td>
+                    <td >{{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
                 <tr>
                     <th>Actual End Date</th>
-                    <td >{{ imported_grant.actual_end_date|default_if_none:"N/A" }} </td>
+                    <td >{{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                 </tr>
                 <tr>
                     <th>Abstract</th>
@@ -146,10 +150,6 @@
                 <tr>
                     <th>Data Contact Phone Number</th>
                     <td >{{ imported_grant.data_contact_phone|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Science Area</th>
-                    <td >{{ imported_grant.science_area }}</td>
                 </tr>
                 <tr>
                     <th>NCAS</th>
