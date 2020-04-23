@@ -41,10 +41,10 @@
                     <tr>
                         {% if 'creation_date' in things %}
                             <th class="highlight">Date Updated</th>
-                            <td class=" highlight"> {{ imported_grant.creation_date|default_if_none:"N/A" }} </td>
+                            <td class=" highlight"> {{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% else %}
                             <th>Date Created</th>
-                            <td> {{ imported_grant.creation_date|default_if_none:"N/A" }} </td>
+                            <td> {{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% endif %}
                     </tr>
 
@@ -86,40 +86,40 @@
                     <tr>
                         {% if 'proposed_start_date' in things %}
                             <th class="highlight">Proposed Start Date</th>
-                            <td class=" highlight"> {{ imported_grant.proposed_start_date|default_if_none:"N/A" }} </td>
+                            <td class=" highlight"> {{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% else %}
                             <th>Proposed Start Date</th>
-                            <td>{{ imported_grant.proposed_start_date|default_if_none:"N/A" }} </td>
+                            <td>{{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% endif %}
                     </tr>
 
                     <tr>
                         {% if 'proposed_end_date' in things %}
                             <th class="highlight">Proposed End Date</th>
-                            <td class=" highlight"> {{ imported_grant.proposed_end_date|default_if_none:"N/A" }} </td>
+                            <td class=" highlight"> {{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% else %}
                             <th>Proposed End Date</th>
-                            <td>{{ imported_grant.proposed_end_date|default_if_none:"N/A" }} </td>
+                            <td>{{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% endif %}
                     </tr>
 
                     <tr>
                         {% if 'actual_start_date' in things %}
                             <th class="highlight">Actual Start Date</th>
-                            <td class=" highlight"> {{ imported_grant.actual_start_date|default_if_none:"N/A" }} </td>
+                            <td class=" highlight"> {{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% else %}
                             <th>Actual Start Date</th>
-                            <td>{{ imported_grant.actual_start_date|default_if_none:"N/A" }} </td>
+                            <td>{{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% endif %}
                     </tr>
 
                     <tr>
                         {% if 'actual_end_date' in things %}
                             <th class="highlight">Actual End Date</th>
-                            <td class=" highlight"> {{ imported_grant.actual_end_date|default_if_none:"N/A" }} </td>
+                            <td class=" highlight"> {{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% else %}
                             <th>Actual End Date</th>
-                            <td>{{ imported_grant.actual_end_date|default_if_none:"N/A" }} </td>
+                            <td>{{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% endif %}
                     </tr>
 

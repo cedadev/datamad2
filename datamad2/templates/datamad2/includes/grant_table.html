@@ -22,9 +22,11 @@
                 </td>
                 <td> {{ imported_grant.title }}</td>
                 <td> {{ imported_grant.grant_holder }}</td>
-                {% if imported_grant.routing_classification is not None %}
+                {% if imported_grant.routing_classification in imported_grant.routing_classification.choice %}
+                    {% if imported_grant.routing_classification is not None %}
                     <td data-sort="{{ imported_grant.routing_classification }} "><i
                             class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
+                    {%  endif %}
                 {% elif imported_grant.get_science_area is not None %}
                     <td data-sort="{{ imported_grant.get_science_area }} "><i
                             class="icon"> {{ imported_grant.get_science_area|icon }}</i></td>
@@ -32,7 +34,7 @@
                     <td data-sort="z"><i class="icon"> {{ imported_grant.routing_classification|icon }}</i>
                     </td>
                 {% endif %}
-                <td> {{ imported_grant.creation_date }}</td>
+                <td> {{ imported_grant.creation_date|date:"d M Y" }}</td>
                 {% if imported_grant.grant.claimed == True %}
                     <td id="claim"> CLAIMED</td>
                 {% else %}
