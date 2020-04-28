@@ -26,6 +26,9 @@ class DataCentre(models.Model):
     #                                          ))
     jira_project = models.CharField(max_length=100, blank=True)
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, data_centre, password, **extra_fields):
