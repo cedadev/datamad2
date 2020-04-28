@@ -24,9 +24,9 @@ class Grant(models.Model):
     # Alt Data Contact Phone No	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
     alt_data_contact_phone = models.CharField(max_length=256, null=True, blank=True)
     # Assigned Data Centre	Sharepoint	E.g. NGDC
-    assigned_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL)
+    assigned_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='assigned_data_centre')
     # Other DC's Expecting Datasets	Sharepoint	E.g. PDC
-    other_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL)
+    other_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='other_data_centre')
     # Hide Record	Sharepoint
     hide_record = models.BooleanField(null=True, blank=True)
     # DateContact with PI	Sharepoint	Date or Null

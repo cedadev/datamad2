@@ -212,7 +212,7 @@
                 </tr>
                 <tr>
                     <th>Other data centre</th>
-                    <td >{{ imported_grant.grant.other_data_centre|default_if_none:"N/A" }} </td>
+                    <td >{{ imported_grant.grant.other_data_centre.name|default_if_none:"N/A" }} </td>
                 </tr>
                 <tr>
                     <th>Date contacted PI</th>

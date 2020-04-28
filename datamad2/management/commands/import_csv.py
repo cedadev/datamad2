@@ -4,7 +4,7 @@ Merge a csv file into datamad
 """
 
 from django.core.management.base import BaseCommand, CommandError
-from datamad2.models import ImportedGrant, Grant
+from datamad2.models import ImportedGrant, Grant, DataCentre
 
 import pandas as pd
 import math
@@ -344,6 +344,12 @@ class Command(BaseCommand):
             for source_field, model_field in mapping.items():
                 if model_field in grant_fields:
                     value = row.__getattribute__(source_field)
+
+                    if model_field in ['assigned_data_centre', 'other_data_centre']:
+                        try:
+                            value = DataCentre.objects.get(name=value)
+                        except Exception as exc:
+                            value = None
 
                     if model_field in date_fields:
                         # Convert the date

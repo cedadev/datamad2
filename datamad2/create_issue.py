@@ -23,7 +23,7 @@ def set_options(user):
 def make_issue(user, imported_grant):
     jira = set_options(user)
     issue_dict = {
-        'project': str(user.data_centre),
+        'project': str(user.data_centre.jira_project),
         'summary': str(imported_grant.grant_ref) + ' : ' + str(imported_grant.title),
         'description': str(imported_grant.abstract),
         'issuetype': {'name': 'Data Management Tracking'},

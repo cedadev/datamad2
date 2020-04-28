@@ -37,7 +37,7 @@
                     <td id="claim"> CLAIMED</td>
                 {% else %}
                     <td>
-                        <button data-id="{{ imported_grant.grant.pk }}" data-user="{{ user.data_centre }}"
+                        <button data-id="{{ imported_grant.grant.pk }}" data-user="{{ user.data_centre.name }}"
                                 class="btn btn-primary claim-btn" id="claim-button"> CLAIM
                         </button>
                     </td>

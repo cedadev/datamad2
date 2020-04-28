@@ -10,15 +10,25 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class DataCentre(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, blank=True, null=True, unique=True)
+    # name = models.CharField(max_length=200, blank=True, null=True,
+    #                                          choices=(
+    #                                              ("BODC", "BODC"),
+    #                                              ("CEDA", "CEDA"),
+    #                                              ("EIDC", "EIDC"),
+    #                                              ("NGDC", "NGDC"),
+    #                                              ("PDC", "PDC"),
+    #                                              ("ADS", "ADS"),
+    #                                          ))
     jira_project = models.CharField(max_length=100, blank=True)
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, password, **extra_fields):
+    def _create_user(self, email, data_centre, password, **extra_fields):
         """
         Creates and saves a user with given email and password
         """
@@ -31,14 +41,15 @@ class UserManager(BaseUserManager):
         # Set the username to match the email
         user.username = self.normalize_email(email)
         user.set_password(password)
+        user.data_centre = DataCentre.objects.get(name=data_centre)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email, data_centre, password=None, **extra_fields):
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(email, data_centre, password, **extra_fields)
 
-    def create_superuser(self, email, password=None, **extra_fields):
+    def create_superuser(self, email, data_centre, password=None, **extra_fields):
 
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_admin', True)
@@ -46,7 +57,7 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True')
 
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(email, data_centre, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -58,7 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         unique=True,
     )
     username = models.EmailField(max_length=255)
-    data_centre = models.ForeignKey('DataCentre', on_delete=models.SET_NULL, null=True)
+    data_centre = models.ForeignKey('DataCentre', on_delete=models.SET_NULL, null=True, blank=True, to_field='name')
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
