@@ -59,7 +59,7 @@ def grant_list(request):
 
         # If the user has not asked for all, filter
         elif assignee != 'all':
-            grants = grants.filter(Q(assigned_data_centre=assignee) | Q(other_data_centre=assignee))
+            grants = grants.filter(Q(assigned_data_centre__name=assignee) | Q(other_data_centre__name=assignee))
 
         return render(request, 'datamad2/grant_list.html', {'grants': grants, 'assignee': assignee})
 
