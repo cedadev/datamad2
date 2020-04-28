@@ -1,6 +1,7 @@
 $(document).ready(function() {
+    $.fn.dataTable.moment( 'DD MMM YYYY' );
     var table = $('#grants').DataTable( {
-        stateSave: true
+        order: [[4, 'desc']]
     } );
 
     new $.fn.dataTable.FixedHeader( table );

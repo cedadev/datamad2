@@ -382,6 +382,11 @@ class Command(BaseCommand):
         # Add grant to imported grant
         for row in tqdm(df.itertuples(), desc='Linking grant and imported grant'):
             grant_ref = row[1]
+            proposed_start_date = row[26]
+            # modified_date = row[77]
+            proposed_start_date = parse(proposed_start_date, dayfirst=True).date()
+            # actual_start_date = actual_start_date.strftime("%Y-%m-%d")
+            # print(type(actual_start_date))
 
             try:
                 g = Grant.objects.get(grant_ref=grant_ref)
@@ -394,5 +399,6 @@ class Command(BaseCommand):
 
             if g and igrant:
                 igrant.grant = g
+                igrant.creation_date = proposed_start_date
                 igrant.save()
                 g.save()
