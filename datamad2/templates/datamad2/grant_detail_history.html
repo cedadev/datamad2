@@ -124,7 +124,12 @@
                     </tr>
 
                     <tr>
-                        <th class="highlight">Abstract</th>
+                        {% if 'abstract' in things %}
+                            <th class="highlight">Abstract</th>
+                        {% else %}
+                            <th>Abstract</th>
+                        {% endif %}
+
                     </tr>
                     <tr>
                         {% if 'abstract' in things %}
@@ -136,7 +141,11 @@
                     </tr>
 
                     <tr>
-                        <th class="highlight">Objectives</th>
+                        {% if 'objectives' in things %}
+                            <th class="highlight">Objectives</th>
+                        {% else %}
+                            <th>Objectives</th>
+                        {% endif %}
                     </tr>
                     <tr>
                         {% if 'objectives' in things %}

@@ -33,8 +33,6 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'fwtheme_django_ceda_serv',
     'fwtheme_django',
-    'datamad2.apps.Datamad2Config',
-    'datamad2_api.apps.Datamad2ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cookielaw',
     'rest_framework',
-    'crispy_forms'
+    'crispy_forms',
+    'datamad2.apps.Datamad2Config',
+    'datamad2_api.apps.Datamad2ApiConfig',
 ]
 
 MIDDLEWARE = [

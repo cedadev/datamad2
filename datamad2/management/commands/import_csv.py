@@ -4,7 +4,7 @@ Merge a csv file into datamad
 """
 
 from django.core.management.base import BaseCommand, CommandError
-from datamad2.models import ImportedGrant, Grant
+from datamad2.models import ImportedGrant, Grant, DataCentre
 
 import pandas as pd
 import math
@@ -338,12 +338,22 @@ class Command(BaseCommand):
             .str.replace(')', '').str.replace('?', '').str.replace('/', '_').str.replace('\'', '')\
             .str.replace('-', '')
 
+        dcs = ["BODC", "CEDA", "EIDC", "NGDC", "PDC", "ADS", "None"]
+        for dc in dcs:
+            DataCentre.objects.get_or_create(name=dc)
+
         for row in tqdm(df.itertuples(), desc='Adding grant info'):
             g_data = {}
 
             for source_field, model_field in mapping.items():
                 if model_field in grant_fields:
                     value = row.__getattribute__(source_field)
+
+                    if model_field in ['assigned_data_centre', 'other_data_centre']:
+                        try:
+                            value = DataCentre.objects.get(name=value)
+                        except Exception as exc:
+                            value = None
 
                     if model_field in date_fields:
                         # Convert the date
@@ -395,4 +405,7 @@ class Command(BaseCommand):
                 igrant.grant = g
                 igrant.creation_date = proposed_start_date
                 igrant.save()
+                g.updated_imported_grant = False
                 g.save()
+
+

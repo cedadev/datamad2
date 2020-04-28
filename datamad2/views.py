@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant
+from .models import ImportedGrant, Grant, User
 from .forms import UpdateClaim, GrantInfoForm
 from django.db.models import Q
 from django.http import HttpResponse
@@ -59,7 +59,7 @@ def grant_list(request):
 
         # If the user has not asked for all, filter
         elif assignee != 'all':
-            grants = grants.filter(Q(assigned_data_centre=assignee) | Q(other_data_centre=assignee))
+            grants = grants.filter(Q(assigned_data_centre__name=assignee) | Q(other_data_centre__name=assignee))
 
         return render(request, 'datamad2/grant_list.html', {'grants': grants, 'assignee': assignee})
 

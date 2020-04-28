@@ -32,4 +32,3 @@ $( ".claim-btn" ).click(function(){
             }
         });
     });
-

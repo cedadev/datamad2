@@ -63,7 +63,7 @@
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropbtn" href="{% url 'grant_list' %}?datacentre={{ user.data_centre }}">My
+                    <a class="nav-link dropbtn" href="{% url 'grant_list' %}?datacentre={{ user.data_centre.name }}">My
                         Grants</a>
                 </li>
 
