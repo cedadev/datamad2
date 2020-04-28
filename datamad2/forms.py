@@ -1,5 +1,5 @@
 from django import forms
-from .models import Grant
+from .models.grants import Grant
 
 
 class UpdateClaim(forms.ModelForm):
@@ -14,6 +14,7 @@ class DateInput(forms.DateInput):
 
 
 class GrantInfoForm(forms.ModelForm):
+
     class Meta:
         model = Grant
         fields = ('alt_data_contact', 'alt_data_contact_email', 'alt_data_contact_phone', 'other_data_centre', 'date_contacted_pi',

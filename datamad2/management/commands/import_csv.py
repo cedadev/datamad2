@@ -4,7 +4,7 @@ Merge a csv file into datamad
 """
 
 from django.core.management.base import BaseCommand, CommandError
-from datamad2.models import ImportedGrant, Grant
+from datamad2.models import ImportedGrant, Grant, DataCentre
 
 import pandas as pd
 import math
@@ -338,12 +338,22 @@ class Command(BaseCommand):
             .str.replace(')', '').str.replace('?', '').str.replace('/', '_').str.replace('\'', '')\
             .str.replace('-', '')
 
+        dcs = ["BODC", "CEDA", "EIDC", "NGDC", "PDC", "ADS", "None"]
+        for dc in dcs:
+            DataCentre.objects.get_or_create(name=dc)
+
         for row in tqdm(df.itertuples(), desc='Adding grant info'):
             g_data = {}
 
             for source_field, model_field in mapping.items():
                 if model_field in grant_fields:
                     value = row.__getattribute__(source_field)
+
+                    if model_field in ['assigned_data_centre', 'other_data_centre']:
+                        try:
+                            value = DataCentre.objects.get(name=value)
+                        except Exception as exc:
+                            value = None
 
                     if model_field in date_fields:
                         # Convert the date
@@ -376,6 +386,11 @@ class Command(BaseCommand):
         # Add grant to imported grant
         for row in tqdm(df.itertuples(), desc='Linking grant and imported grant'):
             grant_ref = row[1]
+            proposed_start_date = row[26]
+            #modified_date = row[77]
+            proposed_start_date = parse(proposed_start_date, dayfirst=True).date()
+            #actual_start_date = actual_start_date.strftime("%Y-%m-%d")
+            #print(type(actual_start_date))
 
             try:
                 g = Grant.objects.get(grant_ref=grant_ref)
@@ -388,5 +403,9 @@ class Command(BaseCommand):
 
             if g and igrant:
                 igrant.grant = g
+                igrant.creation_date = proposed_start_date
                 igrant.save()
+                g.updated_imported_grant = False
                 g.save()
+
+

@@ -23,7 +23,7 @@ def set_options(user):
 def make_issue(user, imported_grant):
     jira = set_options(user)
     issue_dict = {
-        'project': str(user.data_centre),
+        'project': str(user.data_centre.jira_project),
         'summary': str(imported_grant.grant_ref) + ' : ' + str(imported_grant.title),
         'description': str(imported_grant.abstract),
         'issuetype': {'name': 'Data Management Tracking'},
@@ -32,7 +32,7 @@ def make_issue(user, imported_grant):
         'customfield_11658': str(imported_grant.grant_ref),# NERC reference
         'customfield_11659': str(imported_grant.grant_holder),# PI
         'customfield_11862': str(imported_grant.research_org), # Research organisation
-        'customfield_11663': {'value': str(user.data_centre)},  # primary data centre
+        'customfield_11663': {'value': str(user.data_centre.name)},  # primary data centre
         #'customfield_11664': [{'value': str(imported_grant.grant.other_data_centre)},]# secondary data centre
     }
 
