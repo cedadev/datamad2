@@ -11,3 +11,4 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from .grants import ImportedGrant, Grant
 from .users import User, DataCentre
+from .document_store import Document, DMPDocument

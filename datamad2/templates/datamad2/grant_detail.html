@@ -15,175 +15,188 @@
             history.
         </div>
     {% endif %}
+        <div class="card card-shaded">
+            <div class="card-body">
+                {% include 'datamad2/includes/claim_assign_buttons.html' %}
 
-    <div class="card card-shaded">
-        <div class="card-body">
-            {% include 'datamad2/includes/claim_assign_buttons.html' %}
+                <table class="table-responsive" id="grant-info">
 
-            <table class="table-responsive" id="grant-info">
+                    <tr>
+                        <th colspan="2"><h3>{{ imported_grant.title }} </h3></th>
+                    </tr>
+                    # do a for loop to go through document set and put link to dicument in title
+                    <tr>
+                        <th>Docs</th>
+                        <td> {{ imported_grant.grant.document_set.title }} </td>
+                    </tr>
 
-                <tr>
-                    <th colspan="2"><h3>{{ imported_grant.title }} </h3></th>
-                </tr>
-                <tr>
-                    <th>Grant Reference</th>
-                    <td > {{ imported_grant.grant_ref }} </td>
-                </tr>
+                    <tr>
+                        <th>Grant Reference</th>
+                        <td > {{ imported_grant.grant_ref }} </td>
+                    </tr>
 
-                <tr>
-                    <th>Date Created</th>
-                    <td>{{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
-                </tr>
-                <tr>
-                    <th>Grant Status</th>
-                    <td >{{ imported_grant.grant_status|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Routing Classification</th>
-                    <td > {{ imported_grant.routing_classification }} </td>
-                </tr>
-                <tr>
-                    <th>Secondary Classification</th>
-                    <td >{{ imported_grant.secondary_classification }} </td>
-                </tr>
-                <tr>
-                    <th>Science Area</th>
-                    <td class="column-id">{{ imported_grant.science_area }}</td>
-                </tr>
-                <tr>
-                    <th>Proposed Start Date</th>
-                    <td >{{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
-                </tr>
-                <tr>
-                    <th>Proposed End Date</th>
-                    <td >{{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
-                </tr>
-                <tr>
-                    <th>Actual Start Date</th>
-                    <td >{{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
-                </tr>
-                <tr>
-                    <th>Actual End Date</th>
-                    <td >{{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
-                </tr>
-                <tr>
-                    <th>Abstract</th>
-                    <td >{{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
-                </tr>
-                {#                <tr>#}
-                {#                </tr>#}
-                <tr>
-                    <th>Objectives</th>
-                    <td >{{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
+                    <tr>
+                        <th>Date Created</th>
+                        <td>{{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Grant Status</th>
+                        <td >{{ imported_grant.grant_status|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Routing Classification</th>
+                        <td > {{ imported_grant.routing_classification }} </td>
+                    </tr>
+                    <tr>
+                        <th>Secondary Classification</th>
+                        <td >{{ imported_grant.secondary_classification }} </td>
+                    </tr>
+                    <tr>
+                        <th>Science Area</th>
+                        <td class="column-id">{{ imported_grant.science_area }}</td>
+                    </tr>
+                    <tr>
+                        <th>Proposed Start Date</th>
+                        <td >{{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Proposed End Date</th>
+                        <td >{{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Actual Start Date</th>
+                        <td >{{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Actual End Date</th>
+                        <td >{{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Abstract</th>
+                    </tr>
+                    <tr>
 
-                </tr>
-                {#                <tr>#}
-                {#                </tr>#}
-                <tr>
-                    <th>Amount Awarded</th>
-                    <td > £ {{ imported_grant.amount_awarded|default_if_none:"N/A" }} </td>
-                </tr>
-                {#                            <tr>#}
-                {#                                <th>Call</th>#}
-                {#                                <td   >{{ imported_grant.call }} </td>#}
-                {#                            </tr>#}
-                <tr>
-                    <th>Grant Type</th>
-                    <td >{{ imported_grant.grant_type|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Scheme</th>
-                    <td >{{ imported_grant.scheme|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Lead Grant</th>
-                    <td >{{ imported_grant.lead_grant|yesno:"Yes, No, N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Parent Grant</th>
-                    <td >{{ imported_grant.parent_grant|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Grant Holder</th>
-                    <td >{{ imported_grant.grant_holder|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Department</th>
-                    <td >{{ imported_grant.department|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Research Organisation</th>
-                    <td >{{ imported_grant.research_org|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Address</th>
-                    <td >{{ imported_grant.address1|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Address line 2</th>
-                    <td >{{ imported_grant.address2|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>City</th>
-                    <td >{{ imported_grant.city|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Post Code</th>
-                    <td >{{ imported_grant.post_code|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Email</th>
-                    <td >{{ imported_grant.email|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Work number</th>
-                    <td >{{ imported_grant.work_number|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Data Contact</th>
-                    <td >{{ imported_grant.data_contact|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Data Contact Email</th>
-                    <td >{{ imported_grant.data_contact_email|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Data Contact Phone Number</th>
-                    <td >{{ imported_grant.data_contact_phone|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>NCAS</th>
-                    <td >{{ imported_grant.ncas|yesno:"Yes, No, N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>NCEO</th>
-                    <td >{{ imported_grant.nceo|yesno:"Yes, No, N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Comments</th>
-                    <td >{{ imported_grant.comments|default_if_none:"N/A" }} </td>
-                </tr>
-                {% comment %}                            <tr>
-                                <th>Original Proposed Start Date</th>
-                                <td >{{ imported_grant.original_proposed_start_date}} </td>
-                            </tr>
-                            <tr>
-                                <th>Original Proposed End Date</th>
-                                <td >{{ imported_grant.original_proposed_end_date}} </td>
-                            </tr>{% endcomment %}
+                        <td colspan="2">{{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
+                    </tr>
+                    {#                <tr>#}
+                    {#                </tr>#}
+                    <tr>
+                        <th>Objectives</th>
+                    </tr>
+                    <tr>
 
-                {% comment %}                            <tr>
-                                <th>End Date Changed</th>
-                                <td >{{ imported_grant.end_date_changed }} </td>
-                            </tr>
-                            <tr>
-                                <th>Start Date Changed</th>
-                                <td >{{ imported_grant.start_date_changed}} </td>
-                            </tr>{% endcomment %}
+                        <td colspan="2">{{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
 
-            </table>
+                    </tr>
+                    {#                <tr>#}
+                    {#                </tr>#}
+                    <tr>
+                        <th>Amount Awarded</th>
+                        <td > £ {{ imported_grant.amount_awarded|default_if_none:"N/A" }} </td>
+                    </tr>
+                    {#                            <tr>#}
+                    {#                                <th>Call</th>#}
+                    {#                                <td   >{{ imported_grant.call }} </td>#}
+                    {#                            </tr>#}
+                    <tr>
+                        <th>Grant Type</th>
+                        <td >{{ imported_grant.grant_type|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Scheme</th>
+                        <td >{{ imported_grant.scheme|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Lead Grant</th>
+                        <td >{{ imported_grant.lead_grant|yesno:"Yes, No, N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Parent Grant</th>
+                        <td >{{ imported_grant.parent_grant|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Grant Holder</th>
+                        <td >{{ imported_grant.grant_holder|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Department</th>
+                        <td >{{ imported_grant.department|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Research Organisation</th>
+                        <td >{{ imported_grant.research_org|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td >{{ imported_grant.address1|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Address line 2</th>
+                        <td >{{ imported_grant.address2|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>City</th>
+                        <td >{{ imported_grant.city|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Post Code</th>
+                        <td >{{ imported_grant.post_code|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td >{{ imported_grant.email|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Work number</th>
+                        <td >{{ imported_grant.work_number|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Data Contact</th>
+                        <td >{{ imported_grant.data_contact|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Data Contact Email</th>
+                        <td >{{ imported_grant.data_contact_email|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Data Contact Phone Number</th>
+                        <td >{{ imported_grant.data_contact_phone|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>NCAS</th>
+                        <td >{{ imported_grant.ncas|yesno:"Yes, No, N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>NCEO</th>
+                        <td >{{ imported_grant.nceo|yesno:"Yes, No, N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Comments</th>
+                        <td >{{ imported_grant.comments|default_if_none:"N/A" }} </td>
+                    </tr>
+                    {% comment %}                            <tr>
+                                    <th>Original Proposed Start Date</th>
+                                    <td >{{ imported_grant.original_proposed_start_date}} </td>
+                                </tr>
+                                <tr>
+                                    <th>Original Proposed End Date</th>
+                                    <td >{{ imported_grant.original_proposed_end_date}} </td>
+                                </tr>{% endcomment %}
+
+                    {% comment %}                            <tr>
+                                    <th>End Date Changed</th>
+                                    <td >{{ imported_grant.end_date_changed }} </td>
+                                </tr>
+                                <tr>
+                                    <th>Start Date Changed</th>
+                                    <td >{{ imported_grant.start_date_changed}} </td>
+                                </tr>{% endcomment %}
+
+                </table>
+            </div>
         </div>
-    </div>
+
+
 
     <div class="card card-shaded">
         <div class="card-body">
@@ -238,6 +251,7 @@
             </table>
         </div>
     </div>
+
 
     <div>
         {% if imported_grant.ticket == True %}

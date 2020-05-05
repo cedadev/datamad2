@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant, User
+from .models import ImportedGrant, Grant, User, Document, DMPDocument
 from .forms import UpdateClaim, GrantInfoForm
 from django.db.models import Q
 from django.http import HttpResponse
@@ -14,6 +14,8 @@ def grant_detail(request, pk):
     ig = ImportedGrant.objects.filter(pk=pk)
     user = request.user
     grant_ref = str(imported_grant.grant_ref).replace('/', '\\u002f')
+    # documents = imported_grant.grant.document_set
+    # dmp_doc = imported_grant.grant.d
     if request.method == 'POST' and 'jira-issue':
         # call function
         set_options(user)
@@ -25,7 +27,8 @@ def grant_detail(request, pk):
         link = get_link(user, grant_ref)
         if link is None:
             ig.update(ticket=False)
-        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant, 'link': link})
+        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
+                                                              'link': link})
     else:
         return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
 

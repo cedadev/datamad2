@@ -43,6 +43,5 @@ class Document(models.Model):
 
 
 class DMPDocument(Document):
-    pass
-
-
+    version = models.CharField(max_length=100)
+    # handles check summing
