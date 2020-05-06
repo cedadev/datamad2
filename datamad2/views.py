@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant, User, Document, DMPDocument
-from .forms import UpdateClaim, GrantInfoForm
+from .forms import UpdateClaim, GrantInfoForm, DocumentForm
 from django.db.models import Q
 from django.http import HttpResponse
 from .create_issue import make_issue, set_options, get_link
@@ -128,3 +128,19 @@ def grantinfo_edit(request, pk, imported_pk):
     else:
         form = GrantInfoForm(instance=grant)
     return render(request, 'datamad2/grantinfo_edit.html', {'form': form, 'grant': grant})
+
+
+@login_required
+def document_upload(request, pk, imported_pk):
+    grant = get_object_or_404(Grant, pk=pk)
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            document = form.save(commit=False)
+            document.grant = grant
+            document.save()
+            return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
+    else:
+        form = DocumentForm(instance=grant)
+    return render(request, 'datamad2/document_upload.html', {'form': form})
+

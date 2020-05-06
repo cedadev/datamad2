@@ -14,7 +14,7 @@ import hashlib
 
 class Document(models.Model):
     title = models.CharField(max_length=100)
-    upload = models.FileField(upload_to='')
+    upload = models.FileField(upload_to='documents/')
     last_modified = models.DateTimeField(auto_now=True)
     grant = models.ForeignKey('Grant', on_delete=models.CASCADE)
     checksum = models.CharField(max_length=100, blank=True)
@@ -41,7 +41,11 @@ class Document(models.Model):
         self.generate_checksum()
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f"{self.title}"
+
 
 class DMPDocument(Document):
+    #upload = models.FileField(upload_to='dmp_documents/')
     version = models.CharField(max_length=100)
     # handles check summing

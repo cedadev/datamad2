@@ -24,12 +24,6 @@
                     <tr>
                         <th colspan="2"><h3>{{ imported_grant.title }} </h3></th>
                     </tr>
-                    # do a for loop to go through document set and put link to dicument in title
-                    <tr>
-                        <th>Docs</th>
-                        <td> {{ imported_grant.grant.document_set.title }} </td>
-                    </tr>
-
                     <tr>
                         <th>Grant Reference</th>
                         <td > {{ imported_grant.grant_ref }} </td>
@@ -198,60 +192,59 @@
 
 
 
-    <div class="card card-shaded">
-        <div class="card-body">
-            <table class="table-responsive" id="grant-info">
-                <tr>
-                    <td colspan="2">
-                        <h3> Editable Grant Information
-                            <a title='Edit' data-toggle='tooltip'
-                               href="{% url 'grantinfo_edit' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}">
-                                <i class="far fa-edit"></i>
-                            </a>
-                        </h3>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Alternative data contact</th>
-                    <td >{{ imported_grant.grant.alt_data_contact|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Alternative data contact email address</th>
-                    <td >{{ imported_grant.grant.alt_data_contact_email|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Alternative data contact phone number</th>
-                    <td >{{ imported_grant.grant.alt_data_contact_phone|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Other data centre</th>
-                    <td >{{ imported_grant.grant.other_data_centre.name|default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Date contacted PI</th>
-                    <td >{{ imported_grant.grant.date_contacted_pi |default_if_none:"N/A" }} </td>
-                </tr>
-                <tr>
-                <tr>
-                    <th>Will the grant produce data?</th>
-                    <td >{{ imported_grant.grant.will_grant_produce_data|yesno:"Yes, No, N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Date delivered?</th>
-                    <td >{{ imported_grant.grant.datasets_delivered|yesno:"Yes, No, N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Sanctions recommended?</th>
-                    <td >{{ imported_grant.grant.sanctions_recommended|yesno:"Yes, No, N/A" }} </td>
-                </tr>
-                <tr>
-                    <th>Case for support found?</th>
-                    <td >{{ imported_grant.grant.case_for_support_found|yesno:"Yes, No, N/A" }} </td>
-                </tr>
-            </table>
+        <div class="card card-shaded">
+            <div class="card-body">
+                <table class="table-responsive" id="grant-info">
+                    <tr>
+                        <td colspan="2">
+                            <h3> Editable Grant Information
+                                <a title='Edit' data-toggle='tooltip'
+                                   href="{% url 'grantinfo_edit' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}">
+                                    <i class="far fa-edit"></i>
+                                </a>
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Alternative data contact</th>
+                        <td >{{ imported_grant.grant.alt_data_contact|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Alternative data contact email address</th>
+                        <td >{{ imported_grant.grant.alt_data_contact_email|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Alternative data contact phone number</th>
+                        <td >{{ imported_grant.grant.alt_data_contact_phone|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Other data centre</th>
+                        <td >{{ imported_grant.grant.other_data_centre.name|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Date contacted PI</th>
+                        <td >{{ imported_grant.grant.date_contacted_pi |default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <th>Will the grant produce data?</th>
+                        <td >{{ imported_grant.grant.will_grant_produce_data|yesno:"Yes, No, N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Date delivered?</th>
+                        <td >{{ imported_grant.grant.datasets_delivered|yesno:"Yes, No, N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Sanctions recommended?</th>
+                        <td >{{ imported_grant.grant.sanctions_recommended|yesno:"Yes, No, N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Case for support found?</th>
+                        <td >{{ imported_grant.grant.case_for_support_found|yesno:"Yes, No, N/A" }} </td>
+                    </tr>
+                </table>
+            </div>
         </div>
-    </div>
-
 
     <div>
         {% if imported_grant.ticket == True %}
@@ -267,7 +260,42 @@
         {#                        <a href="#"><button class="btn btn-primary"  id="jira-btn"> Make JIRA issue </button></a>#}
     </div>
 
-{% endblock %}
+{% endblock content %}
+
+
+{%  block rightsidebar%}
+
+
+    <div style="height: 500px;" class="card card-shaded">
+            <div class="card-body">
+                <table class="table-responsive" id="grant-info">
+                    <th><h3>Documents</h3></th>
+                    {%  for doc in imported_grant.grant.document_set.all %}
+                        <tr>
+                            <td><a href="{{ doc.upload.url }}"> {{ doc.title }} </a></td>
+                        </tr>
+                    {% endfor %}
+                        <td><a title='Upload' data-toggle='tooltip'
+                                href="{% url 'document_upload' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}">
+                            <i class="fa fa-plus"></i></a> Upload document</td>
+                </table>
+                <table class="table-responsive" id="grant-info">
+                    <th><h3>DMP</h3></th>
+                    <tr>
+                        <td><a href=""> dmp doc title </a></td>
+                    </tr>
+                    <tr><td><a href=""> See version history </a></td></tr>
+                    <tr><td><a title='Upload' data-toggle='tooltip'
+                           href="{% url 'document_upload' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}">
+                        <i class="fa fa-plus"></i></a> Upload new DMP</td></tr>
+
+                </table>
+            </div>
+        </div>
+    </div>
+{%  endblock rightsidebar %}
+
+
 
 {% block tail_js_extra %}
     {{ block.super }}
