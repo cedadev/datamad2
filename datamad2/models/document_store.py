@@ -9,12 +9,34 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from django.db import models
+from django.core.files.storage import FileSystemStorage
+from django.core.exceptions import ValidationError
 import hashlib
+import os
+
+
+class MediaFileSystemStorage(FileSystemStorage):
+    def get_available_name(self, name, max_length=None):
+        return name
+
+    def _save(self, name, content):
+        if self.exists(name):
+            raise ValidationError('File already exists: %s' % name)
+
+        return super(MediaFileSystemStorage, self)._save(name, content)
+
+
+def file_name(instance, filename):
+    h = instance.checksum
+    grant_ref = (instance.grant.grant_ref).replace('/', '_')
+    basename, ext = os.path.splitext(filename)
+    return os.path.join('documents', grant_ref, h + ext.lower())
 
 
 class Document(models.Model):
     title = models.CharField(max_length=100)
-    upload = models.FileField(upload_to='documents/')
+    type = models.CharField(choices=(("support", "Support"), ("dmp", "DMP")), max_length=100)
+    upload = models.FileField(upload_to=file_name, storage=MediaFileSystemStorage())
     last_modified = models.DateTimeField(auto_now=True)
     grant = models.ForeignKey('Grant', on_delete=models.CASCADE)
     checksum = models.CharField(max_length=100, blank=True)
@@ -30,7 +52,7 @@ class Document(models.Model):
         """
         Generate an MD5 checksum to check for file changes
         """
-        if not self.checksum:
+        if not self.pk:
             md5 = hashlib.md5()
             for chunk in self.upload.chunks():
                 md5.update(chunk)
@@ -45,7 +67,3 @@ class Document(models.Model):
         return f"{self.title}"
 
 
-class DMPDocument(Document):
-    #upload = models.FileField(upload_to='dmp_documents/')
-    version = models.CharField(max_length=100)
-    # handles check summing

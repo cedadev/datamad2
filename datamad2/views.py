@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant, User, Document, DMPDocument
+from .models import ImportedGrant, Grant, User, Document
 from .forms import UpdateClaim, GrantInfoForm, DocumentForm
 from django.db.models import Q
 from django.http import HttpResponse
 from .create_issue import make_issue, set_options, get_link
 from django.urls import reverse
-
+from django.contrib import messages
+from django.core.exceptions import ValidationError
 
 @login_required
 def grant_detail(request, pk):
@@ -131,15 +132,19 @@ def grantinfo_edit(request, pk, imported_pk):
 
 
 @login_required
-def document_upload(request, pk, imported_pk):
+def document_upload(request, pk, imported_pk, type):
     grant = get_object_or_404(Grant, pk=pk)
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
-            document = form.save(commit=False)
-            document.grant = grant
-            document.save()
-            return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
+            try:
+                document = form.save(commit=False)
+                document.grant = grant
+                document.type = type
+                document.save()
+                return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
+            except ValidationError:
+                messages.error(request, 'This file has already been uploaded')
     else:
         form = DocumentForm(instance=grant)
     return render(request, 'datamad2/document_upload.html', {'form': form})

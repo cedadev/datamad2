@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models.grants import ImportedGrant, Grant
 from .models.users import User
-from .models.document_store import Document, DMPDocument
+from .models.document_store import Document
 
 # Register your models here.
 
