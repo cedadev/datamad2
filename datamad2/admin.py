@@ -102,7 +102,9 @@ admin.site.register(Grant, GrantAdmin)
 
 
 class DocumentAdmin(admin.ModelAdmin):
-    search_fields = ['title', 'grant']
+    list_display = ('title', 'grant')
+
+    search_fields = ['title', 'grant__grant_ref']
     autocomplete_fields = ['grant']
 
 admin.site.register(Document, DocumentAdmin)
