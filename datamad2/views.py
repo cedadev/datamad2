@@ -15,8 +15,8 @@ def grant_detail(request, pk):
     ig = ImportedGrant.objects.filter(pk=pk)
     user = request.user
     grant_ref = str(imported_grant.grant_ref).replace('/', '\\u002f')
-    # documents = imported_grant.grant.document_set
-    # dmp_doc = imported_grant.grant.d
+    docs = imported_grant.grant.document_set.filter(type='support')
+    dmp_docs = imported_grant.grant.document_set.filter(type='dmp')
     if request.method == 'POST' and 'jira-issue':
         # call function
         set_options(user)
@@ -29,9 +29,10 @@ def grant_detail(request, pk):
         if link is None:
             ig.update(ticket=False)
         return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
-                                                              'link': link})
+                                                              'link': link, 'docs':docs, 'dmp_docs':dmp_docs})
     else:
-        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
+        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
+                                                              'docs':docs, 'dmp_docs':dmp_docs})
 
 
 @login_required
@@ -149,3 +150,7 @@ def document_upload(request, pk, imported_pk, type):
         form = DocumentForm(instance=grant)
     return render(request, 'datamad2/document_upload.html', {'form': form})
 
+
+def dmp_history(request, pk):
+    grant = get_object_or_404(Grant, pk=pk)
+    return render(request, 'datamad2/dmp_history.html', {'grant': grant})

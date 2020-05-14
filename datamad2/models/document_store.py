@@ -34,6 +34,10 @@ def file_name(instance, filename):
 
 
 class Document(models.Model):
+    # ordering by creation date
+    class Meta:
+        ordering = ['-last_modified']
+
     title = models.CharField(max_length=100)
     type = models.CharField(choices=(("support", "Support"), ("dmp", "DMP")), max_length=100)
     upload = models.FileField(upload_to=file_name, storage=MediaFileSystemStorage())
