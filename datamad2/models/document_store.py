@@ -68,6 +68,6 @@ class Document(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.title}: {self.grant.grant_ref}"
+        return f"{self.title}"
 
 
