@@ -1,11 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant, User
-from .forms import UpdateClaim, GrantInfoForm
+from .models import ImportedGrant, Grant, User, Document
+from .forms import UpdateClaim, GrantInfoForm, DocumentForm
 from django.db.models import Q
 from django.http import HttpResponse
 from .create_issue import make_issue, set_options, get_link
 from django.urls import reverse
+from django.contrib import messages
+from django.core.exceptions import ValidationError
 
 
 @login_required
@@ -14,6 +16,8 @@ def grant_detail(request, pk):
     ig = ImportedGrant.objects.filter(pk=pk)
     user = request.user
     grant_ref = str(imported_grant.grant_ref).replace('/', '\\u002f')
+    docs = imported_grant.grant.document_set.filter(type='support')
+    dmp_docs = imported_grant.grant.document_set.filter(type='dmp')
     if request.method == 'POST' and 'jira-issue':
         # call function
         set_options(user)
@@ -25,9 +29,11 @@ def grant_detail(request, pk):
         link = get_link(user, grant_ref)
         if link is None:
             ig.update(ticket=False)
-        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant, 'link': link})
+        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
+                                                              'link': link, 'docs': docs, 'dmp_docs': dmp_docs})
     else:
-        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant})
+        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
+                                                              'docs': docs, 'dmp_docs': dmp_docs})
 
 
 @login_required
@@ -125,3 +131,27 @@ def grantinfo_edit(request, pk, imported_pk):
     else:
         form = GrantInfoForm(instance=grant)
     return render(request, 'datamad2/grantinfo_edit.html', {'form': form, 'grant': grant})
+
+
+@login_required
+def document_upload(request, pk, imported_pk, type):
+    grant = get_object_or_404(Grant, pk=pk)
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                document = form.save(commit=False)
+                document.grant = grant
+                document.type = type
+                document.save()
+                return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
+            except ValidationError:
+                messages.error(request, 'This file has already been uploaded')
+    else:
+        form = DocumentForm(instance=grant)
+    return render(request, 'datamad2/document_upload.html', {'form': form})
+
+
+def dmp_history(request, pk):
+    grant = get_object_or_404(Grant, pk=pk)
+    return render(request, 'datamad2/dmp_history.html', {'grant': grant})

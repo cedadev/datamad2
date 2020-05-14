@@ -338,7 +338,7 @@ class Command(BaseCommand):
             .str.replace(')', '').str.replace('?', '').str.replace('/', '_').str.replace('\'', '')\
             .str.replace('-', '')
 
-        dcs = ["BODC", "CEDA", "EIDC", "NGDC", "PDC", "ADS", "None"]
+        dcs = ["BODC", "CEDA", "EIDC", "NGDC", "PDC", "ADS"]
         for dc in dcs:
             DataCentre.objects.get_or_create(name=dc)
 

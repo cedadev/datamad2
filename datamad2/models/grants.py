@@ -10,6 +10,7 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from django.db import models
 from django.utils import timezone
+# from filer.fields.file import FilerFileField
 
 class Grant(models.Model):
 
@@ -24,9 +25,9 @@ class Grant(models.Model):
     # Alt Data Contact Phone No	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
     alt_data_contact_phone = models.CharField(max_length=256, null=True, blank=True)
     # Assigned Data Centre	Sharepoint	E.g. NGDC
-    assigned_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='assigned_data_centre')
+    assigned_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='assigned_data_centre', blank=True)
     # Other DC's Expecting Datasets	Sharepoint	E.g. PDC
-    other_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='other_data_centre')
+    other_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='other_data_centre', blank=True)
     # Hide Record	Sharepoint
     hide_record = models.BooleanField(null=True, blank=True)
     # DateContact with PI	Sharepoint	Date or Null
@@ -49,6 +50,9 @@ class Grant(models.Model):
     # programme = models.ForeignKey(to='dmp.Programme', blank=True, null=True, on_delete=models.PROTECT)
 
     science_area = models.CharField(max_length=256, null=True, blank=True)
+
+    # dmp_doc = FilerFileField(null=True, blank=True, related_name="dmp_doc", on_delete=models.SET_NULL)
+    # case_for_support_doc = FilerFileField(null=True, blank=True, related_name="cfs_doc", on_delete=models.SET_NULL)
 
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:

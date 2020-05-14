@@ -70,6 +70,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropbtn" href="{% url 'my_account' %}">My Account</a>
                 </li>
+
             {% endif %}
         </ul>
 
@@ -116,7 +117,11 @@
             {% block content %}
             {% endblock content %}
         </div>
-    </div>
+
+    {% block rightsidebar %}
+    {% endblock rightsidebar %}
+
+</div>
 {% endblock content_panel %}
 
 

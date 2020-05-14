@@ -5,6 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models.grants import ImportedGrant, Grant
 from .models.users import User
+from .models.document_store import Document
 
 # Register your models here.
 
@@ -98,3 +99,12 @@ class GrantAdmin(admin.ModelAdmin):
     # pass
 
 admin.site.register(Grant, GrantAdmin)
+
+
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = ('title', 'grant')
+
+    search_fields = ['title', 'grant__grant_ref']
+    autocomplete_fields = ['grant']
+
+admin.site.register(Document, DocumentAdmin)
