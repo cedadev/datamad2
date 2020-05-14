@@ -38,6 +38,10 @@
                         <td >{{ imported_grant.grant_status|default_if_none:"N/A" }} </td>
                     </tr>
                     <tr>
+                        <th>Assigned Data Centre</th>
+                        <td >{{ imported_grant.grant.assigned_data_centre|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
                         <th>Routing Classification</th>
                         <td > {{ imported_grant.routing_classification }} </td>
                     </tr>
@@ -94,11 +98,19 @@
                     {#                            </tr>#}
                     <tr>
                         <th>Grant Type</th>
-                        <td >{{ imported_grant.grant_type|default_if_none:"N/A" }} </td>
+                        <td>{{ imported_grant.grant_type|default_if_none:"N/A" }} </td>
                     </tr>
                     <tr>
                         <th>Scheme</th>
-                        <td >{{ imported_grant.scheme|default_if_none:"N/A" }} </td>
+                        <td>{{ imported_grant.scheme|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Call</th>
+                        <td>{{ imported_grant.call|default_if_none:"N/A" }} </td>
+                    </tr>
+                    <tr>
+                        <th>Facility</th>
+                        <td >{{ imported_grant.facility|default_if_none:"N/A" }} </td>
                     </tr>
                     <tr>
                         <th>Lead Grant</th>

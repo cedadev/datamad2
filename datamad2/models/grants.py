@@ -97,8 +97,9 @@ class ImportedGrant(models.Model):
     amount_awarded = models.DecimalField(null=True, blank=True, max_digits=10, decimal_places=2)
     # Call	Siebel	E.g. Standard Grant DEC06			CALL
     # ignore call for now
-    # call = models.CharField(max_length=1024, default='', blank=True)
+    call = models.CharField(max_length=1024, default='', blank=True)
     # Grant Type	Siebel	E.g. RM grants & fees			GRANT_TYPE
+    facility = models.CharField(max_length=1024, default='', blank=True)
     # The xls file run by RTS also contains Abstract and Objectives I presume these are from the GRANT
     grant_type = models.CharField(max_length=1024, default='', blank=True)
     # Scheme	Siebel	E.g. Standard Grant			SCHEME
