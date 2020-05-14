@@ -1,39 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant, User, Document
-from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm
+from .forms import UpdateClaim, GrantInfoForm, DocumentForm
 from django.db.models import Q
 from django.http import HttpResponse
 from .create_issue import make_issue, set_options, get_link
 from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.views.generic.edit import FormView
-
-
-# class FileFieldView(FormView):
-#     form_class = MultipleDocumentUploadForm
-#     template_name = 'datamad2/multiple_document_upload.html'  # Replace with your template.
-#     success_url = 'actions'  # Replace with your URL or reverse().
-#
-#     def post(self, request, *args, **kwargs):
-#         form_class = self.get_form_class()
-#         form = self.get_form(form_class)
-#         files = request.FILES.getlist('file_field')
-#         if form.is_valid():
-#             for f in files:
-#                 try:
-#                     document = form.save(commit=False)
-#                     document.grant = grant
-#                     document.type = type
-#                     document.save()
-#                     return redirect(reverse('actions')
-#                 except ValidationError:
-#                         messages.error(request, 'This file has already been uploaded')
-#             return self.form_valid(form)
-#         else:
-#             return self.form_invalid(form)
-#         return render(request, 'datamad2/admin_actions.html')
 
 
 @login_required
@@ -56,10 +30,10 @@ def grant_detail(request, pk):
         if link is None:
             ig.update(ticket=False)
         return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
-                                                              'link': link, 'docs':docs, 'dmp_docs':dmp_docs})
+                                                              'link': link, 'docs': docs, 'dmp_docs': dmp_docs})
     else:
         return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
-                                                              'docs':docs, 'dmp_docs':dmp_docs})
+                                                              'docs': docs, 'dmp_docs': dmp_docs})
 
 
 @login_required
@@ -181,7 +155,3 @@ def document_upload(request, pk, imported_pk, type):
 def dmp_history(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
     return render(request, 'datamad2/dmp_history.html', {'grant': grant})
-
-
-def actions(request):
-    return render(request, 'datamad2/admin_actions.html')
