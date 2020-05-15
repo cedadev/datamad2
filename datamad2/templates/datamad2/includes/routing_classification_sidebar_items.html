@@ -4,3 +4,7 @@
 <a class="nav-link pl-2 {% if request.GET.rc == 'Atmospheric' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Atmospheric">Atmospheric</a>
 <a class="nav-link pl-2 {% if request.GET.rc == 'Freshwater' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Freshwater">Freshwater</a>
 <a class="nav-link pl-2 {% if request.GET.rc == 'Terrestrial' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Terrestrial">Terrestrial</a>
+<a class="nav-link pl-2 {% if request.GET.rc == 'Earth Observation' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Earth Observation">Earth Observation</a>
+<a class="nav-link pl-2 {% if request.GET.rc == 'PanelA' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Panel A">Panel A</a>
+<a class="nav-link pl-2 {% if request.GET.rc == 'PanelB' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Panel B">Panel B</a>
+<a class="nav-link pl-2 {% if request.GET.rc == 'PanelC' %}active{% endif %}" href="{% url 'routing_classification' %}?rc=Panel C">Panel C</a>

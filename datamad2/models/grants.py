@@ -143,6 +143,9 @@ class ImportedGrant(models.Model):
                                                        ("Freshwater", "Freshwater"),
                                                        ("Terrestrial", "Terrestrial"),
                                                        ("Earth Observation", "Earth Observation"),
+                                                       ("Panel A", "Panel A"),
+                                                       ("Panel B", "Panel B"),
+                                                       ("Panel C", "Panel C"),
                                                        ))
     # Secondary Classifications	Siebel	E.g. Co-funded 40%; Cross-Research Council: 100%			MISSING
     secondary_classification = models.CharField(max_length=256, null=True, blank=True)
@@ -225,11 +228,13 @@ class ImportedGrant(models.Model):
         science_area = self.science_area
         science_area = science_area.replace(':', '').replace('%', '').split(' ')
         science_areas = dict(science_area[i:i + 2] for i in range(0, len(science_area), 2))
-        top_area = max(science_areas, key=science_areas.get)
+        #top_area = max(science_areas, key=science_areas.get)
+        top_area = max(science_areas.values())
         grant = Grant.objects.get(grant_ref=self.grant_ref)
-        grant.science_area = top_area
+        top_areas = [k for k, v in science_areas.items() if v == top_area]
+        grant.science_area = top_areas
         grant.save()
-        return top_area
+        return top_areas
 
     def save(self, *args, **kwargs):
         # On save, update timestamps
