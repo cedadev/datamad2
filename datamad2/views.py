@@ -1,13 +1,56 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant, User, Document
-from .forms import UpdateClaim, GrantInfoForm, DocumentForm
+from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm
 from django.db.models import Q
 from django.http import HttpResponse
 from .create_issue import make_issue, set_options, get_link
 from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.views.generic.edit import FormView
+
+
+class FileFieldView(FormView):
+    form_class = MultipleDocumentUploadForm
+    template_name = 'datamad2/multiple_document_upload.html'  # Replace with your template.
+    success_url = 'actions'  # Replace with your URL or reverse().
+
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+
+@login_required
+def multiple_document_upload(request):
+    if request.method == 'POST':
+        form = MultipleDocumentUploadForm(request.POST, request.FILES)
+        files = request.FILES.getlist('file_field')
+        if form.is_valid():
+            for f in files:
+                try:
+                    name = str(f)
+                    grant_ref = (name.split(' ')[0]).replace('_', '/')
+                    doc_type = name.split(' ')[1].split('.')[0]
+                    if doc_type == 'DMP':
+                        type = 'dmp'
+                    else:
+                        type = 'support'
+                    document = Document(upload=f)
+                    document.grant = get_object_or_404(Grant, grant_ref=grant_ref)
+                    document.type = type
+                    document.save()
+                except ValidationError:
+                    messages.error(request, 'Error uploading these files')
+        return redirect(reverse('actions'))
+    else:
+        form = MultipleDocumentUploadForm()
+    return render(request, 'datamad2/multiple_document_upload.html', {'form': form})
+
 
 
 @login_required
@@ -155,3 +198,7 @@ def document_upload(request, pk, imported_pk, type):
 def dmp_history(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
     return render(request, 'datamad2/dmp_history.html', {'grant': grant})
+
+
+def actions(request):
+    return render(request, 'datamad2/admin_actions.html')
