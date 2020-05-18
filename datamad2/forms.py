@@ -24,7 +24,8 @@ class GrantInfoForm(forms.ModelForm):
 
 
 class DocumentForm(forms.ModelForm):
+
     class Meta:
         model = Document
-        fields = ('title', 'upload',)
+        fields = ('upload', 'title',)
 
