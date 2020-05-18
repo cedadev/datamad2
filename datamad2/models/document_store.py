@@ -27,10 +27,10 @@ class MediaFileSystemStorage(FileSystemStorage):
 
 
 def file_name(instance, filename):
-    h = instance.checksum
+    # h = instance.checksum
     grant_ref = (instance.grant.grant_ref).replace('/', '_')
-    basename, ext = os.path.splitext(filename)
-    return os.path.join('documents', grant_ref, h + ext.lower())
+    # basename, ext = os.path.splitext(filename)
+    return os.path.join('documents', grant_ref, filename)
 
 
 class Document(models.Model):
@@ -38,7 +38,7 @@ class Document(models.Model):
     class Meta:
         ordering = ['-last_modified']
 
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, blank=True, help_text='If left blank the title will be the name of the file.')
     type = models.CharField(choices=(("support", "Support"), ("dmp", "DMP")), max_length=100)
     upload = models.FileField(upload_to=file_name, storage=MediaFileSystemStorage())
     last_modified = models.DateTimeField(auto_now=True)
