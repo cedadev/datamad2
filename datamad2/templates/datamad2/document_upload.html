@@ -5,13 +5,17 @@
 {% block page_title %}
 {% endblock page_title %}
 {% block content_panel %}
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <h4><label> Upload Document </label></h4>
-    <p>{{ form | crispy }}</p>
-    <p>
-        <button type="submit" class="save btn btn-primary" id="claim">Upload</button>
-    </p>
-  </form>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card card-shaded">
+            <div class="card-body">
+                <h4><label> Upload Document </label></h4>
+                <p>{{ form | crispy }}</p>
+                <p>
+                    <button type="submit" class="save btn btn-primary" id="claim">Upload</button>
+                </p>
+            </div>
+        </div>
+    </form>
 
 {% endblock %}

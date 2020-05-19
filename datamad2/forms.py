@@ -29,3 +29,11 @@ class DocumentForm(forms.ModelForm):
         model = Document
         fields = ('upload', 'title',)
 
+
+class MultipleDocumentUploadForm(forms.Form):
+    class Meta:
+        model = Document
+        fields = ('title', 'upload',)
+
+    upload = forms.FileField(
+        widget=forms.ClearableFileInput(attrs={'multiple': True}))
