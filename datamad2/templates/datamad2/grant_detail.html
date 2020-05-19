@@ -118,7 +118,23 @@
                     </tr>
                     <tr>
                         <th>Parent Grant</th>
-                        <td >{{ imported_grant.parent_grant|default_if_none:"N/A" }} </td>
+                        {% if imported_grant.parent_grant %}
+                        <td><a href="{% url 'grant_detail' pk=imported_grant.parent_grant.pk %}">{{ imported_grant.parent_grant }} </a></td>
+                        {% else %}
+                        <td> None </td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <th>Child Grants</th>
+                        {% if imported_grant.grant.child_grant.get_queryset %}
+                        <td >
+                        {%  for child in imported_grant.grant.child_grant.get_queryset %}
+                            <a href="{% url 'grant_detail' pk=child.pk %}">{{ child.grant_ref }} &nbsp</a>
+                        {%  endfor %}
+                        </td>
+                        {% else %}
+                        <td> None </td>
+                        {% endif %}
                     </tr>
                     <tr>
                         <th>Grant Holder</th>
