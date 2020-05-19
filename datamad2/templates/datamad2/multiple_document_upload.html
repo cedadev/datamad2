@@ -5,13 +5,48 @@
 {% block page_title %}
 {% endblock page_title %}
 {% block content_panel %}
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <h4><label> Upload Document </label></h4>
-    <p>{{ form | crispy }}</p>
-    <p>
-        <button type="submit" class="save btn btn-primary" id="claim">Upload</button>
-    </p>
-  </form>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card card-shaded">
+            <div class="card-body">
+                <h4><label> Upload Documents </label></h4>
+                <p>{{ form | crispy }}</p>
+                <p>
+                    <button type="submit" class="save btn btn-primary" id="claim">Upload</button>
+                </p>
+            </div>
+        </div>
+    </form>
+
+    <div class="container text-center text-muted" style="font-size: 1rem">
+        <p>
+            File names must follow the format:
+        </p>
+        <p>
+            GRANT REFERENCE (underscore separated) DOC TYPE
+        </p>
+        <p>
+            e.g. NE_T000619_1 DMP.pdf
+        </p>
+        <p>
+            Document types available are:
+        </p>
+        <p>
+            DMP - Outline data management plan
+        </p>
+        <p>
+            CFS - Case for support
+        </p>
+        <p>
+            TA - Technical appraisal
+        </p>
+        <p>
+            JOR - Justification of resources
+        </p>
+        <p>
+            PROFORMA - Grant proposal
+        </p>
+    </div>
+
 
 {% endblock %}

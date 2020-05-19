@@ -35,5 +35,5 @@ class MultipleDocumentUploadForm(forms.Form):
         model = Document
         fields = ('title', 'upload',)
 
-    file_field = forms.FileField(
+    upload = forms.FileField(
         widget=forms.ClearableFileInput(attrs={'multiple': True}))
