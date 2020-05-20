@@ -58,6 +58,7 @@ def multiple_document_upload(request):
                     messages.error(request, f'File {name} already exists')
                 except FormatError:
                     messages.error(request, f"File name {name} is not formatted correctly")
+            messages.success(request, 'Upload complete')
     else:
         form = MultipleDocumentUploadForm()
     return render(request, 'datamad2/multiple_document_upload.html', {'form': form})
@@ -202,15 +203,20 @@ def document_upload(request, pk, imported_pk, type):
 
                 document = form.save(commit=False)
                 document.grant = grant
+                grant_ref = (name.split(' ')[0]).replace('_', '/')
+                if grant_ref != grant.grant_ref:
+                    raise FormatError(f"Grant reference in file {name} does not match the grant you are uploading to.")
+
                 document.type = type
                 document.save()
+                messages.success(request, 'File uploaded successfully')
                 return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
 
-            except ValidationError:
+            except ValidationError as exc:
                 messages.error(request, f'This file {name} has already been uploaded')
 
-            except FormatError:
-                messages.error(request, f"File name {name} is not formatted correctly")
+            except FormatError as exc:
+                messages.error(request, f"{exc}")
     else:
         form = DocumentForm(instance=grant)
     return render(request, 'datamad2/document_upload.html', {'form': form})
@@ -223,3 +229,9 @@ def dmp_history(request, pk):
 
 def actions(request):
     return render(request, 'datamad2/admin_actions.html')
+
+
+def delete_file(request, pk, imported_pk):
+    document = Document.objects.get(pk=pk)
+    document.delete_file()
+    return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
