@@ -133,7 +133,7 @@ def routing_classification(request):
         if classification == 'none':
             grants = grants.filter(importedgrant__routing_classification=None).filter(importedgrant__science_area=None).distinct()
         elif classification:
-            grants = grants.filter(Q(importedgrant__routing_classification=classification) | Q(science_area=classification)).distinct()
+            grants = grants.filter(Q(importedgrant__routing_classification=classification) | Q(science_area__icontains=classification)).distinct()
 
         return render(request, 'datamad2/routing_classification.html', {'grants': grants})
 
