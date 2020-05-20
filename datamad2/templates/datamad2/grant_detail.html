@@ -283,13 +283,19 @@
                 <th><h3>Documents</h3></th>
                 {%  for doc in docs %}
                         <tr>
-                            <td><a href="{{ doc.upload.url }}"> {{ doc.title }} </a></td>
+                            <td>
+                                {% if user.is_admin %}
+                            <a title='Delete' data-toggle='tooltip'
+                               href="{% url 'delete_file' pk=doc.pk imported_pk=imported_grant.pk %}">
+                                <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>
+                                {% endif %}
+                            <a href="{{ doc.upload.url }}"> {{ doc.title }} </a></td>
                         </tr>
                 {%  endfor %}
                     <tr>
                         <td><a title='Upload' data-toggle='tooltip'
                                href="{% url 'document_upload' pk=imported_grant.grant.pk imported_pk=imported_grant.pk type='support' %}">
-                            <i class="fa fa-plus"></i></a> Upload document</td></tr>
+                            <i class="fas fa-plus" ></i></a> Upload document</td></tr>
             </table>
                     &nbsp
             <table class="table-responsive" id="grant-info">

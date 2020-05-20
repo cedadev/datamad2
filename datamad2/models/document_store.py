@@ -13,6 +13,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ValidationError
 import hashlib
 import os
+from datamadsite import settings
 
 
 class MediaFileSystemStorage(FileSystemStorage):
@@ -66,6 +67,10 @@ class Document(models.Model):
         self.set_title()
         self.generate_checksum()
         super().save(*args, **kwargs)
+
+    def delete_file(self, *args, **kwargs):
+        os.remove(os.path.join(settings.MEDIA_ROOT, self.upload.name))
+        super(Document, self).delete(*args, **kwargs)
 
     def __str__(self):
         return f"{self.title}"

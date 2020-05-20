@@ -40,3 +40,8 @@ $(".claim-btn").click(function (event) {
         }
     });
 });
+
+
+$(document).on('click', '.confirm', function(){
+    return confirm('Are you sure?');
+})
