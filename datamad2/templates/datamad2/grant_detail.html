@@ -319,11 +319,12 @@
                     {% with dmp=dmp_docs.first %}
                         <tr>
                             <td>
-                                {% if user.is_admin %}
-                            <a title='Delete' data-toggle='tooltip'
-                               href="{% url 'delete_file' pk=dmp.pk imported_pk=imported_grant.pk %}">
-                                <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>
-                                {% endif %}<a href="{{ dmp.upload.url }}"> {{ dmp.title }} </a>
+{#                                {% if user.is_admin %}#}
+{#                            <a title='Delete' data-toggle='tooltip'#}
+{#                               href="{% url 'delete_file' pk=dmp.pk imported_pk=imported_grant.pk %}">#}
+{#                                <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>#}
+{#                                {% endif %}#}
+                                <a href="{{ dmp.upload.url }}"> {{ dmp.title }} </a>
                             </td>
                         </tr>
                     {% endwith %}
