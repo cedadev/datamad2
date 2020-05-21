@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.views.generic.edit import FormView
 import re
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class FormatError(Exception):
@@ -40,7 +41,7 @@ def multiple_document_upload(request):
                 name = str(f)
 
                 try:
-                    pattern = re.compile("^\w{2}_\w\d{6}_\d \w{1,8}.\w*$")
+                    pattern = re.compile("^\w{2}_\w\d{6,7}\w*_\d \w{1,8}.\w*$")
                     if not pattern.match(name):
                         raise FormatError(f"File name {name} is not formatted correctly")
 
@@ -51,13 +52,16 @@ def multiple_document_upload(request):
                     else:
                         type = 'support'
                     document = Document(upload=f)
-                    document.grant = get_object_or_404(Grant, grant_ref=grant_ref)
+                    try:
+                        document.grant = Grant.objects.get(grant_ref=grant_ref)
+                    except ObjectDoesNotExist:
+                        raise FormatError(f"Grant {grant_ref} does not exist")
                     document.type = type
                     document.save()
                 except ValidationError:
                     messages.error(request, f'File {name} already exists')
-                except FormatError:
-                    messages.error(request, f"File name {name} is not formatted correctly")
+                except FormatError as exc:
+                    messages.error(request, f"{exc}")
             messages.success(request, 'Upload complete')
     else:
         form = MultipleDocumentUploadForm()
@@ -197,7 +201,7 @@ def document_upload(request, pk, imported_pk, type):
             name = str(request.FILES.get('upload'))
             try:
 
-                pattern = re.compile("^\w{2}_\w\d{6}_\d \w{1,8}.\w*$")
+                pattern = re.compile("^\w{2}_\w\d{6,7}\w*_\d \w{1,8}.\w*$")
                 if not pattern.match(name):
                     raise FormatError(f"File name {name} is not formatted correctly")
 
