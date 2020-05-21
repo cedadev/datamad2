@@ -41,7 +41,7 @@ def multiple_document_upload(request):
                 name = str(f)
 
                 try:
-                    pattern = re.compile("^\w{2}_\w\d{6,7}\w*_\d \w{1,8}.\w*$")
+                    pattern = re.compile("^\w{2}_\w\d{6,7}\w*_\d \w*.\w*$")
                     if not pattern.match(name):
                         raise FormatError(f"File name {name} is not formatted correctly")
 
@@ -75,8 +75,18 @@ def grant_detail(request, pk):
     ig = ImportedGrant.objects.filter(pk=pk)
     user = request.user
     grant_ref = str(imported_grant.grant_ref).replace('/', '\\u002f')
+
     docs = imported_grant.grant.document_set.filter(type='support')
     dmp_docs = imported_grant.grant.document_set.filter(type='dmp')
+
+    if imported_grant.parent_grant is not None:
+        parent_docs = imported_grant.parent_grant.document_set.filter(type='support')
+        parent_dmps = imported_grant.parent_grant.document_set.filter(type='dmp')
+
+    else:
+        parent_docs = None
+        parent_dmps = None
+
     if request.method == 'POST' and 'jira-issue':
         # call function
         set_options(user)
@@ -89,10 +99,12 @@ def grant_detail(request, pk):
         if link is None:
             ig.update(ticket=False)
         return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
-                                                              'link': link, 'docs': docs, 'dmp_docs': dmp_docs})
+                                                              'link': link, 'docs': docs, 'dmp_docs': dmp_docs,
+                                                              'parent_docs':parent_docs, 'parent_dmps':parent_dmps})
     else:
         return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
-                                                              'docs': docs, 'dmp_docs': dmp_docs})
+                                                              'docs': docs, 'dmp_docs': dmp_docs,
+                                                              'parent_docs':parent_docs, 'parent_dmps':parent_dmps})
 
 
 @login_required
@@ -201,7 +213,7 @@ def document_upload(request, pk, imported_pk, type):
             name = str(request.FILES.get('upload'))
             try:
 
-                pattern = re.compile("^\w{2}_\w\d{6,7}\w*_\d \w{1,8}.\w*$")
+                pattern = re.compile("^\w{2}_\w\d{6,7}\w*_\d \w*.\w*$")
                 if not pattern.match(name):
                     raise FormatError(f"File name {name} is not formatted correctly")
 
