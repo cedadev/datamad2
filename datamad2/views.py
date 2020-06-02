@@ -41,7 +41,7 @@ def multiple_document_upload(request):
                 name = str(f)
 
                 try:
-                    pattern = re.compile("^\w{2}_\w\d{6,7}\w*_\d \w*.\w*$")
+                    pattern = re.compile("^\w*_\w*_\d* \w*.\w*$")
                     if not pattern.match(name):
                         raise FormatError(f"File name {name} is not formatted correctly")
 
@@ -212,7 +212,7 @@ def document_upload(request, pk, imported_pk, type):
             name = str(request.FILES.get('upload'))
             try:
 
-                pattern = re.compile("^\w{2}_\w\d{6,7}\w*_\d \w*.\w*$")
+                pattern = re.compile("^\w*_\w*_\d* \w*.\w*$")
                 if not pattern.match(name):
                     raise FormatError(f"File name {name} is not formatted correctly")
 
