@@ -13,7 +13,14 @@
 {% endblock sidebar_items %}
 
 {% block content %}
-    {% include 'datamad2/includes/grant_table.html' %}
+    {%  if assignee == 'unassigned' %}
+        {% include 'datamad2/includes/grant_table.html' %}
+    {%  elif assignee != 'all' %}
+        {% include 'datamad2/includes/grant_table_data_centre.html' %}
+    {%  else %}
+        {% include 'datamad2/includes/grant_table.html' %}
+    {%  endif %}
+
 {% endblock content %}
 
 {% block tail_js_extra %}
