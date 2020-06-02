@@ -24,20 +24,20 @@
                 <td> {{ imported_grant.grant_holder }}</td>
 {#                {% if imported_grant.routing_classification in imported_grant.routing_classification.choices %}#}
                     {% if imported_grant.routing_classification is not None %}
-                    <td data-sort="{{ imported_grant.routing_classification }} "><i
-                            class="icon"> {{ imported_grant.routing_classification|icon }}</i></td>
+                    <td data-sort="{{ imported_grant.routing_classification }} ">
+                            {{ imported_grant.routing_classification}}</td>
 {#                    {%  endif %}#}
                     {% elif imported_grant.get_science_area is not None %}
 
                     {%  with areas=imported_grant.get_science_area %}
                         <td data-sort="{{ areas|first }} ">
                     {% for area in areas %}
-                     <i class="icon"> {{ area|icon }} </i>
+                      {{ area }}
                     {% endfor %}
                         </td>
                     {% endwith %}
                 {% else %}
-                    <td data-sort="z"><i class="icon"> {{ imported_grant.routing_classification|icon }}</i>
+                    <td data-sort="z"> {{ imported_grant.routing_classification }}
                     </td>
                 {% endif %}
                 <td> {{ imported_grant.creation_date|date:"d M Y" }}</td>
