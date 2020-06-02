@@ -336,24 +336,28 @@
                     {% with dmp=dmp_docs.first %}
                         <tr>
                             <td>
-{#                                {% if user.is_admin %}#}
-{#                            <a title='Delete' data-toggle='tooltip'#}
-{#                               href="{% url 'delete_file' pk=dmp.pk imported_pk=imported_grant.pk %}">#}
-{#                                <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>#}
-{#                                {% endif %}#}
+                            {% if dmp %}
+                                {% if user.is_admin %}
+                            <a title='Delete' data-toggle='tooltip'
+                               href="{% url 'delete_file' pk=dmp.pk imported_pk=imported_grant.pk %}">
+                                <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>
+                                {% endif %}
                                 <a href="{{ dmp.upload.url }}"> {{ dmp.title }} </a>
+                            {%  endif %}
                             </td>
                         </tr>
                     {% endwith %}
                 {% with parent_dmp=parent_dmps.first %}
                         <tr>
                             <td>
-{#                                {% if user.is_admin %}#}
-{#                            <a title='Delete' data-toggle='tooltip'#}
-{#                               href="{% url 'delete_file' pk=dmp.pk imported_pk=imported_grant.pk %}">#}
-{#                                <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>#}
-{#                                {% endif %}#}
+                                {% if parent_dmp %}
+                                {% if user.is_admin %}
+                            <a title='Delete' data-toggle='tooltip'
+                               href="{% url 'delete_file' pk=parent_dmp.pk imported_pk=imported_grant.pk %}">
+                                <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>
+                                {% endif %}
                                 <a href="{{ parent_dmp.upload.url }}"> {{ parent_dmp.title }} </a>
+                            {% endif %}
                             </td>
                         </tr>
                     {% endwith %}
