@@ -140,7 +140,6 @@ def grant_list(request):
 
         return render(request, 'datamad2/grant_list.html', {'grants': grants, 'assignee': assignee})
 
-
 def routing_classification(request):
     if request.method == 'GET':
         grants = Grant.objects.all()
