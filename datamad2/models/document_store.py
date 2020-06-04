@@ -28,10 +28,10 @@ class MediaFileSystemStorage(FileSystemStorage):
 
 
 def file_name(instance, filename):
-    # h = instance.checksum
+    h = instance.checksum
     grant_ref = (instance.grant.grant_ref).replace('/', '_')
     # basename, ext = os.path.splitext(filename)
-    return os.path.join('documents', grant_ref, filename)
+    return os.path.join('documents', grant_ref, h)
 
 
 class Document(models.Model):
@@ -66,6 +66,13 @@ class Document(models.Model):
     def save(self, *args, **kwargs):
         self.set_title()
         self.generate_checksum()
+
+        version = 2
+        exists = Document.objects.filter(title=self.title).exists()
+        if exists:
+            self.title = self.title + f' v{version}'
+            version += 1
+
         super().save(*args, **kwargs)
 
     def delete_file(self, *args, **kwargs):
