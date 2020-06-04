@@ -1,5 +1,5 @@
 {% extends 'datamad2/base.html' %}
-{% load static %}
+{% load static see_more %}
 
 {% block page_title %}
 {% endblock page_title %}
@@ -79,8 +79,8 @@
                         <th>Abstract</th>
                     </tr>
                     <tr>
-
-                        <td colspan="2">{{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
+                        <td colspan="2">{{ imported_grant.abstract|read_more:50|default_if_none:"N/A"}}</td>
+{#                        <button class="btn btn-primary claim-btn see-more"> See more </button></td>#}
                     </tr>
                     {#                <tr>#}
                     {#                </tr>#}
@@ -88,10 +88,10 @@
                         <th>Objectives</th>
                     </tr>
                     <tr>
-
-                        <td colspan="2">{{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
-
+                        <td colspan="2">{{ imported_grant.objectives|read_more:50|default_if_none:"N/A" }}</td>
+{#                        <button class="btn btn-primary claim-btn see-more"> See more </button></td>#}
                     </tr>
+
                     {#                <tr>#}
                     {#                </tr>#}
                     <tr>
@@ -379,5 +379,6 @@
 {% block tail_js_extra %}
     {{ block.super }}
     <script type="text/javascript" src="{% static 'js/claim_button.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/see_more.js' %}"></script>
 {% endblock tail_js_extra %}
 
