@@ -69,13 +69,19 @@ class Document(models.Model):
 
         version = 1
         exists = Document.objects.filter(title=self.title).exists()
+
         if exists:
             while exists:
                 version += 1
-                new_title = self.title + f' v{version}'
-                exists = Document.objects.filter(title=new_title).exists()
+                exists = Document.objects.filter(title=(self.title + f' v{version}')).exists()
 
-        self.title = new_title
+            title = self.title + f' v{version}'
+
+        else:
+            title = self.title
+
+        self.title = title
+
         super().save(*args, **kwargs)
 
     def delete_file(self, *args, **kwargs):
