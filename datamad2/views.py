@@ -223,6 +223,18 @@ def document_upload(request, pk, imported_pk, type):
                     raise FormatError(f"Grant reference in file {name} does not match the grant you are uploading to.")
 
                 document.type = type
+
+                file_type = name.split('.')[0][-3:]
+                if type == 'dmp':
+                    if file_type != 'DMP':
+                        raise FormatError(
+                            f"Document type in file {name} is not DMP.")
+
+                else:
+                    if file_type == 'DMP':
+                        raise FormatError(
+                            f"Document type in file {name} is DMP and belongs in the DMP document section.")
+
                 document.save()
                 messages.success(request, 'File uploaded successfully')
                 return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
@@ -235,11 +247,6 @@ def document_upload(request, pk, imported_pk, type):
     else:
         form = DocumentForm(instance=grant)
     return render(request, 'datamad2/document_upload.html', {'form': form})
-
-
-def dmp_history(request, pk):
-    grant = get_object_or_404(Grant, pk=pk)
-    return render(request, 'datamad2/dmp_history.html', {'grant': grant})
 
 
 def actions(request):
