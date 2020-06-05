@@ -67,12 +67,15 @@ class Document(models.Model):
         self.set_title()
         self.generate_checksum()
 
-        version = 2
+        version = 1
         exists = Document.objects.filter(title=self.title).exists()
         if exists:
-            self.title = self.title + f' v{version}'
-            version += 1
+            while exists:
+                version += 1
+                new_title = self.title + f' v{version}'
+                exists = Document.objects.filter(title=new_title).exists()
 
+        self.title = new_title
         super().save(*args, **kwargs)
 
     def delete_file(self, *args, **kwargs):
