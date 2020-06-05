@@ -1,6 +1,6 @@
 {% load routing_classification_icon %}
 
-<table class="row-border" id="grants" style="width:100%">
+<table class="table no-border"  id="grants">
     <thead>
     <tr>
         <th>Grant Reference</th>
@@ -12,8 +12,8 @@
     </tr>
     </thead>
     <tbody>
-    {% for grant in grants %}
-        {% with imported_grant=grant.importedgrant_set.first %}
+    {% for grant in page_obj.object_list %}
+        {% with imported_grant=grant.object.importedgrant %}
             <tr>
                 <td>
                     <a href="{% url 'grant_detail' pk=imported_grant.pk %}">
@@ -49,3 +49,5 @@
     {% endfor %}
     </tbody>
 </table>
+
+{% include 'datamad2/includes/pagination.html' %}

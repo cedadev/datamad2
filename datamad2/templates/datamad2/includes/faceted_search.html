@@ -1,0 +1,29 @@
+{% load string_tags %}
+{% load crispy_forms_tags %}
+
+<div class="col-3">
+    {% crispy form %}
+    <div class="card border-0">
+        <dl>
+            {% for field, values in facets.fields.items %}
+                <dt> {{ field | facet_title }}</dt>
+                {% for facet in values|slice:":5" %}
+                    <dd>
+                        <a href="{{ request.get_full_path }}&amp;selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a> ({{ facet.1 }})
+                    </dd>
+                {% endfor %}
+                {% for facet in values|slice:"5:" %}
+                    <dd class="d-none" id="hidden-{{ field }}">
+                        <a href="{{ request.get_full_path }}&amp;selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a> ({{ facet.1 }})
+                    </dd>
+                {% endfor %}
+                {% if values|length > 5 %}
+                    <a onclick="display_hidden_facets(this, '{{ field }}');return false" href="#">Show More ({{ values|slice:"5:"|length }})</a>
+                {% endif %}
+                <br>
+                <br>
+            {% endfor %}
+        </dl>
+    </div>
+</div>
+

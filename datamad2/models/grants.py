@@ -50,6 +50,10 @@ class Grant(models.Model):
 
     science_area = models.CharField(max_length=256, null=True, blank=True)
 
+    @property
+    def importedgrant(self):
+        return self.importedgrant_set.first()
+
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:
             self.claimed = False

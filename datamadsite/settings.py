@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'datamad2.apps.Datamad2Config',
     'datamad2_api.apps.Datamad2ApiConfig',
+    'haystack',
+
 ]
 
 MIDDLEWARE = [
@@ -137,3 +139,17 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAdminUser',
     ]
 }
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack_elasticsearch.elasticsearch7.Elasticsearch7SearchEngine',
+        'URL': 'https://es9.ceda.ac.uk:9200',
+        'INDEX_NAME': 'datamad2-haystack-remote',
+        'KWARGS': {
+            'headers': {
+                'x-api-key': '179a6eae4a5c8e4b902954260a38840b8f93bf6ea68272437d338861cd66d144'
+            }
+        }
+    }
+}
+

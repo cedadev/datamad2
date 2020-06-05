@@ -6,7 +6,9 @@ from django.db.models import Q
 from django.http import HttpResponse
 from .create_issue import make_issue, set_options, get_link
 from django.urls import reverse
-
+from haystack.generic_views import FacetedSearchView
+from datamad2.forms import DatamadFacetedSearchForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 @login_required
 def grant_detail(request, pk):
@@ -42,6 +44,12 @@ def grant_history_detail(request, pk, imported_pk):
     grant = get_object_or_404(Grant, pk=pk)
     imported_grant = get_object_or_404(ImportedGrant, pk=imported_pk)
     return render(request, 'datamad2/grant_detail_history.html', {'grant': grant, 'imported_grant': imported_grant})
+
+
+class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
+    form_class = DatamadFacetedSearchForm
+    facet_fields = ['assigned_datacentre', 'other_datacentre', 'routing_classification', 'secondary_classification']
+    template_name = 'datamad2/grant_list.html'
 
 
 @login_required
