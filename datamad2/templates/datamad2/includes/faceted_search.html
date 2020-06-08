@@ -5,16 +5,18 @@
     {% crispy form %}
     <div class="card border-0">
         <dl>
-            {% for field, values in facets.fields.items %}
+
+            {% for field in facet_fields %}
                 <dt> {{ field | facet_title }}</dt>
+                {% with values=facets.fields|get_item:field %}
                 {% for facet in values|slice:":5" %}
                     <dd>
-                        <a href="{{ request.get_full_path }}&amp;selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a> ({{ facet.1 }})
+                        <a href="{{ request.get_full_path }}{% if request.GET %}&amp;{% else %}?{% endif %}selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a> ({{ facet.1 }})
                     </dd>
                 {% endfor %}
                 {% for facet in values|slice:"5:" %}
                     <dd class="d-none" id="hidden-{{ field }}">
-                        <a href="{{ request.get_full_path }}&amp;selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a> ({{ facet.1 }})
+                        <a href="{{ request.get_full_path }}{% if request.GET %}&amp;{% else %}?{% endif %}selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a> ({{ facet.1 }})
                     </dd>
                 {% endfor %}
                 {% if values|length > 5 %}
@@ -22,6 +24,7 @@
                 {% endif %}
                 <br>
                 <br>
+                {% endwith %}
             {% endfor %}
         </dl>
     </div>

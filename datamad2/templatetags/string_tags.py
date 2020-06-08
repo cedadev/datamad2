@@ -17,3 +17,8 @@ register = template.Library()
 def facet_title(value):
     facet = value.replace('_', ' ')
     return facet.title()
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

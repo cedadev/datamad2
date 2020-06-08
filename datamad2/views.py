@@ -48,41 +48,15 @@ def grant_history_detail(request, pk, imported_pk):
 
 class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     form_class = DatamadFacetedSearchForm
-    facet_fields = ['assigned_datacentre', 'other_datacentre', 'routing_classification', 'secondary_classification']
+    facet_fields = ['assigned_datacentre', 'routing_classification', 'other_datacentre' , 'secondary_classification']
     template_name = 'datamad2/grant_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-@login_required
-def grant_list(request):
-    if request.method == 'GET':
-
-        # Get grant objects
-        grants = Grant.objects.all()
-
-        # Default the view to serve all unassigned grants
-        assignee = request.GET.get('datacentre', 'unassigned')
-
-        if assignee == 'unassigned':
-            grants = grants.filter(assigned_data_centre=None)
-
-        # If the user has not asked for all, filter
-        elif assignee != 'all':
-            grants = grants.filter(Q(assigned_data_centre__name=assignee) | Q(other_data_centre__name=assignee))
-
-        return render(request, 'datamad2/grant_list.html', {'grants': grants, 'assignee': assignee})
-
-
-def routing_classification(request):
-    if request.method == 'GET':
-        grants = Grant.objects.all()
-
-        classification = request.GET.get('rc')
-        if classification == 'none':
-            grants = grants.filter(importedgrant__routing_classification=None).filter(importedgrant__science_area=None).distinct()
-        elif classification:
-            grants = grants.filter(Q(importedgrant__routing_classification=classification) | Q(science_area=classification)).distinct()
-
-        return render(request, 'datamad2/routing_classification.html', {'grants': grants})
+        # Add the facet fields to define an order of the facets
+        context['facet_fields'] = self.facet_fields
+        return context
 
 
 @login_required

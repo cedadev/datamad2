@@ -42,4 +42,5 @@ def current_results(page_object):
     current_page = page_object.number
     page_size = page_object.paginator.per_page
     total = page_object.paginator.count
-    return f"Showing {(current_page-1) * page_size} - {current_page*page_size} of {total} results"
+    to_size = (current_page*page_size) if total > (current_page*page_size) else total
+    return f"Showing {(current_page-1) * page_size} - {to_size} of {total} results"
