@@ -7,7 +7,7 @@
         <dl>
 
             {% for field in facet_fields %}
-                <dt> {{ field | facet_title }}</dt>
+                <dt> {{ field | facet_title }}<a class="clear-facets" href="#" title="Clear {{ field | facet_title }} filter" data-facet="{{ field }}" data-toggle="tooltip">&nbsp;<i class="far fa-times-circle"></i></a></dt>
                 {% with values=facets.fields|get_item:field %}
                 {% for facet in values|slice:":5" %}
                     <dd>
