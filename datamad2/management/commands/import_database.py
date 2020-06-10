@@ -46,7 +46,9 @@ mapping = {
     'ACTUAL_START_DATE': 'actual_start_date',
     'ACTUAL_END_DATE': 'actual_end_date',
     'ABSTRACT': 'abstract',
-    'OBJECTIVES': 'objectives'
+    'OBJECTIVES': 'objectives',
+    'FACILITY': 'facility',
+    'CALL': 'call'
 }
 
 

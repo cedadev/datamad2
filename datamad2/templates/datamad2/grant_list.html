@@ -8,22 +8,6 @@
     <h4>Data Centre</h4>
 {% endblock filter_title %}
 
-{#{% block sidebar_items %}#}
-{#    {% include 'datamad2/includes/data_centre_sidebar_items.html' %}#}
-{#    {% for field, values in facets.fields.items %}#}
-{#        <div class="card">#}
-{#            <div class="card-header">{{ field }}</div>#}
-{#            <div class="card-body">#}
-{#                {% for facet in values %}#}
-{#                    <dd>#}
-{#                        <a href="{{ request.get_full_path }}&amp;selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a> {{ facet.1 }}#}
-{#                    </dd>#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#        </div>#}
-{#    {% endfor %}#}
-{#{% endblock sidebar_items %}#}
-
 {% block sidebar %}
     {% include 'datamad2/includes/faceted_search.html' %}
 {% endblock %}
@@ -37,7 +21,6 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
     <script src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
-
     <script type="text/javascript" src="{% static 'js/table_sorter.js' %}"></script>
 {% endblock tail_js_extra %}
 

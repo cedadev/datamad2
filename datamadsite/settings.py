@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 from datamadsite.settings_local import *
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,7 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-8+*s=741644tu_v#fy68t6&mhlpco$6_(u-h@0phc+wllzl7%'
+SECRET_KEY = ''
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -71,6 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media'
             ],
 
         },
@@ -87,6 +90,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'USER': 'django'
     }
 }
 
@@ -140,16 +144,4 @@ REST_FRAMEWORK = {
     ]
 }
 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack_elasticsearch.elasticsearch7.Elasticsearch7SearchEngine',
-        'URL': 'https://es9.ceda.ac.uk:9200',
-        'INDEX_NAME': 'datamad2-haystack-remote',
-        'KWARGS': {
-            'headers': {
-                'x-api-key': '179a6eae4a5c8e4b902954260a38840b8f93bf6ea68272437d338861cd66d144'
-            }
-        }
-    }
-}
-
+from .settings_local import *

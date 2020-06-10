@@ -31,10 +31,10 @@ def icon(value):
                          "class='fa "
                          "fa-globe-americas fa-lg' style='color:#ba9b72'></i></a>")
 
-    elif value == "Earth Observation":
-        return mark_safe("<a id='science-icon' title='Earth Observation' data-toggle='tooltip'><i "
-                         "class='fas "
-                         "fa-satellite fa-lg' style='color:#9e9a8e'></i></a>")
+    # elif value == "Earth Observation":
+    #     return mark_safe("<a id='science-icon' title='Earth Observation' data-toggle='tooltip'><i "
+    #                      "class='fas "
+    #                      "fa-satellite fa-lg' style='color:#9e9a8e'></i></a>")
 
     else:
         return mark_safe("<a id='science-icon' title='None' data-toggle='tooltip'><i class='fa "

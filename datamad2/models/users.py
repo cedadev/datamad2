@@ -31,7 +31,7 @@ class DataCentre(models.Model):
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, data_centre, password, **extra_fields):
+    def _create_user(self, email, password, data_centre=None,  **extra_fields):
         """
         Creates and saves a user with given email and password
         """
@@ -48,11 +48,13 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, data_centre, password=None, **extra_fields):
+    def create_user(self, email, password=None, datacentre=None, **extra_fields):
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, data_centre, password, **extra_fields)
+        return self._create_user(email, password, datacentre, **extra_fields)
 
-    def create_superuser(self, email, data_centre, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, datacentre=None, **extra_fields):
+
+        DataCentre.objects.get_or_create(name=None)
 
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_admin', True)
@@ -60,7 +62,7 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True')
 
-        return self._create_user(email, data_centre, password, **extra_fields)
+        return self._create_user(email, password, datacentre, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -81,7 +83,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'data_centre']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def __str__(self):
         return self.email

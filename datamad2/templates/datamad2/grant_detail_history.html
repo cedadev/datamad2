@@ -1,6 +1,7 @@
 {% extends 'datamad2/grant_detail.html' %}
 {% load static %}
-{% load  claim_status %}
+{% load claim_status %}
+{% load see_more %}
 
 {% block content %}
     {% with things=imported_grant.get_diff_fields %}
@@ -134,9 +135,9 @@
                     <tr>
                         {% if 'abstract' in things %}
                             <td class=" highlight"
-                                colspan="2"> {{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
+                                colspan="2"> {{ imported_grant.abstract|read_more:50|default_if_none:"N/A"}} </td>
                         {% else %}
-                            <td colspan="2">{{ imported_grant.abstract|linebreaksbr|default_if_none:"N/A" }} </td>
+                            <td colspan="2">{{ imported_grant.abstract|read_more:50|default_if_none:"N/A"}} </td>
                         {% endif %}
                     </tr>
 
@@ -150,9 +151,9 @@
                     <tr>
                         {% if 'objectives' in things %}
                             <td class=" highlight"
-                                colspan="2"> {{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
+                                colspan="2"> {{ imported_grant.objectives|read_more:50|default_if_none:"N/A" }} </td>
                         {% else %}
-                            <td colspan="2">{{ imported_grant.objectives|linebreaksbr|default_if_none:"N/A" }} </td>
+                            <td colspan="2">{{ imported_grant.objectives|read_more:50|default_if_none:"N/A" }} </td>
                         {% endif %}
                     </tr>
 
@@ -393,4 +394,5 @@
 
 {% block tail_js_extra %}
     <script type="text/javascript" src="{% static 'js/claim_button.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/see_more.js' %}"></script>
 {% endblock tail_js_extra %}

@@ -24,9 +24,9 @@ class Grant(models.Model):
     # Alt Data Contact Phone No	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
     alt_data_contact_phone = models.CharField(max_length=256, null=True, blank=True)
     # Assigned Data Centre	Sharepoint	E.g. NGDC
-    assigned_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='assigned_data_centre')
+    assigned_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='assigned_data_centre', blank=True)
     # Other DC's Expecting Datasets	Sharepoint	E.g. PDC
-    other_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='other_data_centre')
+    other_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='other_data_centre', blank=True)
     # Hide Record	Sharepoint
     hide_record = models.BooleanField(null=True, blank=True)
     # DateContact with PI	Sharepoint	Date or Null
@@ -61,15 +61,6 @@ class Grant(models.Model):
             self.claimed = True
         return super(Grant, self).save(*args, **kwargs)
 
-
-    # def save(self, *args, **kwargs):
-    #     if self.importedgrant_set.count() > 1:
-    #         self.updated_imported_grant = True
-    #     else:
-    #         self.updated_imported_grant = False
-    #     return super(Grant, self).save(*args, **kwargs)
-
-
     def __str__(self):
         return f"{self.grant_ref}"
 
@@ -97,8 +88,9 @@ class ImportedGrant(models.Model):
     amount_awarded = models.DecimalField(null=True, blank=True, max_digits=10, decimal_places=2)
     # Call	Siebel	E.g. Standard Grant DEC06			CALL
     # ignore call for now
-    # call = models.CharField(max_length=1024, default='', blank=True)
+    call = models.CharField(max_length=1024, default='', blank=True)
     # Grant Type	Siebel	E.g. RM grants & fees			GRANT_TYPE
+    facility = models.CharField(max_length=1024, default='', blank=True)
     # The xls file run by RTS also contains Abstract and Objectives I presume these are from the GRANT
     grant_type = models.CharField(max_length=1024, default='', blank=True)
     # Scheme	Siebel	E.g. Standard Grant			SCHEME
@@ -142,6 +134,9 @@ class ImportedGrant(models.Model):
                                                        ("Freshwater", "Freshwater"),
                                                        ("Terrestrial", "Terrestrial"),
                                                        ("Earth Observation", "Earth Observation"),
+                                                       ("Panel A", "Panel A"),
+                                                       ("Panel B", "Panel B"),
+                                                       ("Panel C", "Panel C"),
                                                        ))
     # Secondary Classifications	Siebel	E.g. Co-funded 40%; Cross-Research Council: 100%			MISSING
     secondary_classification = models.CharField(max_length=256, null=True, blank=True)
@@ -224,11 +219,13 @@ class ImportedGrant(models.Model):
         science_area = self.science_area
         science_area = science_area.replace(':', '').replace('%', '').split(' ')
         science_areas = dict(science_area[i:i + 2] for i in range(0, len(science_area), 2))
-        top_area = max(science_areas, key=science_areas.get)
+        #top_area = max(science_areas, key=science_areas.get)
+        top_area = max(science_areas.values())
         grant = Grant.objects.get(grant_ref=self.grant_ref)
-        grant.science_area = top_area
+        top_areas = [k for k, v in science_areas.items() if v == top_area]
+        grant.science_area = top_areas
         grant.save()
-        return top_area
+        return top_areas
 
     def save(self, *args, **kwargs):
         # On save, update timestamps
