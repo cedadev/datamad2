@@ -1,5 +1,6 @@
 {% extends 'datamad2/base.html' %}
 {% load static %}
+{% load render_table from django_tables2 %}
 
 {% block page_title %}
 {% endblock page_title %}
@@ -13,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-        {% include 'datamad2/includes/grant_table.html' %}
+    {% render_table table %}
 {% endblock content %}
 
 {% block tail_js_extra %}

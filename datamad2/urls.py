@@ -4,6 +4,7 @@ from datamad2 import views
 
 urlpatterns = [
     path('', views.FacetedGrantListView.as_view(), name='grant_list'),
+    path('datacentre/<str:datacentre>/', views.FacetedDatacenterGrantListView.as_view(), name='datacentre_grant_list'),
     path('grant/<int:pk>/', views.grant_detail, name='grant_detail'),
     path('grant/<int:pk>/claim', views.claim, name='claim'),
     path('accounts/', include('django.contrib.auth.urls',)),
