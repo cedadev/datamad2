@@ -130,6 +130,11 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     template_name = 'datamad2/grant_list.html'
 
     def get_table(self, context):
+        selected_facets = self.request.GET.getlist('selected_facets')
+        if selected_facets:
+            for facet in selected_facets:
+                if facet.startswith('assigned_datacentre'):
+                    return DataCentreGrantTable(data=[item.object for item in context['page_obj'].object_list], orderable=False)
         return GrantTable(data=[item.object for item in context['page_obj'].object_list], orderable=False)
 
     def get_context_data(self, **kwargs):
@@ -139,17 +144,6 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
         context['facet_fields'] = self.facet_fields
         context['table'] = self.get_table(context)
         return context
-
-
-class FacetedDatacenterGrantListView(FacetedGrantListView):
-    
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(assigned_datacentre='CEDA')
-
-    def get_table(self, context):
-        return DataCentreGrantTable(data=[item.object for item in context['page_obj'].object_list], orderable=False)
-
 
 
 @login_required
