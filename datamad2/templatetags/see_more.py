@@ -24,20 +24,20 @@ def read_more(s, show_words, autoescape=True):
         return s
 
     insertion = (
-        # The see more link...
+        # The see more link
         '<span class="read-more">&hellip;'
         '    <a href="#">'
-        '        <i class="fa fa-plus-square gray" title="Show All"></i>'
+        '        <span class="badge badge-secondary">See More</span>'
         '    </a>'
         '</span>'
-        # The call to hide the rest...
+        # The call to hide the rest
         '<span class="more d-none">'
     )
 
     # wrap the more part
     words.insert(show_words, insertion)
     words.append('<a href="#">'
-                 '<i class="fa fa-minus-square gray" title="Show Less"></i>'
+                 '<span class="badge badge-secondary">See Less</span>'
                  '</a> </span>')
     return mark_safe(' '.join(words))
 
