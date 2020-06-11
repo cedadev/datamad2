@@ -22,7 +22,7 @@ class MediaFileSystemStorage(FileSystemStorage):
 
     def _save(self, name, content):
         if self.exists(name):
-            raise ValidationError('File already exists: %s' % name)
+            raise ValidationError('File already uploaded')
 
         return super(MediaFileSystemStorage, self)._save(name, content)
 
@@ -39,7 +39,8 @@ class Document(models.Model):
     class Meta:
         ordering = ['-last_modified']
 
-    title = models.CharField(max_length=100, blank=True, help_text='If left blank the title will be the name of the file.')
+    title = models.CharField(max_length=100, blank=True)
+    download_title = models.CharField(max_length=100, blank=True)
     type = models.CharField(choices=(("support", "Support"), ("dmp", "DMP")), max_length=100)
     upload = models.FileField(upload_to=file_name, storage=MediaFileSystemStorage())
     last_modified = models.DateTimeField(auto_now=True)
@@ -48,10 +49,10 @@ class Document(models.Model):
 
     def set_title(self):
         """
-        Default the title to be the file name if nothing set on upload
+        Set the title to be the file name
         """
-        if not self.title:
-            self.title = self.upload.name
+        self.title = self.upload.name.split('.')[0]
+        self.file_ext = self.upload.name.split('.')[1]
 
     def generate_checksum(self):
         """
@@ -81,6 +82,7 @@ class Document(models.Model):
             title = self.title
 
         self.title = title
+        self.download_title = self.title+f'.{self.file_ext}'
 
         super().save(*args, **kwargs)
 

@@ -299,7 +299,7 @@
 
 {%  block rightsidebar%}
 
-    <div style= "width: 300px;">
+    <div style= "width: 325px;">
 {#        <th><h3 class="pt-3">Documents</h3></th>#}
         <div class="accordion pt-3" id="myAccordion">
             <div class="card">
@@ -315,24 +315,24 @@
                             {%  for doc in docs %}
                                 <tr>
                                     <td>
+                                        <a href="{{ doc.upload.url }}" download="{{ doc.download_title }}"> {{ doc.title }}  </a>
                                         {% if user.is_admin %}
-                                            <a title='Delete' data-toggle='tooltip'
-                                               href="{% url 'delete_file' pk=doc.pk imported_pk=imported_grant.pk %}">
-                                                <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>
-                                        {% endif %}
-                                        <a href="{{ doc.upload.url }}"> {{ doc.title }} </a></td>
+                                            <sup><a title='Delete' data-toggle='tooltip'
+                                                    href="{% url 'delete_file' pk=doc.pk imported_pk=imported_grant.pk %}"
+                                                    class="badge badge-secondary"><i class="fa fa-times confirm"></i></a></sup>
+                                        {% endif %}</td>
                                 </tr>
                                 <tr><td> <sup class="text-secondary">{{ doc.last_modified }}</sup> </td></tr>
                             {%  endfor %}
                             {%  for parent_doc in parent_docs %}
                                 <tr>
                                     <td>
+                                        <a href="{{ parent_doc.upload.url }}" download="{{ parent_doc.download_title }}"> {{ parent_doc.title }} </a>
                                         {% if user.is_admin %}
-                                            <a title='Delete' data-toggle='tooltip'
-                                               href="{% url 'delete_file' pk=parent_doc.pk imported_pk=imported_grant.pk %}">
-                                                <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>
-                                        {% endif %}
-                                        <a href="{{ parent_doc.upload.url }}"> {{ parent_doc.title }} </a></td>
+                                            <sup><a title='Delete' data-toggle='tooltip'
+                                                    href="{% url 'delete_file' pk=parent_doc.pk imported_pk=imported_grant.pk %}"
+                                                    class="badge badge-secondary"><i class="fa fa-times confirm"></i></a></sup>
+                                        {% endif %}</td>
                                 </tr>
                                 <tr><td> <sup class="text-secondary">{{ parent_doc.last_modified }}</sup> </td></tr>
                             {%  endfor %}
@@ -358,13 +358,13 @@
                                     <tr>
                                         <td>
                                             {% if dmp %}
+                                                <a href="{{ dmp.upload.url }}" download="{{ dmp.download_title }}"> {{ dmp.title }} </a>
                                                 {% if user.is_admin %}
-                                                    <a title='Delete' data-toggle='tooltip'
-                                                       href="{% url 'delete_file' pk=dmp.pk imported_pk=imported_grant.pk %}">
-                                                        <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>
+                                                    <sup><a title='Delete' data-toggle='tooltip'
+                                                    href="{% url 'delete_file' pk=dmp.pk imported_pk=imported_grant.pk %}"
+                                                    class="badge badge-secondary"><i class="fa fa-times confirm"></i></a></sup>
                                                 {% endif %}
-                                                <a href="{{ dmp.upload.url }}"> {{ dmp.title }} </a>
-                                            {%  endif %}
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     <tr><td> <sup class="text-secondary">{{ dmp.last_modified }}</sup> </td></tr>
@@ -373,12 +373,12 @@
                                     <tr>
                                         <td>
                                             {% if parent_dmp %}
+                                                <a href="{{ parent_dmp.upload.url }}" download="{{ parent_dmp.download_title }}"> {{ parent_dmp.title }} </a>
                                                 {% if user.is_admin %}
-                                                    <a title='Delete' data-toggle='tooltip'
-                                                       href="{% url 'delete_file' pk=parent_dmp.pk imported_pk=imported_grant.pk %}">
-                                                        <i class="fa fa-times fa-lg confirm" style='color:#cc0000'></i></a>
+                                                    <sup><a title='Delete' data-toggle='tooltip'
+                                                    href="{% url 'delete_file' pk=parent_dmp.pk imported_pk=imported_grant.pk %}"
+                                                    class="badge badge-secondary"><i class="fa fa-times confirm"></i></a></sup>
                                                 {% endif %}
-                                                <a href="{{ parent_dmp.upload.url }}"> {{ parent_dmp.title }} </a>
                                             {% endif %}
                                         </td>
                                     </tr>

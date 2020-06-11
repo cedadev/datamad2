@@ -59,7 +59,7 @@ def multiple_document_upload(request):
                     document.type = type
                     document.save()
                 except ValidationError:
-                    messages.error(request, f'File {name} already exists')
+                    messages.error(request, f'The file {name} has already been uploaded')
                 except FormatError as exc:
                     messages.error(request, f"{exc}")
             messages.success(request, 'Upload complete')
@@ -240,7 +240,7 @@ def document_upload(request, pk, imported_pk, type):
                 return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
 
             except ValidationError as exc:
-                messages.error(request, f'This file {name} has already been uploaded')
+                messages.error(request, f'The file {name} has already been uploaded')
 
             except FormatError as exc:
                 messages.error(request, f"{exc}")
