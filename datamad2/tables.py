@@ -17,7 +17,7 @@ class GrantTable(tables.Table):
     grant_ref = tables.LinkColumn(viewname='grant_detail', args=[A('importedgrant__pk')], verbose_name='Grant Reference')
     routing_classification = tables.TemplateColumn(template_name='datamad2/fields/routing_classification_field.html')
     date_added = tables.DateTimeColumn(accessor='importedgrant__creation_date', format='d M Y')
-    claim_status = tables.TemplateColumn(accessor='claimed', template_name='datamad2/fields/claim_status_field.html', attrs={'td':{'class': 'align-middle text-center'}})
+    assigned_datacentre = tables.TemplateColumn(accessor='assigned_data_centre', template_name='datamad2/fields/assigned_datacentre_field.html', attrs={'td':{'class': 'align-middle text-center'}})
 
     class Meta:
         model = Grant
@@ -37,12 +37,6 @@ class GrantTable(tables.Table):
             'importedgrant__grant_holder',
             'routing_classification',
             'date_added',
-            'claim_status',
+            'assigned_datacentre',
             '...'
         )
-
-
-class DataCentreGrantTable(GrantTable):
-
-    class Meta(GrantTable.Meta):
-        exclude=('claim_status',)
