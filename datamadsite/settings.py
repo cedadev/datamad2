@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'datamad2.apps.Datamad2Config',
     'datamad2_api.apps.Datamad2ApiConfig',
     'haystack',
+    'django_tables2'
 
 ]
 
