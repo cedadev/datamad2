@@ -1,5 +1,5 @@
 {% if value %}
-    CLAIMED
+    {{ value }}
 {% else %}
         <button data-id="{{ record.pk }}" data-user="{{ request.user.data_centre.name }}"
                 class="btn btn-primary claim-btn" id="claim-button"> CLAIM

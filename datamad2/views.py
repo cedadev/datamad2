@@ -14,7 +14,7 @@ from django.core.exceptions import ValidationError
 from django.views.generic.edit import FormView
 import re
 from django.core.exceptions import ObjectDoesNotExist
-from datamad2.tables import GrantTable, DataCentreGrantTable
+from datamad2.tables import GrantTable
 
 
 class FormatError(Exception):
@@ -130,11 +130,6 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     template_name = 'datamad2/grant_list.html'
 
     def get_table(self, context):
-        selected_facets = self.request.GET.getlist('selected_facets')
-        if selected_facets:
-            for facet in selected_facets:
-                if facet.startswith('assigned_datacentre'):
-                    return DataCentreGrantTable(data=[item.object for item in context['page_obj'].object_list], orderable=False)
         return GrantTable(data=[item.object for item in context['page_obj'].object_list], orderable=False)
 
     def get_context_data(self, **kwargs):
