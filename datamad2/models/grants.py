@@ -90,7 +90,7 @@ class ImportedGrant(models.Model):
     # ignore call for now
     call = models.CharField(max_length=1024, default='', blank=True)
     # grade / overall score
-    overall_score = models.CharField(max_length=256, null=True, blank=True)
+    overall_score = models.IntegerField(null=True, blank=True)
     # Grant Type	Siebel	E.g. RM grants & fees			GRANT_TYPE
     facility = models.CharField(max_length=1024, default='', blank=True)
     # The xls file run by RTS also contains Abstract and Objectives I presume these are from the GRANT

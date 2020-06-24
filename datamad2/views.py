@@ -126,7 +126,21 @@ def grant_history_detail(request, pk, imported_pk):
 
 class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     form_class = DatamadFacetedSearchForm
-    facet_fields = ['assigned_datacentre', 'routing_classification', 'other_datacentre' , 'secondary_classification']
+    facet_fields = [
+        'assigned_datacentre',
+        'routing_classification',
+        'other_datacentre',
+        'secondary_classification',
+        'grant_status',
+        'grant_type',
+        'scheme',
+        'call',
+        'facility',
+        'lead',
+        'ncas',
+        'nceo',
+
+    ]
     template_name = 'datamad2/grant_list.html'
 
     def get_table(self, context):
