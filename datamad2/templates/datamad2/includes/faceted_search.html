@@ -1,0 +1,32 @@
+{% load string_tags %}
+{% load crispy_forms_tags %}
+
+<div class="col-3">
+    {% crispy form %}
+    <div class="card border-0">
+        <dl>
+
+            {% for field in facet_fields %}
+                <dt> {{ field | facet_title }}<a class="clear-facets" href="#" title="Clear {{ field | facet_title }} filter" data-facet="{{ field }}" data-toggle="tooltip">&nbsp;<i class="far fa-times-circle"></i></a></dt>
+                {% with values=facets.fields|get_item:field %}
+                {% for facet in values|slice:":5" %}
+                    <dd>
+                        <a href="{{ request.get_full_path }}{% if request.GET %}&amp;{% else %}?{% endif %}selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a> ({{ facet.1 }})
+                    </dd>
+                {% endfor %}
+                {% for facet in values|slice:"5:" %}
+                    <dd class="d-none" id="hidden-{{ field }}">
+                        <a href="{{ request.get_full_path }}{% if request.GET %}&amp;{% else %}?{% endif %}selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a> ({{ facet.1 }})
+                    </dd>
+                {% endfor %}
+                {% if values|length > 5 %}
+                    <a onclick="display_hidden_facets(this, '{{ field }}');return false" href="#">Show More ({{ values|slice:"5:"|length }})</a>
+                {% endif %}
+                <br>
+                <br>
+                {% endwith %}
+            {% endfor %}
+        </dl>
+    </div>
+</div>
+

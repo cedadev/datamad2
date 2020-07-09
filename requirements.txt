@@ -1,3 +1,5 @@
+-e git+https://github.com/cedadev/django-haystack-elasticsearch.git@748886603c5bafd295ce12e85db9d4fae65516db#egg=ceda_django_haystack_elasticsearch
+git+https://github.com/cedadev/ceda-elasticsearch-tools.git
 certifi==2019.11.28
 cffi==1.14.0
 chardet==3.0.4
@@ -7,10 +9,14 @@ Django==2.2.13
 django-classy-tags==0.9.0
 django-cookie-law==2.0.2
 django-crispy-forms==1.8.1
+django-haystack==2.8.1
 django-sizefield==1.0.0
+django-tables2==2.3.1
 djangorestframework==3.10.3
-git+https://github.com/cedadev/fwtheme-django.git
-git+https://github.com/cedadev/fwtheme-django-ceda-serv.git
+docopt==0.6.2
+elasticsearch==7.6.0
+-git+https://github.com/cedadev/fwtheme-django.git
+-git+https://github.com/cedadev/fwtheme-django-ceda-serv.git
 idna==2.9
 jira==2.0.0
 node==0.9.24

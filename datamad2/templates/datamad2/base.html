@@ -39,13 +39,14 @@
                     <i class="fa fa-caret-down"></i>
                 </a>
                 <div class="dropdown-content">
-                    <a href="{% url 'grant_list' %}?datacentre=unassigned">Unassigned</a>
-                    <a href="{% url 'grant_list' %}?datacentre=BODC">BODC</a>
-                    <a href="{% url 'grant_list' %}?datacentre=CEDA">CEDA</a>
-                    <a href="{% url 'grant_list' %}?datacentre=EIDC">EIDC</a>
-                    <a href="{% url 'grant_list' %}?datacentre=NGDC">NGDC</a>
-                    <a href="{% url 'grant_list' %}?datacentre=PDC">PDC</a>
-                    <a href="{% url 'grant_list' %}?datacentre=ADS">ADS</a>
+                    <a href="{% url 'grant_list' %}">All</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:Unassigned">Unassigned</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:BODC">BODC</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:CEDA">CEDA</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:EIDC">EIDC</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:NGDC">NGDC</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:PDC">PDC</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:ADS">ADS</a>
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -53,18 +54,17 @@
                     <i class="fa fa-caret-down"></i>
                 </a>
                 <div class="dropdown-content">
-                    <a href="{% url 'routing_classification' %}?rc=none">None</a>
-                    <a href="{% url 'routing_classification' %}?rc=Marine">Marine</a>
-                    <a href="{% url 'routing_classification' %}?rc=Earth">Earth</a>
-                    <a href="{% url 'routing_classification' %}?rc=Atmospheric">Atmospheric</a>
-                    <a href="{% url 'routing_classification' %}?rc=Freshwater">Freshwater</a>
-                    <a href="{% url 'routing_classification' %}?rc=Terrestrial">Terrestrial</a>
-{#                    <a href="{% url 'routing_classification' %}?rc=Earth Observation">Earth Observation</a>#}
+                    <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Unassigned">Unassigned</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Marine">Marine</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Earth">Earth</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Atmospheric">Atmospheric</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Freshwater">Freshwater</a>
+                    <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Terrestrial">Terrestrial</a>
                 </div>
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropbtn" href="{% url 'grant_list' %}?datacentre={{ user.data_centre.name }}">My
+                    <a class="nav-link dropbtn" href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:{{ user.data_centre.name }}">My
                         Grants</a>
                 </li>
 

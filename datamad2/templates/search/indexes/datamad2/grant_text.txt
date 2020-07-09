@@ -1,0 +1,7 @@
+{{ object.importedgrant.title }}
+{{ object.importedgrant.abstract }}
+{{ object.grant_ref }}
+{{ object.importedgrant.grant_holder }}
+{{ object.importedgrant.department }}
+{{ object.importedgrant.research_org }}
+{{ object.importedgrant.parent_grant }}

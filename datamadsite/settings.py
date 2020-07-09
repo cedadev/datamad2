@@ -21,7 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-8+*s=741644tu_v#fy68t6&mhlpco$6_(u-h@0phc+wllzl7%'
+SECRET_KEY = ''
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -45,6 +46,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'datamad2.apps.Datamad2Config',
     'datamad2_api.apps.Datamad2ApiConfig',
+    'haystack',
+    'django_tables2',
 ]
 
 MIDDLEWARE = [
@@ -141,4 +144,4 @@ REST_FRAMEWORK = {
     ]
 }
 
-
+from .settings_local import *

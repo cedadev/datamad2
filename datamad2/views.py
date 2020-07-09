@@ -6,11 +6,15 @@ from django.db.models import Q
 from django.http import HttpResponse
 from .create_issue import make_issue, set_options, get_link
 from django.urls import reverse
+from haystack.generic_views import FacetedSearchView
+from datamad2.forms import DatamadFacetedSearchForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.views.generic.edit import FormView
 import re
 from django.core.exceptions import ObjectDoesNotExist
+from datamad2.tables import GrantTable
 
 
 class FormatError(Exception):
@@ -68,7 +72,6 @@ def multiple_document_upload(request):
     return render(request, 'datamad2/multiple_document_upload.html', {'form': form})
 
 
-
 @login_required
 def grant_detail(request, pk):
     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
@@ -121,36 +124,35 @@ def grant_history_detail(request, pk, imported_pk):
     return render(request, 'datamad2/grant_detail_history.html', {'grant': grant, 'imported_grant': imported_grant})
 
 
-@login_required
-def grant_list(request):
-    if request.method == 'GET':
+class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
+    form_class = DatamadFacetedSearchForm
+    facet_fields = [
+        'assigned_datacentre',
+        'routing_classification',
+        'other_datacentre',
+        'secondary_classification',
+        'grant_status',
+        'grant_type',
+        'scheme',
+        'call',
+        'facility',
+        'lead',
+        'ncas',
+        'nceo',
 
-        # Get grant objects
-        grants = Grant.objects.all()
+    ]
+    template_name = 'datamad2/grant_list.html'
 
-        # Default the view to serve all unassigned grants
-        assignee = request.GET.get('datacentre', 'unassigned')
+    def get_table(self, context):
+        return GrantTable(data=[item.object for item in context['page_obj'].object_list], orderable=False)
 
-        if assignee == 'unassigned':
-            grants = grants.filter(assigned_data_centre=None)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-        # If the user has not asked for all, filter
-        elif assignee != 'all':
-            grants = grants.filter(Q(assigned_data_centre__name=assignee) | Q(other_data_centre__name=assignee))
-
-        return render(request, 'datamad2/grant_list.html', {'grants': grants, 'assignee': assignee})
-
-def routing_classification(request):
-    if request.method == 'GET':
-        grants = Grant.objects.all()
-
-        classification = request.GET.get('rc')
-        if classification == 'none':
-            grants = grants.filter(importedgrant__routing_classification=None).filter(importedgrant__science_area=None).distinct()
-        elif classification:
-            grants = grants.filter(Q(importedgrant__routing_classification=classification) | Q(science_area__icontains=classification)).distinct()
-
-        return render(request, 'datamad2/routing_classification.html', {'grants': grants})
+        # Add the facet fields to define an order of the facets
+        context['facet_fields'] = self.facet_fields
+        context['table'] = self.get_table(context)
+        return context
 
 
 @login_required

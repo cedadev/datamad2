@@ -5,3 +5,6 @@ db.sqlite3-journal
 .idea
 __pychache_
 .DS_Store
+settings_local.py
+grant_refs.txt
+media

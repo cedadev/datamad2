@@ -1,5 +1,6 @@
 {% extends 'datamad2/base.html' %}
 {% load static %}
+{% load render_table from django_tables2 %}
 
 {% block page_title %}
 {% endblock page_title %}
@@ -8,19 +9,13 @@
     <h4>Data Centre</h4>
 {% endblock filter_title %}
 
-{% block sidebar_items %}
-    {% include 'datamad2/includes/data_centre_sidebar_items.html' %}
-{% endblock sidebar_items %}
+{% block sidebar %}
+    {% include 'datamad2/includes/faceted_search.html' %}
+{% endblock %}
 
 {% block content %}
-    {%  if assignee == 'unassigned' %}
-        {% include 'datamad2/includes/grant_table.html' %}
-    {%  elif assignee != 'all' %}
-        {% include 'datamad2/includes/grant_table_data_centre.html' %}
-    {%  else %}
-        {% include 'datamad2/includes/grant_table.html' %}
-    {%  endif %}
-
+    {% render_table table %}
+    {% include 'datamad2/includes/pagination.html' %}
 {% endblock content %}
 
 {% block tail_js_extra %}
@@ -28,7 +23,6 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
     <script src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
-
     <script type="text/javascript" src="{% static 'js/table_sorter.js' %}"></script>
 {% endblock tail_js_extra %}
 

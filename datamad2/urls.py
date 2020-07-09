@@ -3,8 +3,7 @@ from django.contrib.auth import views as auth_views
 from datamad2 import views
 
 urlpatterns = [
-    path('', views.grant_list, name='grant_list'),
-    path('routing_classification', views.routing_classification, name='routing_classification'),
+    path('', views.FacetedGrantListView.as_view(), name='grant_list'),
     path('grant/<int:pk>/', views.grant_detail, name='grant_detail'),
     path('grant/<int:pk>/claim', views.claim, name='claim'),
     path('accounts/', include('django.contrib.auth.urls',)),
@@ -18,5 +17,4 @@ urlpatterns = [
     path('actions/', views.actions, name='actions'),
     path('actions/<int:pk>/<int:imported_pk>/delete_file/', views.delete_file, name='delete_file'),
     path('actions/multiple_upload/', views.multiple_document_upload, name='multi_document_upload'),
-
 ]

@@ -10,7 +10,6 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from django.db import models
 from django.utils import timezone
-# from filer.fields.file import FilerFileField
 
 class Grant(models.Model):
 
@@ -51,8 +50,9 @@ class Grant(models.Model):
 
     science_area = models.CharField(max_length=256, null=True, blank=True)
 
-    # dmp_doc = FilerFileField(null=True, blank=True, related_name="dmp_doc", on_delete=models.SET_NULL)
-    # case_for_support_doc = FilerFileField(null=True, blank=True, related_name="cfs_doc", on_delete=models.SET_NULL)
+    @property
+    def importedgrant(self):
+        return self.importedgrant_set.first()
 
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:
@@ -60,15 +60,6 @@ class Grant(models.Model):
         else:
             self.claimed = True
         return super(Grant, self).save(*args, **kwargs)
-
-
-    # def save(self, *args, **kwargs):
-    #     if self.importedgrant_set.count() > 1:
-    #         self.updated_imported_grant = True
-    #     else:
-    #         self.updated_imported_grant = False
-    #     return super(Grant, self).save(*args, **kwargs)
-
 
     def __str__(self):
         return f"{self.grant_ref}"
@@ -98,6 +89,8 @@ class ImportedGrant(models.Model):
     # Call	Siebel	E.g. Standard Grant DEC06			CALL
     # ignore call for now
     call = models.CharField(max_length=1024, default='', blank=True)
+    # grade / overall score
+    overall_score = models.IntegerField(null=True, blank=True)
     # Grant Type	Siebel	E.g. RM grants & fees			GRANT_TYPE
     facility = models.CharField(max_length=1024, default='', blank=True)
     # The xls file run by RTS also contains Abstract and Objectives I presume these are from the GRANT
