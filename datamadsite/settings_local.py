@@ -17,3 +17,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MESSAGE_LEVEL = message_constants.DEBUG
 
+JIRA_KEY_PATH = ''

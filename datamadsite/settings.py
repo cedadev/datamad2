@@ -26,7 +26,7 @@ SECRET_KEY = '-8+*s=741644tu_v#fy68t6&mhlpco$6_(u-h@0phc+wllzl7%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'datamad2.apps.Datamad2Config',
     'datamad2_api.apps.Datamad2ApiConfig',
+    'sslserver'
 ]
 
 MIDDLEWARE = [
