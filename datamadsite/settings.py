@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'datamad2_api.apps.Datamad2ApiConfig',
     'haystack',
     'django_tables2',
+    'django_unused_media'
 ]
 
 MIDDLEWARE = [
