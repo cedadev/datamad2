@@ -78,7 +78,7 @@ class ImportedGrant(models.Model):
     grant = models.ForeignKey(to=Grant, on_delete=models.PROTECT, null=True, blank=True)
     # date imported grant was created
     # creation_date = models.DateTimeField(auto_now_add=True)
-    creation_date = models.DateField(editable=False)
+    creation_date = models.DateTimeField(editable=False)
     #Date modified
     #modified_date = models.DateTimeField(editable=False)
     # Grant Status	Siebel	Active/Closed			GRANT_STATUS
@@ -90,7 +90,7 @@ class ImportedGrant(models.Model):
     # ignore call for now
     call = models.CharField(max_length=1024, default='', blank=True)
     # grade / overall score
-    overall_score = models.IntegerField(null=True, blank=True)
+    overall_score = models.FloatField(null=True, blank=True)
     # Grant Type	Siebel	E.g. RM grants & fees			GRANT_TYPE
     facility = models.CharField(max_length=1024, default='', blank=True)
     # The xls file run by RTS also contains Abstract and Objectives I presume these are from the GRANT
