@@ -75,6 +75,7 @@ admin.site.unregister(Group)
 
 class ImportedGrantAdmin(admin.ModelAdmin):
     search_fields = ['grant_ref', 'title']
+    list_display = ('grant_ref', 'title', 'creation_date')
 
     def __init__(self, *args, **kwargs):
         admin.ModelAdmin.__init__(self, *args, **kwargs)

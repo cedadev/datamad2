@@ -8,7 +8,7 @@ __copyright__ = 'Copyright 2018 United Kingdom Research and Innovation'
 __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from datamad2.models import ImportedGrant, Grant
 
 import pandas as pd
@@ -17,38 +17,41 @@ from dateutil.parser import parse
 from tqdm import tqdm
 from django.core.exceptions import ObjectDoesNotExist
 from decimal import Decimal
-
+import io
+import requests
+from requests.auth import HTTPBasicAuth
 
 mapping = {
-    'PROJECT_TITLE': 'title',
     'GRANTREFERENCE': 'grant_ref',
-    'GRANT_STATUS': 'grant_status',
-    'AMOUNT': 'amount_awarded',
-    'GRANT_TYPE': 'grant_type',
+    'PROJECT_TITLE': 'title',
     'SCHEME': 'scheme',
-    'LEAD_GRAN': 'lead_grant',
+    'CALL': 'call',
+    'GRANT_TYPE': 'grant_type',
     'GRANT_HOLDER': 'grant_holder',
-    'DEPARTMENT': 'department',
-    'RESEARCH_ORG': 'research_org',
-    'ADDRESS1': 'address1',
-    'ADDRESS2': 'address2',
-    'CITY': 'city',
-    'POSTCODE': 'post_code',
-    'EMAIL': 'email',
     'WORK_NUMBER': 'work_number',
-    'ROUTING_CLASSIFICATION': 'routing_classification',
-    'SECONDARY_CLASSIFICATION': 'secondary_classification',
-    'SCIENCE_AREA': 'science_area',
+    'EMAIL': 'email',
+    'RESEARCH_ORG': 'research_org',
+    'DEPARTMENT': 'department',
+    'ACTUAL_START_DATE': 'actual_start_date',
+    'ACTUAL_END_DATE': 'actual_end_date',
     'NCAS': 'ncas',
     'NCEO': 'nceo',
     'PROPOSED_ST_DT': 'proposed_start_date',
     'PROPOSED_END_DT': 'proposed_end_date',
-    'ACTUAL_START_DATE': 'actual_start_date',
-    'ACTUAL_END_DATE': 'actual_end_date',
+    'GRANT_STATUS': 'grant_status',
+    'ADDRESS1': 'address1',
+    'ADDRESS2': 'address2',
+    'CITY': 'city',
+    'POSTCODE': 'post_code',
+    'LEAD_GRANT': 'lead_grant',
+    'AMOUNT': 'amount_awarded',
+    'ROUTING_CLASSIFICATION': 'routing_classification',
+    'SCIENCE_AREA': 'science_area',
+    'SECONDARY_CLASSIFICATION': 'secondary_classification',
     'ABSTRACT': 'abstract',
     'OBJECTIVES': 'objectives',
     'FACILITY': 'facility',
-    'CALL': 'call'
+    'OVERALL_SCORE': 'overall_score'
 }
 
 
@@ -56,12 +59,30 @@ class Command(BaseCommand):
     help = __doc__
 
     def add_arguments(self, parser):
-        parser.add_argument('input_file', help='Tab delimited file to import')
+        input_group = parser.add_mutually_exclusive_group()
+        input_group.add_argument('--url', help='Import database from URL')
+        input_group.add_argument('--file', help='CSV file to import')
+        parser.add_argument('--username')
+        parser.add_argument('--password')
 
     def handle(self, *args, **options):
 
+        if options.get('url'):
+            r = requests.get(
+                options['url'],
+                auth=HTTPBasicAuth(
+                    options.get('username'),
+                    options.get('password')
+                )
+            )
+
+            if r.text[:15] == '"GRANTREFERENCE':
+                database_input = io.StringIO(r.text)
+        else:
+            database_input = options.get('file')
+
         # Load file
-        df = pd.read_table(options['input_file'])
+        df = pd.read_csv(database_input)
 
         for row in tqdm(df.itertuples(), desc='Importing grants'):
             data = {}
@@ -74,11 +95,11 @@ class Command(BaseCommand):
                 if not isinstance(value, str) and math.isnan(value):
                     continue
 
-                if source_field in ('LEAD_GRAN', 'NCAS', 'NCEO'):
+                if source_field in ('LEAD_GRANT', 'NCAS', 'NCEO'):
                     # Turn into boolean
                     value = bool('y' in value.lower())
 
-                elif source_field in ('PROPOSED_ST_DT','PROPOSED_END_DT','ACTUAL_START_DATE','ACTUAL_END_DATE'):
+                elif source_field in ('PROPOSED_ST_DT', 'PROPOSED_END_DT', 'ACTUAL_START_DATE', 'ACTUAL_END_DATE'):
                     # Convert the date
                     value = parse(value, default=None).date()
 
@@ -95,7 +116,7 @@ class Command(BaseCommand):
 
             try:
                 existing_G = Grant.objects.get(grant_ref=grant_ref)
-                existing_ig = existing_G.importedgrant_set.first()
+                existing_ig = existing_G.importedgrant
                 changed_fields = list(filter(
                     lambda field: getattr(existing_ig, field, None) != getattr(ig, field, None), model_fields))
 
@@ -108,7 +129,6 @@ class Command(BaseCommand):
             except ObjectDoesNotExist:
                 ig = ImportedGrant(**data)
                 ig.save()
-
 
         # Attach parent child relationships
         for row in tqdm(df.itertuples(), desc='Making parent child connections'):
