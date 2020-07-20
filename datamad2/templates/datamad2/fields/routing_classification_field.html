@@ -1,7 +1,7 @@
 {% if value %}
     {{ value }}
-{% elif record.importedgrant.get_science_area %}
-    {% with areas=record.importedgrant.get_science_area %}
+{% elif record.importedgrant.top_science_area %}
+    {% with areas=record.importedgrant.top_science_area %}
         {% for area in areas %}
             {{ area }}
         {% endfor %}

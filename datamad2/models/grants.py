@@ -10,6 +10,10 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from django.db import models
 from django.utils import timezone
+import re
+
+science_area_pattern = re.compile('(?P<area>\w+):\s?(?P<percentage>\d{1,3})%', re.M)
+
 
 class Grant(models.Model):
 
@@ -217,16 +221,17 @@ class ImportedGrant(models.Model):
                 return changed_fields
 
     @property
-    def get_science_area(self):
-        science_area = self.science_area
-        science_area = science_area.replace(':', '').replace('%', '').split(' ')
-        science_areas = dict(science_area[i:i + 2] for i in range(0, len(science_area), 2))
-        #top_area = max(science_areas, key=science_areas.get)
-        top_area = max(science_areas.values())
-        grant = Grant.objects.get(grant_ref=self.grant_ref)
-        top_areas = [k for k, v in science_areas.items() if v == top_area]
-        grant.science_area = top_areas
-        grant.save()
+    def top_science_area(self):
+        top_areas = []
+
+        if self.science_area:
+            science_areas = {}
+            for match in science_area_pattern.finditer(self.science_area):
+                    science_areas[match.group('area')] = int(match.group('percentage'))
+
+            top_percentage = max(science_areas.values())
+            top_areas = [k for k,v in science_areas.items() if v == top_percentage]
+
         return top_areas
 
     def save(self, *args, **kwargs):
