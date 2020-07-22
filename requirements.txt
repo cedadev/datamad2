@@ -1,6 +1,6 @@
 git+https://github.com/cedadev/ceda-elasticsearch-tools.git
 git+https://github.com/cedadev/django-haystack-elasticsearch.git
-git+https://github.com/rsmith/django-jira-oauth.git
+git+https://github.com/rsmith013/django-jira-oauth.git
 certifi==2019.11.28
 cffi==1.14.0
 chardet==3.0.4
