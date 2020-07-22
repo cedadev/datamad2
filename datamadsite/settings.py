@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'fwtheme_django_ceda_serv',
     'fwtheme_django',
+    'jira_oauth',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,7 +49,7 @@ INSTALLED_APPS = [
     'datamad2_api.apps.Datamad2ApiConfig',
     'haystack',
     'django_tables2',
-    'django_unused_media'
+    'django_unused_media',
 ]
 
 MIDDLEWARE = [

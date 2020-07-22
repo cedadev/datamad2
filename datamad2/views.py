@@ -1,10 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant, User, Document
+from .models import ImportedGrant, Grant, Document
 from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm
-from django.db.models import Q
 from django.http import HttpResponse
-from .create_issue import make_issue, set_options, get_link
+from .create_issue import make_issue
 from django.urls import reverse
 from haystack.generic_views import FacetedSearchView
 from datamad2.forms import DatamadFacetedSearchForm
@@ -15,13 +14,14 @@ from django.views.generic.edit import FormView
 import re
 from django.core.exceptions import ObjectDoesNotExist
 from datamad2.tables import GrantTable
+from jira_oauth.decorators import jira_access_token_required
 
 
 class FormatError(Exception):
     pass
 
 
-class FileFieldView(FormView):
+class FileFieldView(LoginRequiredMixin, FormView):
     form_class = MultipleDocumentUploadForm
     template_name = 'datamad2/multiple_document_upload.html'  # Replace with your template.
     success_url = 'actions'  # Replace with your URL or reverse().
@@ -75,14 +75,11 @@ def multiple_document_upload(request):
 @login_required
 def grant_detail(request, pk):
     imported_grant = get_object_or_404(ImportedGrant, pk=pk)
-    ig = ImportedGrant.objects.filter(pk=pk)
-    user = request.user
-    grant_ref = str(imported_grant.grant_ref).replace('/', '\\u002f')
 
     docs = imported_grant.grant.document_set.filter(type='support')
     dmp_docs = imported_grant.grant.document_set.filter(type='dmp')
 
-    if imported_grant.parent_grant is not None:
+    if imported_grant.parent_grant:
         parent_docs = imported_grant.parent_grant.document_set.filter(type='support')
         parent_dmps = imported_grant.parent_grant.document_set.filter(type='dmp')
 
@@ -90,25 +87,35 @@ def grant_detail(request, pk):
         parent_docs = None
         parent_dmps = None
 
-    if request.method == 'POST' and 'jira-issue':
-        # call function
-        set_options(user)
-        make_issue(user, imported_grant)
-        ig.update(ticket=True)
-        # return user to required page
-        return redirect('grant_detail', pk=pk)
-    elif imported_grant.ticket is True:
-        link = get_link(user, grant_ref)
-        if link is None:
-            ig.update(ticket=False)
-        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
-                                                              'link': link, 'docs': docs, 'dmp_docs': dmp_docs,
-                                                              'parent_docs':parent_docs, 'parent_dmps':parent_dmps})
-    else:
-        return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
+    return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
                                                               'docs': docs, 'dmp_docs': dmp_docs,
                                                               'parent_docs':parent_docs, 'parent_dmps':parent_dmps})
 
+
+@login_required
+@jira_access_token_required
+def push_to_jira(request, pk):
+    """
+    Create a JIRA ticket from a grant.
+    Once the ticket is created, save a link to the ticket with the grant for easy retrieval
+    :param request:
+    :param pk:
+    :return:
+    """
+    imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+
+    # There is no jira URL against this grant
+    if not imported_grant.grant.jira_ticket:
+        issue = make_issue(request, imported_grant)
+        link = issue.permalink()
+
+        # Save the ticket link to the correct grant
+        if link:
+            grant = Grant.objects.get(pk=imported_grant.grant.pk)
+            grant.jira_ticket=link
+            grant.save()
+
+    return redirect('grant_detail', pk=pk)
 
 @login_required
 def grant_history(request, pk):
@@ -259,3 +266,4 @@ def delete_file(request, pk, imported_pk):
     document = Document.objects.get(pk=pk)
     document.delete_file()
     return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
+
