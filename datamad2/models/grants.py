@@ -54,6 +54,8 @@ class Grant(models.Model):
 
     science_area = models.CharField(max_length=256, null=True, blank=True)
 
+    jira_ticket = models.URLField(null=True, blank=True)
+
     @property
     def importedgrant(self):
         return self.importedgrant_set.first()
@@ -176,8 +178,6 @@ class ImportedGrant(models.Model):
     abstract = models.TextField(default='', blank=True)
     # Objectives	Siebel		Truncated
     objectives = models.TextField(default='', blank=True)
-    # ticket created
-    ticket = models.BooleanField(null=True, blank=True) #, editable=False, verbose_name='Ticket created')
 
 
 

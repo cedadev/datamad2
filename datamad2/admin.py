@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models.grants import ImportedGrant, Grant
-from .models.users import User
+from .models.users import User, DataCentre
 from .models.document_store import Document
 
 # Register your models here.
@@ -112,3 +112,9 @@ class DocumentAdmin(admin.ModelAdmin):
     autocomplete_fields = ['grant']
 
 admin.site.register(Document, DocumentAdmin)
+
+
+class DataCentreAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(DataCentre, DataCentreAdmin)

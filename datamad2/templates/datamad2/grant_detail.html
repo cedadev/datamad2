@@ -285,17 +285,15 @@
         </div>
 
     <div class="pb-4">
-        {% if imported_grant.ticket == True %}
-            <a href="{{ link }}">
-                <button class="btn btn-primary jira-btn" id="jira-btn">Link to JIRA issue</button>
+        {% if imported_grant.grant.jira_ticket %}
+            <a href="{{ imported_grant.grant.jira_ticket }}" target="_blank">
+                <button class="btn btn-primary jira-btn" id="jira-btn">JIRA Issue</button>
             </a>
         {% else %}
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" name="jira-issue" class="btn btn-primary jira-btn">Make JIRA issue</button>
-            </form>
+            <a href="{% url 'jira_convert' imported_grant.pk %}">
+                <button class="btn btn-primary jira-btn" id="jira-btn">Convert to JIRA Issue</button>
+            </a>
         {% endif %}
-        {#                        <a href="#"><button class="btn btn-primary"  id="jira-btn"> Make JIRA issue </button></a>#}
     </div>
 
 {% endblock content %}
