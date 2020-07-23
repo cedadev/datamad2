@@ -1,8 +1,6 @@
 {% extends 'datamad2/base.html' %}
 {% load static see_more %}
 
-{% block page_title %}
-{% endblock page_title %}
 
 {% block sidebar %}
 {% endblock sidebar %}
@@ -41,12 +39,6 @@
                         <th>Assigned Data Centre</th>
                         <td >{{ imported_grant.grant.assigned_data_centre|default_if_none:"N/A" }} </td>
                     </tr>
-{#                {% if imported_grant.grant.claimed == True %}#}
-{#                    <tr>#}
-{#                        <th>Claimed by</th>#}
-{#                        <td >{{ }} </td>#}
-{#                    </tr>#}
-{#                {% endif %}#}
                     <tr>
                         <th>Routing Classification</th>
                         <td > {{ imported_grant.routing_classification }} </td>

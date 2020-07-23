@@ -48,12 +48,6 @@
                             <td> {{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% endif %}
                     </tr>
-
-                    {#                            <tr>#}
-                    {#                                <th>Date Modified </th>#}
-                    {#                                <td  > {{ imported_grant.modified_date }} </td>#}
-                    {#                            </tr>#}
-
                     <tr>
                         {% if 'grant_status' in things %}
                             <th class="highlight">Grant Status</th>
@@ -366,25 +360,6 @@
                             <td>{{ imported_grant.comments|default_if_none:"N/A" }} </td>
                         {% endif %}
                     </tr>
-                    {% comment %}                            <tr>
-                                <th>Original Proposed Start Date</th>
-                                <td >{{ imported_grant.original_proposed_start_date}} </td>
-                            </tr>
-                            <tr>
-                                <th>Original Proposed End Date</th>
-                                <td >{{ imported_grant.original_proposed_end_date}} </td>
-                            </tr>{% endcomment %}
-
-                    {% comment %}                            <tr>
-                                <th>End Date Changed</th>
-                                <td >{{ imported_grant.end_date_changed }} </td>
-                            </tr>
-                            <tr>
-                                <th>Start Date Changed</th>
-                                <td >{{ imported_grant.start_date_changed}} </td>
-                            </tr>{% endcomment %}
-
-
                     </tbody>
                 </table>
             </div>

@@ -1,25 +1,11 @@
-{%  extends 'datamad2/base.html' %}
-{% load staticfiles cookielaw_tags i18n fwtheme_tags %}
-{% load routing_classification_icon %}
-{% is_container_fluid as container_fluid %}
+{% extends 'datamad2/base.html' %}
 
-{% block content %}
-
-{% block page_special %}
-{% endblock %}
-
-{# To make content occupy full width, override the block page_container #}
-{# with one of the same name which OMITS the div class=container tag #}
-
-{% block page_container %}
-
-    <div class="container{% if container_fluid %}-fluid{% endif %}">
-
-    {% block content_main %}
-            <div class="col">
-            <table class="row-border" id="grants" style="width:100%">
+{% block page_title %}{% endblock %}
+{% block content_panel %}
+    <div class="col">
+        <table class="row-border" id="grants" style="width:100%">
             <tr>
-                <th> <h4>Account Details </h4></th>
+                <th><h4>Account Details </h4></th>
             </tr>
             <tr>
                 <th>First Name</th>
@@ -40,15 +26,14 @@
             <tr>
                 <th></th>
                 <td>
-                    <a href="{% url 'logout'%}"> <button class="btn btn-primary" id="claim"> Logout </button> </a>
-                    <a href="{% url 'password_reset' %}"> <button class="btn btn-primary" id="claim"> Change Password </button> </a>
+                    <a href="{% url 'logout' %}">
+                        <button class="btn btn-primary" id="claim"> Logout</button>
+                    </a>
+                    <a href="{% url 'password_reset' %}">
+                        <button class="btn btn-primary" id="claim"> Change Password</button>
+                    </a>
                 </td>
             </tr>
-    </table>
+        </table>
 
-    {% endblock content_main %}
-
-</div>
-
-{% endblock page_container %}
-{% endblock %}
+{% endblock content_panel %}
