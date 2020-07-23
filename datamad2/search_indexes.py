@@ -31,3 +31,9 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Grant
+
+    def prepare_secondary_classification(self, obj):
+        secondary_classification = obj.importedgrant.secondary_classification
+        if secondary_classification:
+            return secondary_classification.split(':')[0]
+        return secondary_classification

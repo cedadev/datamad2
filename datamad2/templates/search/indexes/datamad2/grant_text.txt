@@ -5,3 +5,5 @@
 {{ object.importedgrant.department }}
 {{ object.importedgrant.research_org }}
 {{ object.importedgrant.parent_grant }}
+{{ object.importedgrant.facility }}
+{{ object.importedgrant.call }}

@@ -15,6 +15,7 @@ import re
 from django.core.exceptions import ObjectDoesNotExist
 from datamad2.tables import GrantTable
 from jira_oauth.decorators import jira_access_token_required
+from django.conf import settings
 
 
 class FormatError(Exception):
@@ -153,6 +154,15 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     def get_table(self, context):
         return GrantTable(data=[item.object for item in context['page_obj'].object_list], orderable=False)
 
+    def get_queryset(self):
+        options = {
+            "size": settings.HAYSTACK_FACET_LIMIT
+        }
+        qs = super().get_queryset()
+        for field in self.facet_fields:
+            qs = qs.facet(field, **options)
+        return qs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -256,10 +266,6 @@ def document_upload(request, pk, imported_pk, type):
     else:
         form = DocumentForm(instance=grant)
     return render(request, 'datamad2/document_upload.html', {'form': form})
-
-
-def actions(request):
-    return render(request, 'datamad2/admin_actions.html')
 
 
 def delete_file(request, pk, imported_pk):
