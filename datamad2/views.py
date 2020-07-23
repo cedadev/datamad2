@@ -16,6 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from datamad2.tables import GrantTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
+from itertools import chain
 
 
 class FormatError(Exception):
@@ -85,12 +86,14 @@ def grant_detail(request, pk):
         parent_dmps = imported_grant.parent_grant.document_set.filter(type='dmp')
 
     else:
-        parent_docs = None
-        parent_dmps = None
+        parent_docs = Document.objects.none()
+        parent_dmps = Document.objects.none()
 
-    return render(request, 'datamad2/grant_detail.html', {'imported_grant': imported_grant,
-                                                              'docs': docs, 'dmp_docs': dmp_docs,
-                                                              'parent_docs':parent_docs, 'parent_dmps':parent_dmps})
+    return render(request, 'datamad2/grant_detail.html', {
+        'imported_grant': imported_grant,
+        'supporting_docs': docs | parent_docs,
+        'dmp_docs': dmp_docs | parent_dmps,
+    })
 
 
 @login_required
@@ -113,10 +116,11 @@ def push_to_jira(request, pk):
         # Save the ticket link to the correct grant
         if link:
             grant = Grant.objects.get(pk=imported_grant.grant.pk)
-            grant.jira_ticket=link
+            grant.jira_ticket = link
             grant.save()
 
     return redirect('grant_detail', pk=pk)
+
 
 @login_required
 def grant_history(request, pk):
@@ -272,4 +276,3 @@ def delete_file(request, pk, imported_pk):
     document = Document.objects.get(pk=pk)
     document.delete_file()
     return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
-

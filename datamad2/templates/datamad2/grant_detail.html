@@ -13,192 +13,194 @@
             history.
         </div>
     {% endif %}
-        <div class="card card-shaded">
-            <div class="card-body">
-                {% include 'datamad2/includes/claim_assign_buttons.html' %}
+    <div class="card card-shaded">
+        <div class="card-body">
+            {% include 'datamad2/includes/claim_assign_buttons.html' %}
 
-                <table class="table-responsive" id="grant-info">
+            <table class="table-responsive" id="grant-info">
 
-                    <tr>
-                        <th colspan="2"><h3>{{ imported_grant.title }} </h3></th>
-                    </tr>
-                    <tr>
-                        <th>Grant Reference</th>
-                        <td > {{ imported_grant.grant_ref }} </td>
-                    </tr>
+                <tr>
+                    <th colspan="2"><h3>{{ imported_grant.title }} </h3></th>
+                </tr>
+                <tr>
+                    <th>Grant Reference</th>
+                    <td> {{ imported_grant.grant_ref }} </td>
+                </tr>
 
-                    <tr>
-                        <th>Date Created</th>
-                        <td>{{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Grant Status</th>
-                        <td >{{ imported_grant.grant_status|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Assigned Data Centre</th>
-                        <td >{{ imported_grant.grant.assigned_data_centre|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Routing Classification</th>
-                        <td > {{ imported_grant.routing_classification }} </td>
-                    </tr>
-                    <tr>
-                        <th>Secondary Classification</th>
-                        <td >{{ imported_grant.secondary_classification }} </td>
-                    </tr>
-                    <tr>
-                        <th>Science Area</th>
-                        <td class="column-id">{{ imported_grant.science_area }}</td>
-                    </tr>
-                    <tr>
-                        <th>Proposed Start Date</th>
-                        <td >{{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Proposed End Date</th>
-                        <td >{{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Actual Start Date</th>
-                        <td >{{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Actual End Date</th>
-                        <td >{{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Abstract</th>
-                    </tr>
-                    <tr>
-                        <td colspan="2">{{ imported_grant.abstract|read_more:50|default_if_none:"N/A"}}</td>
-{#                        <button class="btn btn-primary claim-btn see-more"> See more </button></td>#}
-                    </tr>
-                    {#                <tr>#}
-                    {#                </tr>#}
-                    <tr>
-                        <th>Objectives</th>
-                    </tr>
-                    <tr>
-                        <td colspan="2">{{ imported_grant.objectives|read_more:50|default_if_none:"N/A" }}</td>
-{#                        <button class="btn btn-primary claim-btn see-more"> See more </button></td>#}
-                    </tr>
+                <tr>
+                    <th>Date Created</th>
+                    <td>{{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                </tr>
+                <tr>
+                    <th>Grant Status</th>
+                    <td>{{ imported_grant.grant_status|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Assigned Data Centre</th>
+                    <td>{{ imported_grant.grant.assigned_data_centre|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Routing Classification</th>
+                    <td> {{ imported_grant.routing_classification }} </td>
+                </tr>
+                <tr>
+                    <th>Secondary Classification</th>
+                    <td>{{ imported_grant.secondary_classification }} </td>
+                </tr>
+                <tr>
+                    <th>Science Area</th>
+                    <td class="column-id">{{ imported_grant.science_area }}</td>
+                </tr>
+                <tr>
+                    <th>Proposed Start Date</th>
+                    <td>{{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                </tr>
+                <tr>
+                    <th>Proposed End Date</th>
+                    <td>{{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                </tr>
+                <tr>
+                    <th>Actual Start Date</th>
+                    <td>{{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                </tr>
+                <tr>
+                    <th>Actual End Date</th>
+                    <td>{{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                </tr>
+                <tr>
+                    <th>Abstract</th>
+                </tr>
+                <tr>
+                    <td colspan="2">{{ imported_grant.abstract|read_more:50|default_if_none:"N/A" }}</td>
+                    {#                        <button class="btn btn-primary claim-btn see-more"> See more </button></td>#}
+                </tr>
+                {#                <tr>#}
+                {#                </tr>#}
+                <tr>
+                    <th>Objectives</th>
+                </tr>
+                <tr>
+                    <td colspan="2">{{ imported_grant.objectives|read_more:50|default_if_none:"N/A" }}</td>
+                    {#                        <button class="btn btn-primary claim-btn see-more"> See more </button></td>#}
+                </tr>
 
-                    {#                <tr>#}
-                    {#                </tr>#}
-                    <tr>
-                        <th>Amount Awarded</th>
-                        <td > £ {{ imported_grant.amount_awarded|default_if_none:"N/A" }} </td>
-                    </tr>
-                    {#                            <tr>#}
-                    {#                                <th>Call</th>#}
-                    {#                                <td   >{{ imported_grant.call }} </td>#}
-                    {#                            </tr>#}
-                    <tr>
-                        <th>Grant Type</th>
-                        <td>{{ imported_grant.grant_type|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Scheme</th>
-                        <td>{{ imported_grant.scheme|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Call</th>
-                        <td>{{ imported_grant.call|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Overall Score</th>
-                        <td>{{ imported_grant.overall_score|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Facility</th>
-                        <td >{{ imported_grant.facility|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Lead Grant</th>
-                        <td >{{ imported_grant.lead_grant|yesno:"Yes, No, N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Parent Grant</th>
-                        {% if imported_grant.parent_grant %}
-                        <td><a href="{% url 'grant_detail' pk=imported_grant.parent_grant.pk %}">{{ imported_grant.parent_grant }} </a></td>
-                        {% else %}
-                        <td> None </td>
-                        {% endif %}
-                    </tr>
-                    <tr>
-                        <th>Child Grants</th>
-                        {% if imported_grant.grant.child_grant.get_queryset %}
-                        <td >
-                        {%  for child in imported_grant.grant.child_grant.get_queryset %}
-                            <a href="{% url 'grant_detail' pk=child.pk %}">{{ child.grant_ref }} &nbsp</a>
-                        {%  endfor %}
+                {#                <tr>#}
+                {#                </tr>#}
+                <tr>
+                    <th>Amount Awarded</th>
+                    <td> £ {{ imported_grant.amount_awarded|default_if_none:"N/A" }} </td>
+                </tr>
+                {#                            <tr>#}
+                {#                                <th>Call</th>#}
+                {#                                <td   >{{ imported_grant.call }} </td>#}
+                {#                            </tr>#}
+                <tr>
+                    <th>Grant Type</th>
+                    <td>{{ imported_grant.grant_type|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Scheme</th>
+                    <td>{{ imported_grant.scheme|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Call</th>
+                    <td>{{ imported_grant.call|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Overall Score</th>
+                    <td>{{ imported_grant.overall_score|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Facility</th>
+                    <td>{{ imported_grant.facility|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Lead Grant</th>
+                    <td>{{ imported_grant.lead_grant|yesno:"Yes, No, N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Parent Grant</th>
+                    {% if imported_grant.parent_grant %}
+                        <td>
+                            <a href="{% url 'grant_detail' pk=imported_grant.parent_grant.pk %}">{{ imported_grant.parent_grant }} </a>
                         </td>
-                        {% else %}
-                        <td> None </td>
-                        {% endif %}
-                    </tr>
-                    <tr>
-                        <th>Grant Holder</th>
-                        <td >{{ imported_grant.grant_holder|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Department</th>
-                        <td >{{ imported_grant.department|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Research Organisation</th>
-                        <td >{{ imported_grant.research_org|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Address</th>
-                        <td >{{ imported_grant.address1|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Address line 2</th>
-                        <td >{{ imported_grant.address2|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>City</th>
-                        <td >{{ imported_grant.city|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Post Code</th>
-                        <td >{{ imported_grant.post_code|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Email</th>
-                        <td >{{ imported_grant.email|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Work number</th>
-                        <td >{{ imported_grant.work_number|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Data Contact</th>
-                        <td >{{ imported_grant.data_contact|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Data Contact Email</th>
-                        <td >{{ imported_grant.data_contact_email|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Data Contact Phone Number</th>
-                        <td >{{ imported_grant.data_contact_phone|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>NCAS</th>
-                        <td >{{ imported_grant.ncas|yesno:"Yes, No, N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>NCEO</th>
-                        <td >{{ imported_grant.nceo|yesno:"Yes, No, N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Comments</th>
-                        <td >{{ imported_grant.comments|default_if_none:"N/A" }} </td>
-                    </tr>
-                    {% comment %}                            <tr>
+                    {% else %}
+                        <td> None</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <th>Child Grants</th>
+                    {% if imported_grant.grant.child_grant.get_queryset %}
+                        <td>
+                            {% for child in imported_grant.grant.child_grant.get_queryset %}
+                                <a href="{% url 'grant_detail' pk=child.pk %}">{{ child.grant_ref }} &nbsp</a>
+                            {% endfor %}
+                        </td>
+                    {% else %}
+                        <td> None</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <th>Grant Holder</th>
+                    <td>{{ imported_grant.grant_holder|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Department</th>
+                    <td>{{ imported_grant.department|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Research Organisation</th>
+                    <td>{{ imported_grant.research_org|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>{{ imported_grant.address1|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Address line 2</th>
+                    <td>{{ imported_grant.address2|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>City</th>
+                    <td>{{ imported_grant.city|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Post Code</th>
+                    <td>{{ imported_grant.post_code|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ imported_grant.email|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Work number</th>
+                    <td>{{ imported_grant.work_number|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Data Contact</th>
+                    <td>{{ imported_grant.data_contact|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Data Contact Email</th>
+                    <td>{{ imported_grant.data_contact_email|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Data Contact Phone Number</th>
+                    <td>{{ imported_grant.data_contact_phone|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>NCAS</th>
+                    <td>{{ imported_grant.ncas|yesno:"Yes, No, N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>NCEO</th>
+                    <td>{{ imported_grant.nceo|yesno:"Yes, No, N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Comments</th>
+                    <td>{{ imported_grant.comments|default_if_none:"N/A" }} </td>
+                </tr>
+                {% comment %}                            <tr>
                                     <th>Original Proposed Start Date</th>
                                     <td >{{ imported_grant.original_proposed_start_date}} </td>
                                 </tr>
@@ -207,7 +209,7 @@
                                     <td >{{ imported_grant.original_proposed_end_date}} </td>
                                 </tr>{% endcomment %}
 
-                    {% comment %}                            <tr>
+                {% comment %}                            <tr>
                                     <th>End Date Changed</th>
                                     <td >{{ imported_grant.end_date_changed }} </td>
                                 </tr>
@@ -216,65 +218,65 @@
                                     <td >{{ imported_grant.start_date_changed}} </td>
                                 </tr>{% endcomment %}
 
-                </table>
-            </div>
+            </table>
         </div>
+    </div>
 
 
 
-        <div class="card card-shaded">
-            <div class="card-body">
-                <table class="table-responsive" id="grant-info">
-                    <tr>
-                        <td colspan="2">
-                            <h3> Editable Grant Information
-                                <a title='Edit' data-toggle='tooltip'
-                                   href="{% url 'grantinfo_edit' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}">
-                                    <i class="far fa-edit"></i>
-                                </a>
-                            </h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Alternative data contact</th>
-                        <td >{{ imported_grant.grant.alt_data_contact|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Alternative data contact email address</th>
-                        <td >{{ imported_grant.grant.alt_data_contact_email|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Alternative data contact phone number</th>
-                        <td >{{ imported_grant.grant.alt_data_contact_phone|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Other data centre</th>
-                        <td >{{ imported_grant.grant.other_data_centre.name|default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Date contacted PI</th>
-                        <td >{{ imported_grant.grant.date_contacted_pi |default_if_none:"N/A" }} </td>
-                    </tr>
-                    <tr>
-                    <tr>
-                        <th>Will the grant produce data?</th>
-                        <td >{{ imported_grant.grant.will_grant_produce_data|yesno:"Yes, No, N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Date delivered?</th>
-                        <td >{{ imported_grant.grant.datasets_delivered|yesno:"Yes, No, N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Sanctions recommended?</th>
-                        <td >{{ imported_grant.grant.sanctions_recommended|yesno:"Yes, No, N/A" }} </td>
-                    </tr>
-                    <tr>
-                        <th>Case for support found?</th>
-                        <td >{{ imported_grant.grant.case_for_support_found|yesno:"Yes, No, N/A" }} </td>
-                    </tr>
-                </table>
-            </div>
+    <div class="card card-shaded">
+        <div class="card-body">
+            <table class="table-responsive" id="grant-info">
+                <tr>
+                    <td colspan="2">
+                        <h3> Editable Grant Information
+                            <a title='Edit' data-toggle='tooltip'
+                               href="{% url 'grantinfo_edit' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}">
+                                <i class="far fa-edit"></i>
+                            </a>
+                        </h3>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Alternative data contact</th>
+                    <td>{{ imported_grant.grant.alt_data_contact|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Alternative data contact email address</th>
+                    <td>{{ imported_grant.grant.alt_data_contact_email|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Alternative data contact phone number</th>
+                    <td>{{ imported_grant.grant.alt_data_contact_phone|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Other data centre</th>
+                    <td>{{ imported_grant.grant.other_data_centre.name|default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Date contacted PI</th>
+                    <td>{{ imported_grant.grant.date_contacted_pi |default_if_none:"N/A" }} </td>
+                </tr>
+                <tr>
+                <tr>
+                    <th>Will the grant produce data?</th>
+                    <td>{{ imported_grant.grant.will_grant_produce_data|yesno:"Yes, No, N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Date delivered?</th>
+                    <td>{{ imported_grant.grant.datasets_delivered|yesno:"Yes, No, N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Sanctions recommended?</th>
+                    <td>{{ imported_grant.grant.sanctions_recommended|yesno:"Yes, No, N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>Case for support found?</th>
+                    <td>{{ imported_grant.grant.case_for_support_found|yesno:"Yes, No, N/A" }} </td>
+                </tr>
+            </table>
         </div>
+    </div>
 
     <div class="pb-4">
         {% if imported_grant.grant.jira_ticket %}
@@ -291,107 +293,45 @@
 {% endblock content %}
 
 
-{%  block rightsidebar%}
+{% block rightsidebar %}
 
-    <div style= "width: 325px;">
-{#        <th><h3 class="pt-3">Documents</h3></th>#}
-        <div class="accordion pt-3" id="myAccordion">
+        <div class="accordion pt-3" id="documentAccordian">
             <div class="card">
-                <div class="card-header" id="headingOne">
+                <div class="card-header" id="supportingDocuments">
                     <h2 class="mb-0">
-                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Supporting Documents</button>
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                                data-target="#collapseSupportDoc" aria-expanded="true" aria-controls="collapseSupportDoc">Supporting
+                            Documents
+                        </button>
                     </h2>
                 </div>
 
-                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#myAccordion">
-                    <div class="card-body">
-                        <table class="table-responsive" id="grant-docs">
-                            {%  for doc in docs %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ doc.upload.url }}" download="{{ doc.download_title }}"> {{ doc.title }}  </a>
-                                        {% if user.is_admin %}
-                                            <sup><a title='Delete' data-toggle='tooltip'
-                                                    href="{% url 'delete_file' pk=doc.pk imported_pk=imported_grant.pk %}"
-                                                    class="badge badge-secondary"><i class="fa fa-times confirm"></i></a></sup>
-                                        {% endif %}</td>
-                                </tr>
-                                <tr><td> <sup class="text-secondary">{{ doc.last_modified }}</sup> </td></tr>
-                            {%  endfor %}
-                            {%  for parent_doc in parent_docs %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ parent_doc.upload.url }}" download="{{ parent_doc.download_title }}"> {{ parent_doc.title }} </a>
-                                        {% if user.is_admin %}
-                                            <sup><a title='Delete' data-toggle='tooltip'
-                                                    href="{% url 'delete_file' pk=parent_doc.pk imported_pk=imported_grant.pk %}"
-                                                    class="badge badge-secondary"><i class="fa fa-times confirm"></i></a></sup>
-                                        {% endif %}</td>
-                                </tr>
-                                <tr><td> <sup class="text-secondary">{{ parent_doc.last_modified }}</sup> </td></tr>
-                            {%  endfor %}
-                            <tr>
-                                <td><a title='Upload' data-toggle='tooltip'
-                                       href="{% url 'document_upload' pk=imported_grant.grant.pk imported_pk=imported_grant.pk type='support' %}">
-                                    <i class="fas fa-plus" ></i></a> Upload new document</td></tr>
-                        </table>
-                    </div>
+                <div id="collapseSupportDoc" class="collapse" aria-labelledby="supportingDocuments" data-parent="#documentAccordian">
+                    {% with doc_list=supporting_docs %}
+                        {% include 'datamad2/includes/document_list.html' %}
+                    {% endwith %}
                 </div>
 
                 <div class="card">
-                    <div class="card-header" id="headingTwo">
+                    <div class="card-header" id="dmpDocuments">
                         <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"> DMPs </button>
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                                    data-target="#collapseDmpDoc" aria-expanded="true" aria-controls="collapseDmpDoc"> DMPs
+                            </button>
                         </h2>
                     </div>
 
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#myAccordion">
-                        <div class="card-body">
-                            <table class="table-responsive" id="grant-docs">
-                                {% for dmp in dmp_docs %}
-                                    <tr>
-                                        <td>
-                                            {% if dmp %}
-                                                <a href="{{ dmp.upload.url }}" download="{{ dmp.download_title }}"> {{ dmp.title }} </a>
-                                                {% if user.is_admin %}
-                                                    <sup><a title='Delete' data-toggle='tooltip'
-                                                    href="{% url 'delete_file' pk=dmp.pk imported_pk=imported_grant.pk %}"
-                                                    class="badge badge-secondary"><i class="fa fa-times confirm"></i></a></sup>
-                                                {% endif %}
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    <tr><td> <sup class="text-secondary">{{ dmp.last_modified }}</sup> </td></tr>
-                                {% endfor %}
-                                {% for parent_dmp in parent_dmps %}
-                                    <tr>
-                                        <td>
-                                            {% if parent_dmp %}
-                                                <a href="{{ parent_dmp.upload.url }}" download="{{ parent_dmp.download_title }}"> {{ parent_dmp.title }} </a>
-                                                {% if user.is_admin %}
-                                                    <sup><a title='Delete' data-toggle='tooltip'
-                                                    href="{% url 'delete_file' pk=parent_dmp.pk imported_pk=imported_grant.pk %}"
-                                                    class="badge badge-secondary"><i class="fa fa-times confirm"></i></a></sup>
-                                                {% endif %}
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    <tr><td> <sup class="text-secondary">{{ parent_dmp.last_modified }}</sup> </td></tr>
-                                {% endfor%}
-
-                                <tr><td><a title='Upload' data-toggle='tooltip'
-                                           href="{% url 'document_upload' pk=imported_grant.grant.pk imported_pk=imported_grant.pk type='dmp' %}">
-                                    <i class="fa fa-plus"></i></a> Upload new DMP</td></tr>
-                            </table>
-                        </div>
+                    <div id="collapseDmpDoc" class="collapse" aria-labelledby="dmpDocuments" data-parent="#documentAccordian">
+                        {% with doc_list=dmp_docs %}
+                            {% include 'datamad2/includes/document_list.html' %}
+                        {% endwith %}
                     </div>
 
                 </div>
             </div>
         </div>
-    </div>
 
-{%  endblock rightsidebar %}
+{% endblock rightsidebar %}
 
 
 
