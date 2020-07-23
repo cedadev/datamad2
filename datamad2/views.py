@@ -258,10 +258,6 @@ def document_upload(request, pk, imported_pk, type):
     return render(request, 'datamad2/document_upload.html', {'form': form})
 
 
-def actions(request):
-    return render(request, 'datamad2/admin_actions.html')
-
-
 def delete_file(request, pk, imported_pk):
     document = Document.objects.get(pk=pk)
     document.delete_file()

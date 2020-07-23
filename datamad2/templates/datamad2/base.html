@@ -64,16 +64,13 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropbtn" href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:{{ user.data_centre.name }}">My
+                    <a class="nav-link dropbtn"
+                       href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:{{ user.data_centre.name }}">My
                         Grants</a>
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropbtn" href="{% url 'actions' %}">Actions</a>
-                </li>
-
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropbtn" href="{% url 'my_account' %}">My Account</a>
+                    <a class="nav-link dropbtn" href="{% url 'multi_document_upload' %}">Upload Documents</a>
                 </li>
 
             {% endif %}
@@ -83,8 +80,16 @@
     <div>
         <ul class="navbar-nav">
             {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}"><i class='fa fa-user-alt'></i>&nbsp;Logout</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class='fa fa-user-alt'></i>&nbsp;{{ user.first_name }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'my_account' %}">My Account</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                    </div>
                 </li>
             {% else %}
                 <a class="nav-link" href="{% url 'login' %}"><i class='fa fa-user-alt'></i>&nbsp;Login</a>
@@ -102,32 +107,32 @@
         </div>
     </div>
     <div class="row">
-            {% block sidebar %}
-                <div class="col-2">
-                    <nav id="sidebar">
-                        <div class="card hide-sidebar border-0">
-                            <div class="card-body p-0">
-                                {% block filter_title %}
-                                    <h4>Data Centre</h4>
-                                {% endblock %}
-                                <div class="nav flex-column nav-pills">
-                                    {% block sidebar_items %}
-                                    {% endblock sidebar_items %}
-                                </div>
+        {% block sidebar %}
+            <div class="col-2">
+                <nav id="sidebar">
+                    <div class="card hide-sidebar border-0">
+                        <div class="card-body p-0">
+                            {% block filter_title %}
+                                <h4>Data Centre</h4>
+                            {% endblock %}
+                            <div class="nav flex-column nav-pills">
+                                {% block sidebar_items %}
+                                {% endblock sidebar_items %}
                             </div>
                         </div>
-                    </nav>
-                </div>
-            {% endblock sidebar %}
+                    </div>
+                </nav>
+            </div>
+        {% endblock sidebar %}
         <div class="col">
             {% block content %}
             {% endblock content %}
         </div>
 
-    {% block rightsidebar %}
-    {% endblock rightsidebar %}
+        {% block rightsidebar %}
+        {% endblock rightsidebar %}
 
-</div>
+    </div>
 {% endblock content_panel %}
 
 
