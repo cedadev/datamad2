@@ -7,7 +7,7 @@
     {% with things=imported_grant.get_diff_fields %}
         {% if 'creation_date' in things %}
             <div class="alert alert-secondary" role="alert">
-                Fields that are highlighted in red show changes made since the previous update of this grant.
+                Fields that are text-dangered in red show changes made since the previous update of this grant.
                 Click <a href="{% url 'grant_history' pk=imported_grant.pk %}" class="alert-link">here</a> to return to
                 list of changes.
             </div>
@@ -24,15 +24,15 @@
                     <tbody>
                     <tr>
                         {% if 'title' in things %}
-                            <th class="highlight" colspan="2"><h3>{{ imported_grant.title }} </h3></th>
+                            <th class="text-danger" colspan="2"><h3>{{ imported_grant.title }} </h3></th>
                         {% else %}
                             <th colspan="2"><h3>{{ imported_grant.title }} </h3></th>
                         {% endif %}
                     </tr>
                     <tr>
                         {% if 'grant_ref' in things %}
-                            <th class="highlight">Grant Reference</th>
-                            <td class=" highlight"> {{ imported_grant.grant_ref }} </td>
+                            <th class="text-danger">Grant Reference</th>
+                            <td class="text-danger"> {{ imported_grant.grant_ref }} </td>
                         {% else %}
                             <th>Grant Reference</th>
                             <td> {{ imported_grant.grant_ref }} </td>
@@ -41,8 +41,8 @@
 
                     <tr>
                         {% if 'creation_date' in things %}
-                            <th class="highlight">Date Updated</th>
-                            <td class=" highlight"> {{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                            <th class="text-danger">Date Updated</th>
+                            <td class="text-danger"> {{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% else %}
                             <th>Date Created</th>
                             <td> {{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
@@ -50,8 +50,8 @@
                     </tr>
                     <tr>
                         {% if 'grant_status' in things %}
-                            <th class="highlight">Grant Status</th>
-                            <td class=" highlight"> {{ imported_grant.grant_status|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Grant Status</th>
+                            <td class="text-danger"> {{ imported_grant.grant_status|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Grant Status</th>
                             <td> {{ imported_grant.grant_status|default_if_none:"N/A" }} </td>
@@ -60,8 +60,8 @@
 
                     <tr>
                         {% if 'routing_classification' in things %}
-                            <th class="highlight">Routing Classification</th>
-                            <td class=" highlight"> {{ imported_grant.routing_classification }} </td>
+                            <th class="text-danger">Routing Classification</th>
+                            <td class="text-danger"> {{ imported_grant.routing_classification }} </td>
                         {% else %}
                             <th>Routing Classification</th>
                             <td> {{ imported_grant.routing_classification }} </td>
@@ -70,8 +70,8 @@
 
                     <tr>
                         {% if 'secondary_classification' in things %}
-                            <th class="highlight">Secondary Classification</th>
-                            <td class=" highlight"> {{ imported_grant.secondary_classification }} </td>
+                            <th class="text-danger">Secondary Classification</th>
+                            <td class="text-danger"> {{ imported_grant.secondary_classification }} </td>
                         {% else %}
                             <th>Secondary Classification</th>
                             <td> {{ imported_grant.secondary_classification }} </td>
@@ -80,8 +80,8 @@
 
                     <tr>
                         {% if 'proposed_start_date' in things %}
-                            <th class="highlight">Proposed Start Date</th>
-                            <td class=" highlight"> {{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                            <th class="text-danger">Proposed Start Date</th>
+                            <td class="text-danger"> {{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% else %}
                             <th>Proposed Start Date</th>
                             <td>{{ imported_grant.proposed_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
@@ -90,8 +90,8 @@
 
                     <tr>
                         {% if 'proposed_end_date' in things %}
-                            <th class="highlight">Proposed End Date</th>
-                            <td class=" highlight"> {{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                            <th class="text-danger">Proposed End Date</th>
+                            <td class="text-danger"> {{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% else %}
                             <th>Proposed End Date</th>
                             <td>{{ imported_grant.proposed_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
@@ -100,8 +100,8 @@
 
                     <tr>
                         {% if 'actual_start_date' in things %}
-                            <th class="highlight">Actual Start Date</th>
-                            <td class=" highlight"> {{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                            <th class="text-danger">Actual Start Date</th>
+                            <td class="text-danger"> {{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% else %}
                             <th>Actual Start Date</th>
                             <td>{{ imported_grant.actual_start_date|default_if_none:"N/A"|date:"d M Y" }} </td>
@@ -110,8 +110,8 @@
 
                     <tr>
                         {% if 'actual_end_date' in things %}
-                            <th class="highlight">Actual End Date</th>
-                            <td class=" highlight"> {{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
+                            <th class="text-danger">Actual End Date</th>
+                            <td class="text-danger"> {{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                         {% else %}
                             <th>Actual End Date</th>
                             <td>{{ imported_grant.actual_end_date|default_if_none:"N/A"|date:"d M Y" }} </td>
@@ -120,7 +120,7 @@
 
                     <tr>
                         {% if 'abstract' in things %}
-                            <th class="highlight">Abstract</th>
+                            <th class="text-danger">Abstract</th>
                         {% else %}
                             <th>Abstract</th>
                         {% endif %}
@@ -128,7 +128,7 @@
                     </tr>
                     <tr>
                         {% if 'abstract' in things %}
-                            <td class=" highlight"
+                            <td class="text-danger"
                                 colspan="2"> {{ imported_grant.abstract|read_more:50|default_if_none:"N/A"}} </td>
                         {% else %}
                             <td colspan="2">{{ imported_grant.abstract|read_more:50|default_if_none:"N/A"}} </td>
@@ -137,14 +137,14 @@
 
                     <tr>
                         {% if 'objectives' in things %}
-                            <th class="highlight">Objectives</th>
+                            <th class="text-danger">Objectives</th>
                         {% else %}
                             <th>Objectives</th>
                         {% endif %}
                     </tr>
                     <tr>
                         {% if 'objectives' in things %}
-                            <td class=" highlight"
+                            <td class="text-danger"
                                 colspan="2"> {{ imported_grant.objectives|read_more:50|default_if_none:"N/A" }} </td>
                         {% else %}
                             <td colspan="2">{{ imported_grant.objectives|read_more:50|default_if_none:"N/A" }} </td>
@@ -153,8 +153,8 @@
 
                     <tr>
                         {% if 'amount_awarded' in things %}
-                            <th class="highlight">Amount Awarded</th>
-                            <td class=" highlight"> £ {{ imported_grant.amount_awarded|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Amount Awarded</th>
+                            <td class="text-danger"> £ {{ imported_grant.amount_awarded|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Amount Awarded</th>
                             <td> £ {{ imported_grant.amount_awarded|default_if_none:"N/A" }} </td>
@@ -163,8 +163,8 @@
 
                     <tr>
                         {% if 'grant_type' in things %}
-                            <th class="highlight">Grant Type</th>
-                            <td class=" highlight"> {{ imported_grant.grant_type|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Grant Type</th>
+                            <td class="text-danger"> {{ imported_grant.grant_type|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Grant Type</th>
                             <td> {{ imported_grant.grant_type|default_if_none:"N/A" }} </td>
@@ -173,8 +173,8 @@
 
                     <tr>
                         {% if 'scheme' in things %}
-                            <th class="highlight">Scheme</th>
-                            <td class=" highlight"> {{ imported_grant.scheme|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Scheme</th>
+                            <td class="text-danger"> {{ imported_grant.scheme|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Scheme</th>
                             <td> {{ imported_grant.scheme|default_if_none:"N/A" }} </td>
@@ -183,8 +183,8 @@
 
                     <tr>
                         {% if 'lead_grant' in things %}
-                            <th class="highlight">Lead Grant</th>
-                            <td class=" highlight"> {{ imported_grant.lead_grant|yesno:"Yes, No, N/A" }} </td>
+                            <th class="text-danger">Lead Grant</th>
+                            <td class="text-danger"> {{ imported_grant.lead_grant|yesno:"Yes, No, N/A" }} </td>
                         {% else %}
                             <th>Lead Grant</th>
                             <td> {{ imported_grant.lead_grant|yesno:"Yes, No, N/A" }} </td>
@@ -193,8 +193,8 @@
 
                     <tr>
                         {% if 'parent_grant' in things %}
-                            <th class="highlight">Parent Grant</th>
-                            <td class=" highlight"> {{ imported_grant.parent_grant|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Parent Grant</th>
+                            <td class="text-danger"> {{ imported_grant.parent_grant|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Parent Grant</th>
                             <td> {{ imported_grant.parent_grant|default_if_none:"N/A" }} </td>
@@ -203,8 +203,8 @@
 
                     <tr>
                         {% if 'grant_holder' in things %}
-                            <th class="highlight">Grant Holder</th>
-                            <td class=" highlight"> {{ imported_grant.grant_holder|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Grant Holder</th>
+                            <td class="text-danger"> {{ imported_grant.grant_holder|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Grant Holder</th>
                             <td> {{ imported_grant.grant_holder|default_if_none:"N/A" }} </td>
@@ -213,8 +213,8 @@
 
                     <tr>
                         {% if 'department' in things %}
-                            <th class="highlight">Department</th>
-                            <td class=" highlight"> {{ imported_grant.department|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Department</th>
+                            <td class="text-danger"> {{ imported_grant.department|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Department</th>
                             <td> {{ imported_grant.department|default_if_none:"N/A" }} </td>
@@ -223,8 +223,8 @@
 
                     <tr>
                         {% if 'research_organisation' in things %}
-                            <th class="highlight">Research Organisation</th>
-                            <td class=" highlight"> {{ imported_grant.research_org|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Research Organisation</th>
+                            <td class="text-danger"> {{ imported_grant.research_org|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Research Organisation</th>
                             <td>{{ imported_grant.research_org|default_if_none:"N/A" }} </td>
@@ -233,8 +233,8 @@
 
                     <tr>
                         {% if 'address1' in things %}
-                            <th class="highlight">Address</th>
-                            <td class=" highlight"> {{ imported_grant.address1|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Address</th>
+                            <td class="text-danger"> {{ imported_grant.address1|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Address</th>
                             <td>{{ imported_grant.address1|default_if_none:"N/A" }} </td>
@@ -243,8 +243,8 @@
 
                     <tr>
                         {% if 'address2' in things %}
-                            <th class="highlight">Address Line 2</th>
-                            <td class=" highlight"> {{ imported_grant.address2|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Address Line 2</th>
+                            <td class="text-danger"> {{ imported_grant.address2|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Address Line 2</th>
                             <td>{{ imported_grant.address2|default_if_none:"N/A" }} </td>
@@ -253,8 +253,8 @@
 
                     <tr>
                         {% if 'city' in things %}
-                            <th class="highlight">City</th>
-                            <td class=" highlight"> {{ imported_grant.city|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">City</th>
+                            <td class="text-danger"> {{ imported_grant.city|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>City</th>
                             <td>{{ imported_grant.city|default_if_none:"N/A" }} </td>
@@ -263,8 +263,8 @@
 
                     <tr>
                         {% if 'post_code' in things %}
-                            <th class="highlight">Post Code</th>
-                            <td class=" highlight"> {{ imported_grant.post_code|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Post Code</th>
+                            <td class="text-danger"> {{ imported_grant.post_code|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Post Code</th>
                             <td>{{ imported_grant.post_code|default_if_none:"N/A" }} </td>
@@ -273,8 +273,8 @@
 
                     <tr>
                         {% if 'email' in things %}
-                            <th class="highlight">Email</th>
-                            <td class=" highlight"> {{ imported_grant.email|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Email</th>
+                            <td class="text-danger"> {{ imported_grant.email|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Email</th>
                             <td>{{ imported_grant.email|default_if_none:"N/A" }} </td>
@@ -283,8 +283,8 @@
 
                     <tr>
                         {% if 'work_number' in things %}
-                            <th class="highlight">Work Number</th>
-                            <td class=" highlight"> {{ imported_grant.work_number|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Work Number</th>
+                            <td class="text-danger"> {{ imported_grant.work_number|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Work Number</th>
                             <td>{{ imported_grant.work_number|default_if_none:"N/A" }} </td>
@@ -293,8 +293,8 @@
 
                     <tr>
                         {% if 'data_contact' in things %}
-                            <th class="highlight">Data Contact</th>
-                            <td class=" highlight"> {{ imported_grant.data_contact|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Data Contact</th>
+                            <td class="text-danger"> {{ imported_grant.data_contact|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Data Contact</th>
                             <td>{{ imported_grant.data_contact|default_if_none:"N/A" }} </td>
@@ -303,8 +303,8 @@
 
                     <tr>
                         {% if 'data_contact_email' in things %}
-                            <th class="highlight">Data Contact Email</th>
-                            <td class=" highlight"> {{ imported_grant.data_contact_email|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Data Contact Email</th>
+                            <td class="text-danger"> {{ imported_grant.data_contact_email|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Data Contact Email</th>
                             <td>{{ imported_grant.data_contact_email|default_if_none:"N/A" }} </td>
@@ -313,8 +313,8 @@
 
                     <tr>
                         {% if 'data_contact_phone' in things %}
-                            <th class="highlight">Data Contact Phone Number</th>
-                            <td class=" highlight"> {{ imported_grant.data_contact_phone|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Data Contact Phone Number</th>
+                            <td class="text-danger"> {{ imported_grant.data_contact_phone|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Data Contact Phone Number</th>
                             <td>{{ imported_grant.data_contact_phone|default_if_none:"N/A" }} </td>
@@ -323,8 +323,8 @@
 
                     <tr>
                         {% if 'science_area' in things %}
-                            <th class="highlight">Science Area</th>
-                            <td class=" highlight"> {{ imported_grant.science_area }} </td>
+                            <th class="text-danger">Science Area</th>
+                            <td class="text-danger"> {{ imported_grant.science_area }} </td>
                         {% else %}
                             <th>Science Area</th>
                             <td>{{ imported_grant.science_area }} </td>
@@ -333,8 +333,8 @@
 
                     <tr>
                         {% if 'ncas' in things %}
-                            <th class="highlight">NCAS</th>
-                            <td class=" highlight"> {{ imported_grant.ncas|yesno:"Yes, No, N/A" }} </td>
+                            <th class="text-danger">NCAS</th>
+                            <td class="text-danger"> {{ imported_grant.ncas|yesno:"Yes, No, N/A" }} </td>
                         {% else %}
                             <th>NCAS</th>
                             <td>{{ imported_grant.ncas|yesno:"Yes, No, N/A" }} </td>
@@ -343,8 +343,8 @@
 
                     <tr>
                         {% if 'nceo' in things %}
-                            <th class="highlight">NCEO</th>
-                            <td class=" highlight"> {{ imported_grant.nceo|yesno:"Yes, No, N/A" }} </td>
+                            <th class="text-danger">NCEO</th>
+                            <td class="text-danger"> {{ imported_grant.nceo|yesno:"Yes, No, N/A" }} </td>
                         {% else %}
                             <th>NCEO</th>
                             <td>{{ imported_grant.nceo|yesno:"Yes, No, N/A" }} </td>
@@ -353,8 +353,8 @@
 
                     <tr>
                         {% if 'comments' in things %}
-                            <th class="highlight">Comments</th>
-                            <td class=" highlight"> {{ imported_grant.comments|default_if_none:"N/A" }} </td>
+                            <th class="text-danger">Comments</th>
+                            <td class="text-danger"> {{ imported_grant.comments|default_if_none:"N/A" }} </td>
                         {% else %}
                             <th>Comments</th>
                             <td>{{ imported_grant.comments|default_if_none:"N/A" }} </td>

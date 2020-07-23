@@ -36,41 +36,42 @@
         <ul class="navbar-nav mx-auto">
             {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropbtn">Grants
-                        <i class="fa fa-caret-down"></i>
+                    <a class="nav-link dropdown-toggle" href="#" id="grantFilterDropdown" role="button" data-toggle="dropdown">
+                        Grants
                     </a>
-                    <div class="dropdown-content">
-                        <a href="{% url 'grant_list' %}">All</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:Unassigned">Unassigned</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:BODC">BODC</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:CEDA">CEDA</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:EIDC">EIDC</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:NGDC">NGDC</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:PDC">PDC</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:ADS">ADS</a>
+                    <div class="dropdown-menu" aria-labelledby="grantFilterDropdown">
+                        <a class="dropdown-item"href="{% url 'grant_list' %}">All</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:Unassigned">Unassigned</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:BODC">BODC</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:CEDA">CEDA</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:EIDC">EIDC</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:NGDC">NGDC</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:PDC">PDC</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:ADS">ADS</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropbtn">Routing Classification
-                        <i class="fa fa-caret-down"></i>
+                    <a class="nav-link dropdown-toggle" href="#" id="routingClassificationDropdown" role="button" data-toggle="dropdown">
+                        Routing Classification
                     </a>
-                    <div class="dropdown-content">
-                        <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Unassigned">Unassigned</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Marine">Marine</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Earth">Earth</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Atmospheric">Atmospheric</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Freshwater">Freshwater</a>
-                        <a href="{% url 'grant_list' %}?selected_facets=routing_classification:Terrestrial">Terrestrial</a>
+                    <div class="dropdown-menu" aria-labelledby="routingClassificationDropdown">
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=routing_classification:Unassigned">Unassigned</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=routing_classification:Marine">Marine</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=routing_classification:Earth">Earth</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=routing_classification:Atmospheric">Atmospheric</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=routing_classification:Freshwater">Freshwater</a>
+                        <a class="dropdown-item"href="{% url 'grant_list' %}?selected_facets=routing_classification:Terrestrial">Terrestrial</a>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropbtn"
+
+                <li class="nav-item">
+                    <a class="nav-link"
                        href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:{{ user.data_centre.name }}">My
                         Grants</a>
                 </li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropbtn" href="{% url 'multi_document_upload' %}">Upload Documents</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'multi_document_upload' %}">Upload Documents</a>
                 </li>
 
             {% endif %}
@@ -108,21 +109,6 @@
     </div>
     <div class="row">
         {% block sidebar %}
-            <div class="col-2">
-                <nav id="sidebar">
-                    <div class="card hide-sidebar border-0">
-                        <div class="card-body p-0">
-                            {% block filter_title %}
-                                <h4>Data Centre</h4>
-                            {% endblock %}
-                            <div class="nav flex-column nav-pills">
-                                {% block sidebar_items %}
-                                {% endblock sidebar_items %}
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            </div>
         {% endblock sidebar %}
         <div class="col">
             {% block content %}
