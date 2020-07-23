@@ -30,8 +30,8 @@ class MediaFileSystemStorage(FileSystemStorage):
 def file_name(instance, filename):
     h = instance.checksum
     grant_ref = (instance.grant.grant_ref).replace('/', '_')
-    # basename, ext = os.path.splitext(filename)
-    return os.path.join('documents', grant_ref, h)
+    basename, ext = os.path.splitext(filename)
+    return os.path.join('documents', grant_ref, f'{h}{ext}')
 
 
 class Document(models.Model):

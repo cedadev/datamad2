@@ -209,7 +209,7 @@ class ImportedGrant(models.Model):
     #     return old, new
 
     def get_diff_fields(self):
-        model_fields = [field.name for field in self._meta.get_fields()]
+        model_fields = [field.name for field in self._meta.get_fields() if field.name != 'id']
         #imported_grants = self.grant.importedgrant_set.all()
         date = self.creation_date
         passed = self.grant.importedgrant_set.filter(creation_date__lt=date).order_by('creation_date')

@@ -8,13 +8,27 @@
     </div>
     <div class="row">
         <div class="col">
-            <p> Changes made at:</p>
+            <table class="table">
+                <thead>
+                <th>Date</th>
+                <th>Fields Changed</th>
+                </thead>
+                {% for imported_grant in grant.importedgrant_set.all %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'grant_history_detail' pk=grant.pk imported_pk=imported_grant.pk %}"> {{ imported_grant.creation_date }}</a>
+                        </td>
+                        <td>
+                            {% for field in imported_grant.get_diff_fields %}
+                                <li>{{ field }}</li>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <p>
 
-            {% for imported_grant in grant.importedgrant_set.all %}
-                <p>
-                    <a href="{% url 'grant_history_detail' pk=grant.pk imported_pk=imported_grant.pk %}"> {{ imported_grant.creation_date }}</a>
-                </p>
-            {% endfor %}
+                    </p>
+                {% endfor %}
+            </table>
         </div>
 
     </div>
