@@ -31,3 +31,19 @@ HAYSTACK_CONNECTIONS = {
     }
 }
 
+HAYSTACK_FACET_LIMIT = 100
+
+def read(file_path):
+    """ Read a file and return it's contents. """
+    with open(file_path) as f:
+        return f.read()
+
+JIRA_CONSUMER_KEY = 'OAuthKey'
+JIRA_PRIVATE_RSA_KEY_PATH = ''
+JIRA_PRIVATE_RSA_KEY = read(JIRA_PRIVATE_RSA_KEY_PATH)
+
+# The URLs for the JIRA instance
+JIRA_SERVER = ''
+JIRA_REQUEST_TOKEN_URL = JIRA_SERVER + '/plugins/servlet/oauth/request-token'
+JIRA_AUTHORIZE_URL = JIRA_SERVER + '/plugins/servlet/oauth/authorize'
+JIRA_ACCESS_TOKEN_URL = JIRA_SERVER + '/plugins/servlet/oauth/access-token'
