@@ -294,42 +294,27 @@
 
 
 {% block rightsidebar %}
-
-        <div class="accordion pt-3" id="documentAccordian">
-            <div class="card">
-                <div class="card-header" id="supportingDocuments">
-                    <h2 class="mb-0">
-                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
-                                data-target="#collapseSupportDoc" aria-expanded="true" aria-controls="collapseSupportDoc">Supporting
-                            Documents
-                        </button>
-                    </h2>
-                </div>
-
-                <div id="collapseSupportDoc" class="collapse" aria-labelledby="supportingDocuments" data-parent="#documentAccordian">
-                    {% with doc_list=supporting_docs %}
-                        {% include 'datamad2/includes/document_list.html' %}
-                    {% endwith %}
-                </div>
-
-                <div class="card">
-                    <div class="card-header" id="dmpDocuments">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
-                                    data-target="#collapseDmpDoc" aria-expanded="true" aria-controls="collapseDmpDoc"> DMPs
-                            </button>
-                        </h2>
-                    </div>
-
-                    <div id="collapseDmpDoc" class="collapse" aria-labelledby="dmpDocuments" data-parent="#documentAccordian">
-                        {% with doc_list=dmp_docs %}
-                            {% include 'datamad2/includes/document_list.html' %}
-                        {% endwith %}
-                    </div>
-
-                </div>
-            </div>
+    <div class="card mt-3">
+        <div class="card-header">
+            <h4 class="card-title">Supporting Documents</h4>
         </div>
+        <div class="card-body">
+            <h5>General Supporting Documents</h5>
+            {% with doc_list=supporting_docs %}
+                {% include 'datamad2/includes/document_list.html' %}
+            {% endwith %}
+            <hr>
+            <h5>DMPs</h5>
+            {% with doc_list=dmp_docs %}
+                {% include 'datamad2/includes/document_list.html' %}
+            {% endwith %}
+            <br>
+            <a class="btn btn-primary w-100" title='Upload' data-toggle='tooltip'
+               href="{% url 'document_upload' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}">
+                <i class="fas fa-plus"></i> Add document</a>
+        </div>
+
+    </div>
 
 {% endblock rightsidebar %}
 

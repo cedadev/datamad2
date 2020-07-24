@@ -14,7 +14,7 @@ urlpatterns = [
     path('grant/<int:pk>/history/', views.grant_history, name='grant_history'),
     path('grant/<int:pk>/history/<int:imported_pk>', views.grant_history_detail, name='grant_history_detail'),
     path('grantinfo/edit/<int:imported_pk>/<int:pk>', views.grantinfo_edit, name='grantinfo_edit'),
-    path('documents/upload/<type>/<int:imported_pk>/<int:pk>', views.document_upload, name='document_upload'),
+    path('documents/upload/<int:imported_pk>/<int:pk>', views.document_upload, name='document_upload'),
     path('actions/<int:pk>/<int:imported_pk>/delete_file/', views.delete_file, name='delete_file'),
     path('actions/multiple_upload/', views.multiple_document_upload, name='multi_document_upload'),
 ]
