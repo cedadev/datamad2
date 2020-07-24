@@ -43,5 +43,5 @@ $(".claim-btn").click(function (event) {
 
 
 $(document).on('click', '.confirm', function(){
-    return confirm('Are you sure you want to delete this document?');
+    return confirm('Are you sure you want to make this change?');
 })

@@ -79,7 +79,8 @@ def multiple_document_upload(request):
 
 @login_required
 def grant_detail(request, pk):
-    imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+    grant = get_object_or_404(Grant, pk=pk)
+    imported_grant = grant.importedgrant
 
     docs = imported_grant.grant.document_set.filter(type='support')
     dmp_docs = imported_grant.grant.document_set.filter(type='dmp')
@@ -109,16 +110,15 @@ def push_to_jira(request, pk):
     :param pk:
     :return:
     """
-    imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+    grant = get_object_or_404(Grant, pk=pk)
 
     # There is no jira URL against this grant
-    if not imported_grant.grant.jira_ticket:
-        issue = make_issue(request, imported_grant)
+    if not grant.jira_ticket:
+        issue = make_issue(request, grant.importedgrant)
         link = issue.permalink()
 
         # Save the ticket link to the correct grant
         if link:
-            grant = Grant.objects.get(pk=imported_grant.grant.pk)
             grant.jira_ticket = link
             grant.save()
 
@@ -127,8 +127,7 @@ def push_to_jira(request, pk):
 
 @login_required
 def grant_history(request, pk):
-    imported_grant = get_object_or_404(ImportedGrant, pk=pk)
-    grant = imported_grant.grant
+    grant = get_object_or_404(Grant, pk=pk)
     return render(request, 'datamad2/grant_history.html', {'grant': grant})
 
 
@@ -215,9 +214,9 @@ def my_account(request):
 
 
 @login_required
-def grantinfo_edit(request, pk, imported_pk):
+def grantinfo_edit(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
-    imported_grant = get_object_or_404(ImportedGrant, pk=imported_pk)
+
     if request.method == "POST":
         form = GrantInfoForm(request.POST, instance=grant)
         if form.is_valid():
@@ -230,7 +229,7 @@ def grantinfo_edit(request, pk, imported_pk):
 
 
 @login_required
-def document_upload(request, pk, imported_pk):
+def document_upload(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
 
     if request.method == 'POST':
@@ -260,7 +259,7 @@ def document_upload(request, pk, imported_pk):
                 document.save()
 
                 messages.success(request, 'File uploaded successfully')
-                return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
+                return redirect(reverse('grant_detail', kwargs={'pk': pk}))
 
             except ValidationError as exc:
                 messages.error(request, f'The file {name} has already been uploaded ')
@@ -273,7 +272,7 @@ def document_upload(request, pk, imported_pk):
     return render(request, 'datamad2/document_upload.html', {'form': form})
 
 
-def delete_file(request, pk, imported_pk):
+def delete_file(request, pk):
     document = Document.objects.get(pk=pk)
     document.delete_file()
-    return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
+    return redirect(reverse('grant_detail', kwargs={'pk': document.grant.pk}))
