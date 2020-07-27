@@ -1,5 +1,6 @@
 from jira import JIRA
 from django.conf import settings
+from django.urls import reverse
 
 
 def get_jira_client(request):
@@ -45,6 +46,15 @@ def make_issue(request, imported_grant):
     # Create a new one if none found or return first hit (there should only be one)
     if not results:
         new_issue = jira.create_issue(fields=issue_dict)
+
+        # Generate back-reference to datamad
+        datamad_permalink = request.build_absolute_uri(reverse('grant_detail', kwargs={'pk':imported_grant.grant.pk}))
+
+        # Add backreference to datamad
+        jira.add_simple_link(new_issue, {
+            'url': datamad_permalink,
+            'title': f'View grant: {imported_grant.grant_ref} in Datamad'
+        })
 
         # Assign issue to the creator
         jira.assign_issue(new_issue, request.user.email)

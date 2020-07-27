@@ -285,7 +285,7 @@
                 <button class="btn btn-primary jira-btn" id="jira-btn">JIRA Issue</button>
             </a>
         {% else %}
-            <a href="{% url 'jira_convert' imported_grant.pk %}">
+            <a href="{% url 'jira_convert' imported_grant.grant.pk %}">
                 <button class="btn btn-primary jira-btn" id="jira-btn">Convert to JIRA Issue</button>
             </a>
         {% endif %}
