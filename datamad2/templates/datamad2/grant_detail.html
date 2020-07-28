@@ -6,10 +6,11 @@
 {% endblock sidebar %}
 
 {% block content %}
+
     {% if imported_grant.grant.updated_imported_grant == True %}
-        <div class="alert alert-secondary" role="alert">
+        <div class="alert alert-secondary mt-3" role="alert">
             Some details of this grant have been changed since the original proposal. Click <a
-                href="{% url 'grant_history' pk=imported_grant.pk %}" class="alert-link">here</a> to view the
+                href="{% url 'grant_history' pk=imported_grant.grant.pk %}" class="alert-link">here</a> to view the
             history.
         </div>
     {% endif %}
@@ -231,7 +232,7 @@
                     <td colspan="2">
                         <h3> Editable Grant Information
                             <a title='Edit' data-toggle='tooltip'
-                               href="{% url 'grantinfo_edit' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}">
+                               href="{% url 'grantinfo_edit' pk=imported_grant.grant.pk %}">
                                 <i class="far fa-edit"></i>
                             </a>
                         </h3>
@@ -284,14 +285,13 @@
                 <button class="btn btn-primary jira-btn" id="jira-btn">JIRA Issue</button>
             </a>
         {% else %}
-            <a href="{% url 'jira_convert' imported_grant.pk %}">
+            <a href="{% url 'jira_convert' imported_grant.grant.pk %}">
                 <button class="btn btn-primary jira-btn" id="jira-btn">Convert to JIRA Issue</button>
             </a>
         {% endif %}
     </div>
 
 {% endblock content %}
-
 
 {% block rightsidebar %}
     <div class="card mt-3">
@@ -310,19 +310,18 @@
             {% endwith %}
             <br>
             <a class="btn btn-primary w-100" title='Upload' data-toggle='tooltip'
-               href="{% url 'document_upload' pk=imported_grant.grant.pk imported_pk=imported_grant.pk %}">
+               href="{% url 'document_upload' pk=imported_grant.grant.pk %}">
                 <i class="fas fa-plus"></i> Add document</a>
         </div>
 
     </div>
-
 {% endblock rightsidebar %}
 
 
 
 {% block tail_js_extra %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static 'js/claim_button.js' %}?version=1.0"></script>
+    <script type="text/javascript" src="{% static 'js/claim_button.js' %}?version=1.1"></script>
     <script type="text/javascript" src="{% static 'js/see_more.js' %}?version=1.0"></script>
 {% endblock tail_js_extra %}
 

@@ -16,7 +16,7 @@ from django_tables2.utils import A
 class GrantTable(tables.Table):
     grant_ref = tables.LinkColumn(
         viewname='grant_detail',
-        args=[A('importedgrant__pk')],
+        args=[A('pk')],
         verbose_name='Grant Reference'
     )
     routing_classification = tables.TemplateColumn(

@@ -7,7 +7,7 @@
                        download="{{ doc.download_title }}"> {{ doc.title }} </a>
                     {% if user.is_admin %}
                         <a title='Delete' data-toggle='tooltip'
-                           href="{% url 'delete_file' pk=doc.pk imported_pk=imported_grant.pk %}">
+                           href="{% url 'delete_file' pk=doc.pk %}">
                             &nbsp;<i class="fa fa-times confirm text-danger"></i>
                         </a>
                     {% endif %}
