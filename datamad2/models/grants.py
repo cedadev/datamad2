@@ -234,6 +234,18 @@ class ImportedGrant(models.Model):
 
         return top_areas
 
+    @property
+    def top_categories(self):
+        top_categories = []
+        if self.top_science_area:
+            top_categories = [area for area in self.top_science_area]
+        if self.routing_classification:
+            top_categories.append(self.routing_classification)
+        if len(top_categories) > 0:
+            return list(set(top_categories))
+        else:
+            return None
+
     def save(self, *args, **kwargs):
         # On save, update timestamps
         exists = Grant.objects.filter(grant_ref=self.grant_ref).exists()

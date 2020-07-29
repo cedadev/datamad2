@@ -1,0 +1,9 @@
+{% if record.importedgrant.top_categories %}
+    {% with cats=record.importedgrant.top_categories %}
+        {%  for cat in cats %}
+            {{ cat }}
+        {% endfor %}
+    {% endwith %}
+{% else %}
+    {{ record.importedgrant.top_categories }}
+{% endif %}

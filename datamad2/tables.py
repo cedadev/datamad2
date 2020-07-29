@@ -19,9 +19,11 @@ class GrantTable(tables.Table):
         args=[A('pk')],
         verbose_name='Grant Reference'
     )
-    routing_classification = tables.TemplateColumn(
-        template_name='datamad2/fields/routing_classification_field.html'
+    top_categories = tables.TemplateColumn(
+        template_name='datamad2/fields/top_categories_field.html'
     )
+
+
     date_added = tables.DateTimeColumn(
         accessor='importedgrant__creation_date',
         format='d M Y'
@@ -48,7 +50,7 @@ class GrantTable(tables.Table):
             'grant_ref',
             'importedgrant__title',
             'importedgrant__grant_holder',
-            'routing_classification',
+            'top_categories',
             'date_added',
             'assigned_datacentre',
             '...'
