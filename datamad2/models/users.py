@@ -75,6 +75,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     username = models.EmailField(max_length=255)
     data_centre = models.ForeignKey('DataCentre', on_delete=models.SET_NULL, null=True, blank=True, to_field='name')
+    prefered_facets = models.TextField(null=True)
+
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -92,3 +94,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_staff(self):
         "Is the user a member of staff?"
         return self.is_admin
+
+    @property
+    def preferences(self):
+        prefered_facets = []
+
+        if self.prefered_facets:
+            prefered_facets = self.prefered_facets.split(',')
+
+        return {
+            'prefered_facets': prefered_facets
+        }

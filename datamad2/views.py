@@ -1,10 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant, Document
-from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm
+from .models import ImportedGrant, Grant, Document, User
+from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm
 from django.http import HttpResponse
 from .create_issue import make_issue
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from haystack.generic_views import FacetedSearchView
 from datamad2.forms import DatamadFacetedSearchForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -16,7 +16,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from datamad2.tables import GrantTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
-from itertools import chain
 
 
 class FormatError(Exception):
@@ -206,9 +205,27 @@ def change_claim(request, pk):
     return render(request, 'datamad2/change_claim.html', {'change_claim': change_claim, 'form': form})
 
 
-@login_required
-def my_account(request):
-    return render(request, 'registration/my_account.html', {'my_account': my_account})
+class MyAccountView(LoginRequiredMixin, FormView):
+    template_name = 'registration/my_account.html'
+    form_class = FacetPreferencesForm
+    success_url = reverse_lazy('my_account')
+
+    def get_initial(self):
+        initial = {}
+        prefered_facets = self.request.user.preferences.get('prefered_facets',[])
+        for facet in prefered_facets:
+            initial[facet] = True
+        return initial
+
+    def form_valid(self, form):
+        preferences = [field for field, value in form.cleaned_data.items() if value]
+        user = User.objects.get(pk=self.request.user.pk)
+        user.prefered_facets = ','.join(preferences)
+        user.save()
+
+        return super().form_valid(form)
+
+
 
 
 @login_required

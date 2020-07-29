@@ -1,0 +1,33 @@
+{% load string_tags %}
+
+<dt> {{ field | facet_title }}<a class="clear-facets" href="#"
+                                 title="Clear {{ field | facet_title }} filter"
+                                 data-facet="{{ field }}" data-toggle="tooltip">&nbsp;<i
+        class="far fa-times-circle"></i></a></dt>
+{% with values=facets.fields|get_item:field %}
+    {% for facet in values|slice:":5" %}
+        <dd>
+            <a href="
+
+
+                    {{ request.get_full_path }}{% if request.GET %}&amp;{% else %}?{% endif %}selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a>
+            ({{ facet.1 }})
+        </dd>
+    {% endfor %}
+    {% for facet in values|slice:"5:" %}
+        <dd class="d-none" id="hidden-{{ field }}">
+            <a href="
+
+
+                    {{ request.get_full_path }}{% if request.GET %}&amp;{% else %}?{% endif %}selected_facets={{ field }}:{{ facet.0|urlencode }}">{{ facet.0 }}</a>
+            ({{ facet.1 }})
+        </dd>
+    {% endfor %}
+    {% if values|length > 5 %}
+        <a onclick="display_hidden_facets(this,'dd', 'hidden-', '{{ field }}');return false" href="#" data-label="Show More
+                                ({{ values|slice:"5:"|length }})">Show More
+            ({{ values|slice:"5:"|length }})</a>
+        <br>
+    {% endif %}
+    <hr>
+{% endwith %}

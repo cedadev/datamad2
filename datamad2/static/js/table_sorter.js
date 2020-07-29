@@ -1,12 +1,13 @@
-function display_hidden_facets(event, facet) {
-    let hidden = $('dd[id=hidden-' + facet + ']')
+function display_hidden_facets(event, el, prefix, facet) {
+    let hidden = $(el + '[id='+ prefix + facet + ']')
     hidden.toggleClass('d-none')
 
     let e = $(event)
-    if (e.html().startsWith("Show More")) {
+    let message = e.attr('data-label')
+    if (e.html() === message ){
         e.html("Hide")
     } else {
-        e.html("Show More (" + hidden.length + ")")
+        e.html(message)
     }
 }
 
