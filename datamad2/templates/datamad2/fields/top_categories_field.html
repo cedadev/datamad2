@@ -1,0 +1,6 @@
+{% for label in record.importedgrant.labels.routing_classification %}
+    <span class="badge badge-primary" title="Routing Classification" data-toggle="tooltip">{{ label }}</span>
+{% endfor %}
+{% for label in record.importedgrant.labels.science_areas %}
+    <span class="badge badge-secondary" title="Science Area" data-toggle="tooltip">{{ label }}</span>
+{% endfor %}

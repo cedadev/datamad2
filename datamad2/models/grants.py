@@ -221,18 +221,23 @@ class ImportedGrant(models.Model):
                 return changed_fields
 
     @property
-    def top_science_area(self):
-        top_areas = []
-
+    def science_areas(self):
+        science_areas = {}
         if self.science_area:
-            science_areas = {}
             for match in science_area_pattern.finditer(self.science_area):
-                    science_areas[match.group('area')] = int(match.group('percentage'))
+                science_areas[match.group('area')] = int(match.group('percentage'))
 
-            top_percentage = max(science_areas.values())
-            top_areas = [k for k,v in science_areas.items() if v == top_percentage]
+            science_areas = sorted(science_areas.items(), key=lambda x: x[1], reverse=True)
 
-        return top_areas
+        return [f'{k} {v}%' for k,v in science_areas]
+
+    @property
+    def labels(self):
+        routing_labels = {'science_areas': self.science_areas}
+        if self.routing_classification:
+            routing_labels['routing_classification'] = [self.routing_classification]
+
+        return routing_labels
 
     def save(self, *args, **kwargs):
         # On save, update timestamps

@@ -17,7 +17,7 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
     grant_ref = indexes.CharField(model_attr='grant_ref')
     assigned_datacentre = indexes.CharField(model_attr='assigned_data_centre', null=True, faceted=True, default='Unassigned')
     other_datacentre = indexes.CharField(model_attr='other_data_centre', null=True, faceted=True, default='Unassigned')
-    routing_classification = indexes.CharField(model_attr='importedgrant__routing_classification', null=True, faceted=True, default='Unassigned')
+    labels = indexes.CharField(model_attr='importedgrant__labels', null=True, faceted=True, default='Unassigned')
     secondary_classification = indexes.CharField(model_attr='importedgrant__secondary_classification', null=True, faceted=True, default='Unassigned')
     grant_status = indexes.CharField(model_attr='importedgrant__grant_status', null=True, faceted=True, default='Unassigned')
     grant_type = indexes.CharField(model_attr='importedgrant__grant_type', null=True, faceted=True, default='Unassigned')
@@ -37,3 +37,14 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
         if secondary_classification:
             return secondary_classification.split(':')[0]
         return secondary_classification
+
+    def prepare_labels(self, obj):
+        all_labels = obj.importedgrant.labels
+        labels = {area.split()[0] for area in all_labels['science_areas']}
+        labels.update(
+            set(
+                all_labels.get('routing_classification',[])
+            )
+        )
+
+        return list(labels)
