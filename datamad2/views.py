@@ -142,7 +142,7 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     form_class = DatamadFacetedSearchForm
     facet_fields = [
         'assigned_datacentre',
-        'top_categories',
+        'labels',
         'other_datacentre',
         'secondary_classification',
         'grant_status',

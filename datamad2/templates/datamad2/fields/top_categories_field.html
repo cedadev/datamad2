@@ -1,9 +1,6 @@
-{% if record.importedgrant.top_categories %}
-    {% with cats=record.importedgrant.top_categories %}
-        {%  for cat in cats %}
-            {{ cat }}
-        {% endfor %}
-    {% endwith %}
-{% else %}
-    {{ record.importedgrant.top_categories }}
-{% endif %}
+{% for label in record.importedgrant.labels.routing_classification %}
+    <span class="badge badge-primary" title="Routing Classification" data-toggle="tooltip">{{ label }}</span>
+{% endfor %}
+{% for label in record.importedgrant.labels.science_areas %}
+    <span class="badge badge-secondary" title="Science Area" data-toggle="tooltip">{{ label }}</span>
+{% endfor %}
