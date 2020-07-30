@@ -1,29 +1,20 @@
-<div class="card-body">
-    <table class="table-responsive" id="grant-docs">
-        {% for doc in doc_list %}
-            <tr>
-                <td>
-                    {% if doc %}
-                        <a href="{{ doc.upload.url }}"
-                           download="{{ doc.download_title }}"> {{ doc.title }} </a>
-                        {% if user.is_admin %}
-                            <a title='Delete' data-toggle='tooltip'
-                               href="{% url 'delete_file' pk=doc.pk imported_pk=imported_grant.pk %}">
-                                &nbsp;<i class="fa fa-times confirm text-danger"></i>
-                            </a>
-                        {% endif %}
-                        <br>
-                        <small class="text-secondary">{{ doc.last_modified }}</small>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
+<table class="table-responsive" id="grant-docs">
+    {% for doc in doc_list %}
         <tr>
             <td>
-                <a class="btn btn-primary" title='Upload' data-toggle='tooltip'
-                   href="{% url 'document_upload' pk=imported_grant.grant.pk imported_pk=imported_grant.pk type='support' %}">
-                    <i class="fas fa-plus"></i> Add document</a>
+                {% if doc %}
+                    <a href="{{ doc.upload.url }}"
+                       download="{{ doc.download_title }}"> {{ doc.title }} </a>
+                    {% if user.is_admin %}
+                        <a title='Delete' data-toggle='tooltip'
+                           href="{% url 'delete_file' pk=doc.pk %}">
+                            &nbsp;<i class="fa fa-times confirm text-danger"></i>
+                        </a>
+                    {% endif %}
+                    <br>
+                    <small class="text-secondary">{{ doc.last_modified }}</small>
+                {% endif %}
             </td>
         </tr>
-    </table>
-</div>
+    {% endfor %}
+</table>

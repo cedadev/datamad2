@@ -10,12 +10,14 @@ from datamad2.forms import DatamadFacetedSearchForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.views.generic.edit import FormView
 import re
 from django.core.exceptions import ObjectDoesNotExist
 from datamad2.tables import GrantTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
+from django.views.generic.edit import FormView
+
+DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*) (?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
 
 class FormatError(Exception):
@@ -46,23 +48,25 @@ def multiple_document_upload(request):
                 name = str(f)
 
                 try:
-                    pattern = re.compile("^\w*_\w*_\d* \w*.\w*$")
-                    if not pattern.match(name):
+                    m = DOCUMENT_NAMING_PATTERN.match(name)
+                    if not m:
                         raise FormatError(f"File name {name} is not formatted correctly")
 
-                    grant_ref = (name.split(' ')[0]).replace('_', '/')
-                    doc_type = name.split(' ')[1].split('.')[0]
-                    if doc_type == 'DMP':
-                        type = 'dmp'
-                    else:
-                        type = 'support'
+                    grant_ref = m.group('grant_ref').replace('_', '/')
+
+                    file_type = m.group('doc_type').lower()
+                    if file_type != 'dmp':
+                        file_type = 'support'
+
                     document = Document(upload=f)
+
                     try:
                         document.grant = Grant.objects.get(grant_ref=grant_ref)
                     except ObjectDoesNotExist:
                         raise FormatError(f"Grant {grant_ref} does not exist")
-                    document.type = type
+                    document.type = file_type
                     document.save()
+
                 except ValidationError:
                     messages.error(request, f'The file {name} has already been uploaded')
                 except FormatError as exc:
@@ -75,7 +79,8 @@ def multiple_document_upload(request):
 
 @login_required
 def grant_detail(request, pk):
-    imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+    grant = get_object_or_404(Grant, pk=pk)
+    imported_grant = grant.importedgrant
 
     docs = imported_grant.grant.document_set.filter(type='support')
     dmp_docs = imported_grant.grant.document_set.filter(type='dmp')
@@ -105,16 +110,15 @@ def push_to_jira(request, pk):
     :param pk:
     :return:
     """
-    imported_grant = get_object_or_404(ImportedGrant, pk=pk)
+    grant = get_object_or_404(Grant, pk=pk)
 
     # There is no jira URL against this grant
-    if not imported_grant.grant.jira_ticket:
-        issue = make_issue(request, imported_grant)
+    if not grant.jira_ticket:
+        issue = make_issue(request, grant.importedgrant)
         link = issue.permalink()
 
         # Save the ticket link to the correct grant
         if link:
-            grant = Grant.objects.get(pk=imported_grant.grant.pk)
             grant.jira_ticket = link
             grant.save()
 
@@ -123,8 +127,7 @@ def push_to_jira(request, pk):
 
 @login_required
 def grant_history(request, pk):
-    imported_grant = get_object_or_404(ImportedGrant, pk=pk)
-    grant = imported_grant.grant
+    grant = get_object_or_404(Grant, pk=pk)
     return render(request, 'datamad2/grant_history.html', {'grant': grant})
 
 
@@ -229,9 +232,9 @@ class MyAccountView(LoginRequiredMixin, FormView):
 
 
 @login_required
-def grantinfo_edit(request, pk, imported_pk):
+def grantinfo_edit(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
-    imported_grant = get_object_or_404(ImportedGrant, pk=imported_pk)
+
     if request.method == "POST":
         form = GrantInfoForm(request.POST, instance=grant)
         if form.is_valid():
@@ -244,52 +247,50 @@ def grantinfo_edit(request, pk, imported_pk):
 
 
 @login_required
-def document_upload(request, pk, imported_pk, type):
+def document_upload(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
+
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             name = str(request.FILES.get('upload'))
             try:
-
-                pattern = re.compile("^\w*_\w*_\d* \w*.\w*$")
-                if not pattern.match(name):
+                # Check basic name format
+                m = DOCUMENT_NAMING_PATTERN.match(name)
+                if not m:
                     raise FormatError(f"File name {name} is not formatted correctly")
 
-                document = form.save(commit=False)
-                document.grant = grant
-                grant_ref = (name.split(' ')[0]).replace('_', '/')
+                # Check grant ref against grant you are trying to upload against
+                grant_ref = (m.group('grant_ref')).replace('_', '/')
                 if grant_ref != grant.grant_ref:
                     raise FormatError(f"Grant reference in file {name} does not match the grant you are uploading to.")
 
-                document.type = type
+                # Extract the file type
+                file_type = m.group('doc_type').lower()
+                if file_type != 'dmp':
+                    file_type = 'support'
 
-                file_type = name.split('.')[0][-3:]
-                if type == 'dmp':
-                    if file_type != 'DMP':
-                        raise FormatError(
-                            f"Document type in file {name} is not DMP.")
-
-                else:
-                    if file_type == 'DMP':
-                        raise FormatError(
-                            f"Document type in file {name} is DMP and belongs in the DMP document section.")
-
+                # Create the document object
+                document = form.save(commit=False)
+                document.grant = grant
+                document.type = file_type
                 document.save()
+
                 messages.success(request, 'File uploaded successfully')
-                return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
+                return redirect(reverse('grant_detail', kwargs={'pk': pk}))
 
             except ValidationError as exc:
-                messages.error(request, f'The file {name} has already been uploaded')
+                messages.error(request, f'The file {name} has already been uploaded ')
 
             except FormatError as exc:
                 messages.error(request, f"{exc}")
     else:
         form = DocumentForm(instance=grant)
+
     return render(request, 'datamad2/document_upload.html', {'form': form})
 
 
-def delete_file(request, pk, imported_pk):
+def delete_file(request, pk):
     document = Document.objects.get(pk=pk)
     document.delete_file()
-    return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}))
+    return redirect(reverse('grant_detail', kwargs={'pk': document.grant.pk}))
