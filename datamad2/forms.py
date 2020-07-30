@@ -3,6 +3,9 @@ from .models.grants import Grant
 from haystack.forms import FacetedSearchForm
 from crispy_forms.helper import FormHelper
 from .models.document_store import Document
+from datamad2.search_indexes import ImportedGrantIndex
+from crispy_forms.layout import Submit
+from .utils import removesuffix
 
 
 class UpdateClaim(forms.ModelForm):
@@ -56,3 +59,18 @@ class MultipleDocumentUploadForm(DocumentForm):
 
     upload = forms.FileField(
         widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
+
+class FacetPreferencesForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Update Preferences'))
+
+        igx = ImportedGrantIndex()
+        preference_fields = [removesuffix(field, '_exact') for field in igx.field_map if field.endswith('_exact')]
+
+        for field in preference_fields:
+            self.fields[field] = forms.BooleanField(required=False)
+
