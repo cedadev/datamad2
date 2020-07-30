@@ -19,7 +19,7 @@ class GrantTable(tables.Table):
         args=[A('pk')],
         verbose_name='Grant Reference'
     )
-    top_categories = tables.TemplateColumn(
+    labels = tables.TemplateColumn(
         template_name='datamad2/fields/top_categories_field.html'
     )
 
@@ -50,7 +50,7 @@ class GrantTable(tables.Table):
             'grant_ref',
             'importedgrant__title',
             'importedgrant__grant_holder',
-            'top_categories',
+            'labels',
             'date_added',
             'assigned_datacentre',
             '...'
