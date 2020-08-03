@@ -1,6 +1,6 @@
-from datamad2.models import Grant, ImportedGrant, User
+from datamad2.models import Grant, ImportedGrant, User, DataCentre
 from rest_framework import viewsets
-from datamad2_api.serializers import GrantSerializer, ImportedGrantSerializer, UserSerializer, PermissionSerializer
+from datamad2_api.serializers import GrantSerializer, ImportedGrantSerializer, UserSerializer, PermissionSerializer, DataCentreSerializer
 from django.contrib.auth.models import Permission
 
 class GrantViewSet(viewsets.ModelViewSet):
@@ -34,3 +34,11 @@ class PermissionViewSet(viewsets.ModelViewSet):
     """
     queryset = Permission.objects.all()
     serializer_class = PermissionSerializer
+
+
+class DataCentreViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows datacentres to be viewed or edited.
+    """
+    queryset = DataCentre.objects.all()
+    serializer_class = DataCentreSerializer

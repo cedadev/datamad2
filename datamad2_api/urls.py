@@ -7,6 +7,7 @@ router.register(r'grants', views.GrantViewSet)
 router.register(r'importedgrants', views.ImportedGrantViewSet)
 router.register(r'users', views.UserViewSet)
 router.register(r'permission', views.PermissionViewSet)
+router.register(r'datacenters', views.DataCentreViewSet)
 
 
 urlpatterns = [
