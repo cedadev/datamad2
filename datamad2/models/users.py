@@ -30,6 +30,17 @@ class DataCentre(models.Model):
         return f"{self.name}"
 
 
+class Subtask(models.Model):
+    data_centre = models.ForeignKey(to=DataCentre, on_delete=models.PROTECT, null=True, blank=True)
+    name = models.CharField(max_length=200, blank=True, null=True)
+    schedule_time = models.IntegerField(blank=True, null=True, help_text='Time in weeks to schedule sub task in reference to the reference time.') #in weeks
+    ref_time = models.CharField(max_length=200, blank=True, null=True, choices=(("start_date", "Start Date"), ("end_date", "End Date")), help_text=
+    'Start date means the sub-task will be scheduled after the start date. End date means it will be scheduled before the end date.')
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, data_centre=None,  **extra_fields):
         """
