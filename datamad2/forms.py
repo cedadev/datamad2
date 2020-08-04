@@ -29,6 +29,12 @@ class GrantInfoForm(forms.ModelForm):
 
 
 class DatamadFacetedSearchForm(FacetedSearchForm):
+    CHOICES = (
+        (None, 'Relevance'),
+        ('date_added', 'Date Added (asc)'),
+        ('-date_added', 'Date Added (desc)'),
+    )
+    sort_by = forms.ChoiceField(choices=CHOICES, required=False, widget=forms.Select(attrs={"onchange":"this.form.submit()"}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -46,6 +52,15 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
         own ``SearchForm`` subclass and do ``return self.searchqueryset.all()``.
         """
         return self.searchqueryset.all()
+
+    def search(self):
+        sqs = super().search()
+
+        if self.cleaned_data['sort_by']:
+            order = self.cleaned_data['sort_by']
+            sqs = sqs.order_by(order)
+
+        return sqs
 
 
 class DocumentForm(forms.ModelForm):
