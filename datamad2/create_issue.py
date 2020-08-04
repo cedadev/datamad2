@@ -88,4 +88,5 @@ def create_subtask(subtask, request, new_issue, imported_grant):
                     'customfield_11660': str(imported_grant.actual_start_date), # grant start date
                     'duedate': str(ref_time + datetime.timedelta(weeks=subtask.schedule_time))}
 
-    jira.create_issue(fields=subtask_dict)
+    subtask = jira.create_issue(fields=subtask_dict)
+    jira.assign_issue(subtask, request.user.email)
