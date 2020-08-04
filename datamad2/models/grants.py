@@ -68,7 +68,7 @@ class Grant(models.Model):
         return super(Grant, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.grant_ref}"
+        return f"{self.grant_ref}: {self.importedgrant.title}"
 
 
 class ImportedGrant(models.Model):
