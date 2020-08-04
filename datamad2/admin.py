@@ -93,7 +93,7 @@ admin.site.register(ImportedGrant, ImportedGrantAdmin)
 
 class GrantAdmin(admin.ModelAdmin):
     readonly_fields = ['updated_imported_grant', 'science_area']
-    search_fields = ['grant_ref']
+    search_fields = ['grant_ref', 'importedgrant__title']
 
     def has_add_permission(self, request, obj=None):
         return False
