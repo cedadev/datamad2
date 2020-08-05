@@ -33,10 +33,10 @@ class DataCentre(models.Model):
 class Subtask(models.Model):
     data_centre = models.ForeignKey(to=DataCentre, on_delete=models.PROTECT, null=True, blank=True)
     name = models.CharField(max_length=200, blank=True, null=True)
-    schedule_time = models.IntegerField(blank=True, null=True, help_text='Time in weeks to at which to schedule sub-task in reference to the reference time.',
-                                        verbose_name='Schedule at') #in weeks
+    schedule_time = models.IntegerField(blank=True, null=True, help_text='Time in weeks to at which to schedule sub-task in reference to the reference time. '
+                                                                         'Using a negative value schedules the task before the reference time', verbose_name='Schedule at') #in weeks
     ref_time = models.CharField(max_length=200, blank=True, null=True, choices=(("start_date", "Start Date"), ("end_date", "End Date")), help_text=
-    'Start date means the sub-task will be scheduled after the start date. End date means it will be scheduled before the end date.', verbose_name='Reference time')
+    'Start date means the sub-task will be scheduled in reference to the start date. End date means it will be scheduled in reference to the end date.', verbose_name='Reference time')
 
     def __str__(self):
         return f"{self.name}"
