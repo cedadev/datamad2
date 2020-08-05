@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models.grants import ImportedGrant, Grant
-from .models.users import User, DataCentre
+from .models.users import User, DataCentre, Subtask
 from .models.document_store import Document
 
 # Register your models here.
@@ -118,3 +118,9 @@ class DataCentreAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(DataCentre, DataCentreAdmin)
+
+
+class SubtaskAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Subtask, SubtaskAdmin)
