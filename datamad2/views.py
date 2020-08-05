@@ -202,7 +202,7 @@ def change_claim(request, pk):
         form = UpdateClaim(request.POST, instance=grant)
         if form.is_valid():
             form.save()
-        return redirect('grant_list')
+        return redirect(reverse('grant_detail', kwargs={'pk': pk}))
     else:
         form = UpdateClaim(instance=grant)
     return render(request, 'datamad2/change_claim.html', {'change_claim': change_claim, 'form': form})
@@ -240,7 +240,7 @@ def grantinfo_edit(request, pk):
         if form.is_valid():
             grantinfo = form.save(commit=False)
             grantinfo.save()
-            return redirect(reverse('grant_detail', kwargs={'pk': imported_pk}) + "#spaced-card")
+            return redirect(reverse('grant_detail', kwargs={'pk': pk}) + "#editable-info")
     else:
         form = GrantInfoForm(instance=grant)
     return render(request, 'datamad2/grantinfo_edit.html', {'form': form, 'grant': grant})
