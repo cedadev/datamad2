@@ -34,13 +34,14 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
         ('date_added', 'Date Added (asc)'),
         ('-date_added', 'Date Added (desc)'),
     )
-    sort_by = forms.ChoiceField(choices=CHOICES, required=False, widget=forms.Select(attrs={"onchange":"this.form.submit()"}))
+    sort_by = forms.ChoiceField(choices=CHOICES, required=False, widget=forms.Select(attrs={"onchange":"trigger_submit(this)"}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method='get'
         self.helper.form_class='ml-0'
+        self.helper.form_id='search_form'
 
     def no_query_found(self):
         """
