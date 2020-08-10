@@ -11,6 +11,39 @@ function display_hidden_facets(event, el, prefix, facet) {
     }
 }
 
+function trigger_submit(element){
+    $(element).trigger('submit')
+}
+
+$('#search_form').submit(function(event){
+    // Stop the default form submission
+    event.preventDefault();
+
+    // Extract the values from the form and the current URL
+    let form_qs = $('#search_form').serialize()
+    let formParams = new URLSearchParams(form_qs)
+    let urlParams = new URLSearchParams(window.location.search)
+
+    // Add the form values to the current URL
+    for (const param of formParams.entries()) {
+        if (param[1] !== "") {
+            urlParams.set(...param)
+        } else {
+            urlParams.delete(param[0])
+        }
+    }
+
+    // Handle adding the search character
+    let new_qs = urlParams.toString();
+    if (new_qs) {
+        new_qs = '?' + new_qs
+    }
+
+    // Reload page with changes
+    window.location.href = window.location.origin + new_qs;
+
+})
+
 $('.clear-facets').click(function (event) {
     event.preventDefault();
     let facet = $(this).attr('data-facet')
@@ -49,6 +82,7 @@ $('.clear-facets').click(function (event) {
     window.location.href = window.location.origin + new_qs;
 
 })
+
 
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
