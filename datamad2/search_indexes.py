@@ -28,6 +28,7 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
     ncas = indexes.CharField(model_attr='importedgrant__ncas', null=True, faceted=True)
     nceo = indexes.CharField(model_attr='importedgrant__nceo', null=True, faceted=True)
     overall_score = indexes.IntegerField(model_attr='importedgrant__overall_score', null=True)
+    date_added = indexes.DateTimeField(model_attr='importedgrant__creation_date', null=True)
 
     def get_model(self):
         return Grant

@@ -1,4 +1,4 @@
-from datamad2.models import Grant, ImportedGrant, User, DataCentre
+from datamad2.models import Grant, ImportedGrant, User, DataCentre, Subtask
 from rest_framework import serializers
 from django.contrib.auth.models import Permission
 
@@ -31,4 +31,9 @@ class DataCentreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = DataCentre
         fields = '__all__'
-        
+
+
+class SubtaskSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Subtask
+        fields = '__all__'

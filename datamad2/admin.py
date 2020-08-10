@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models.grants import ImportedGrant, Grant
-from .models.users import User, DataCentre
+from .models.users import User, DataCentre, Subtask
 from .models.document_store import Document
 
 # Register your models here.
@@ -93,7 +93,7 @@ admin.site.register(ImportedGrant, ImportedGrantAdmin)
 
 class GrantAdmin(admin.ModelAdmin):
     readonly_fields = ['updated_imported_grant', 'science_area']
-    search_fields = ['grant_ref']
+    search_fields = ['grant_ref', 'importedgrant__title']
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -118,3 +118,9 @@ class DataCentreAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(DataCentre, DataCentreAdmin)
+
+
+class SubtaskAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Subtask, SubtaskAdmin)

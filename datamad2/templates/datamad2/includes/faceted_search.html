@@ -5,7 +5,10 @@
 
 <div class="col-3">
     {% crispy form %}
-    <div class="card border-0">
+    <div>
+        <label for="id_filter_by">Filter by</label>
+    </div>
+    <div class="card border-0" id="id_filter_by">
         <dl>
             {% if user.preferences.prefered_facets %}
                 {% for field in user.preferences.prefered_facets %}
