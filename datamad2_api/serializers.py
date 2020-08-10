@@ -24,6 +24,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class PermissionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Permission
+        fields = '__all__'
 
 
 class DataCentreSerializer(serializers.HyperlinkedModelSerializer):
