@@ -40,6 +40,9 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
         return secondary_classification
 
     def prepare_labels(self, obj):
+        if not obj.importedgrant:
+            return None
+        
         all_labels = obj.importedgrant.labels
         labels = {area.split()[0] for area in all_labels['science_areas']}
         labels.update(
