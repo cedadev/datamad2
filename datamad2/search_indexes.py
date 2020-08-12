@@ -34,6 +34,9 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
         return Grant
 
     def prepare_secondary_classification(self, obj):
+        if not obj.importedgrant:
+            return None
+        
         secondary_classification = obj.importedgrant.secondary_classification
         if secondary_classification:
             return secondary_classification.split(':')[0]
