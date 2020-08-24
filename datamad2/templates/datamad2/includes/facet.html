@@ -24,9 +24,7 @@
         </dd>
     {% endfor %}
     {% if values|length > 5 %}
-        <a onclick="display_hidden_facets(this,'dd', 'hidden-', '{{ field }}');return false" href="#" data-label="Show More
-                                ({{ values|slice:"5:"|length }})">Show More
-            ({{ values|slice:"5:"|length }})</a>
+        <a onclick="display_hidden_facets(this,'dd', 'hidden-', '{{ field }}');return false" href="#" data-label="Show More ({{ values|slice:"5:"|length }})">Show More ({{ values|slice:"5:"|length }})</a>
         <br>
     {% endif %}
     <hr>
