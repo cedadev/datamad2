@@ -14,7 +14,7 @@ from haystack import indexes
 
 class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    grant_ref = indexes.CharField(model_attr='grant_ref')
+    grant_ref = indexes.CharField(model_attr='grant_ref', faceted=True)
     assigned_datacentre = indexes.CharField(model_attr='assigned_data_centre', null=True, faceted=True, default='Unassigned')
     other_datacentre = indexes.CharField(model_attr='other_data_centre', null=True, faceted=True, default='Unassigned')
     labels = indexes.CharField(model_attr='importedgrant__labels', null=True, faceted=True, default='Unassigned')
