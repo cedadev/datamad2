@@ -17,7 +17,7 @@ from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
 from django.views.generic.edit import FormView
 
-DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*) (?P<doc_type>\w*)(?P<extension>\.\w*)$")
+DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
 
 class FormatError(Exception):
@@ -287,7 +287,7 @@ def document_upload(request, pk):
     else:
         form = DocumentForm(instance=grant)
 
-    return render(request, 'datamad2/document_upload.html', {'form': form})
+    return render(request, 'datamad2/document_upload.html', {'form': form, 'grant': grant})
 
 
 def delete_file(request, pk):
