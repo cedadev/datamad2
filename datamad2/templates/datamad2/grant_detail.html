@@ -73,28 +73,17 @@
                 </tr>
                 <tr>
                     <td colspan="2">{{ imported_grant.abstract|read_more:50|default_if_none:"N/A" }}</td>
-                    {#                        <button class="btn btn-primary claim-btn see-more"> See more </button></td>#}
                 </tr>
-                {#                <tr>#}
-                {#                </tr>#}
                 <tr>
                     <th>Objectives</th>
                 </tr>
                 <tr>
                     <td colspan="2">{{ imported_grant.objectives|read_more:50|default_if_none:"N/A" }}</td>
-                    {#                        <button class="btn btn-primary claim-btn see-more"> See more </button></td>#}
                 </tr>
-
-                {#                <tr>#}
-                {#                </tr>#}
                 <tr>
                     <th>Amount Awarded</th>
                     <td> £ {{ imported_grant.amount_awarded|default_if_none:"N/A" }} </td>
                 </tr>
-                {#                            <tr>#}
-                {#                                <th>Call</th>#}
-                {#                                <td   >{{ imported_grant.call }} </td>#}
-                {#                            </tr>#}
                 <tr>
                     <th>Grant Type</th>
                     <td>{{ imported_grant.grant_type|default_if_none:"N/A" }} </td>
@@ -201,24 +190,6 @@
                     <th>Comments</th>
                     <td>{{ imported_grant.comments|default_if_none:"N/A" }} </td>
                 </tr>
-                {% comment %}                            <tr>
-                                    <th>Original Proposed Start Date</th>
-                                    <td >{{ imported_grant.original_proposed_start_date}} </td>
-                                </tr>
-                                <tr>
-                                    <th>Original Proposed End Date</th>
-                                    <td >{{ imported_grant.original_proposed_end_date}} </td>
-                                </tr>{% endcomment %}
-
-                {% comment %}                            <tr>
-                                    <th>End Date Changed</th>
-                                    <td >{{ imported_grant.end_date_changed }} </td>
-                                </tr>
-                                <tr>
-                                    <th>Start Date Changed</th>
-                                    <td >{{ imported_grant.start_date_changed}} </td>
-                                </tr>{% endcomment %}
-
             </table>
         </div>
     </div>
@@ -274,6 +245,21 @@
                 <tr>
                     <th>Case for support found?</th>
                     <td>{{ imported_grant.grant.case_for_support_found|yesno:"Yes, No, N/A" }} </td>
+                </tr>
+                <tr>
+                    <th>DMP Agreed</th>
+                    <td>
+                        {% if imported_grant.grant.dmp_agreed %}
+                            {% with doc=imported_grant.grant.document_set.all.first %}
+                                {{ doc.last_modified| date:"dS M Y" }}
+                                <br>
+                                <a href="{{ doc.upload.url }}"
+                                   download="{{ doc.download_title }}"> {{ doc.title }} </a>
+                            {% endwith %}
+                        {% else %}
+                            {{ imported_grant.grant.dmp_agreed|yesno:"Yes, No, N/A" }}
+                        {% endif %}
+                    </td>
                 </tr>
             </table>
         </div>

@@ -46,6 +46,11 @@ class Document(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     grant = models.ForeignKey('Grant', on_delete=models.CASCADE)
     checksum = models.CharField(max_length=100, blank=True)
+    tags = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text='Comma separated list of tags to be displayed with the file'
+    )
 
     def set_title(self):
         """
@@ -63,6 +68,9 @@ class Document(models.Model):
             for chunk in self.upload.chunks():
                 md5.update(chunk)
             self.checksum = md5.hexdigest()
+
+    def get_tags(self):
+        return self.tags.split(',')
 
     def save(self, *args, **kwargs):
         self.set_title()
