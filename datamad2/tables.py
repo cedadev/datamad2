@@ -23,11 +23,16 @@ class GrantTable(tables.Table):
         template_name='datamad2/fields/top_categories_field.html'
     )
 
-
     date_added = tables.DateTimeColumn(
         accessor='importedgrant__creation_date',
         format='d M Y'
     )
+
+    actual_start_date = tables.DateColumn(
+        accessor='importedgrant__actual_start_date',
+        format='d M Y'
+    )
+
     assigned_datacentre = tables.TemplateColumn(
         accessor='assigned_data_centre',
         template_name='datamad2/fields/assigned_datacentre_field.html',
@@ -52,6 +57,7 @@ class GrantTable(tables.Table):
             'importedgrant__grant_holder',
             'labels',
             'date_added',
+            'actual_start_date',
             'assigned_datacentre',
             '...'
         )
