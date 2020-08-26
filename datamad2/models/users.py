@@ -10,20 +10,12 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db import models
-from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 
 class DataCentre(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True, unique=True)
-    # name = models.CharField(max_length=200, blank=True, null=True,
-    #                                          choices=(
-    #                                              ("BODC", "BODC"),
-    #                                              ("CEDA", "CEDA"),
-    #                                              ("EIDC", "EIDC"),
-    #                                              ("NGDC", "NGDC"),
-    #                                              ("PDC", "PDC"),
-    #                                              ("ADS", "ADS"),
-    #                                          ))
     jira_project = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
@@ -69,6 +61,7 @@ class UserManager(BaseUserManager):
         DataCentre.objects.get_or_create(name=None)
 
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_admin', True)
 
         if extra_fields.get('is_superuser') is not True:
@@ -92,6 +85,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=False,
+        help_text=_('Designates whether the user can log into this admin site.'),
+    )
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
     objects = UserManager()
 
@@ -101,11 +100,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
-    @property
-    def is_staff(self):
-        "Is the user a member of staff?"
-        return self.is_admin
 
     @property
     def preferences(self):
