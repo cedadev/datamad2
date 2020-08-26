@@ -6,16 +6,17 @@ from django.http import HttpResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
 from haystack.generic_views import FacetedSearchView
-from datamad2.forms import DatamadFacetedSearchForm
+from datamad2.forms import DatamadFacetedSearchForm, DocumentFacetedSearchForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 import re
 from django.core.exceptions import ObjectDoesNotExist
-from datamad2.tables import GrantTable
+from datamad2.tables import GrantTable, DocumentTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
 from django.views.generic.edit import FormView
+from django.views.generic import DetailView
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
@@ -300,3 +301,40 @@ def delete_file(request, pk):
     document = Document.objects.get(pk=pk)
     document.delete_file()
     return redirect(reverse('grant_detail', kwargs={'pk': document.grant.pk}))
+
+
+class DocumentLibraryView(FacetedSearchView):
+
+    success_url=reverse_lazy('document_list')
+    form_class = DocumentFacetedSearchForm
+    facet_fields = [
+        'tags',
+        'type',
+        'dmp_agreed'
+    ]
+    template_name = 'datamad2/document_library_list.html'
+
+    def get_table(self, context):
+        return DocumentTable(data=[item.object for item in context['page_obj'].object_list], orderable=False)
+
+    def get_queryset(self):
+        options = {
+            "size": settings.HAYSTACK_FACET_LIMIT
+        }
+        qs = super().get_queryset()
+        qs = qs.models(Document)
+        for field in self.facet_fields:
+            qs = qs.facet(field, **options)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Add the facet fields to define an order of the facets
+        context['facet_fields'] = self.facet_fields
+        context['table'] = self.get_table(context)
+        return context
+
+
+class DocumentDetailView(DetailView):
+    model = Document

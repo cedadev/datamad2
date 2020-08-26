@@ -6,7 +6,7 @@ from .models.document_store import Document
 from datamad2.search_indexes import ImportedGrantIndex
 from crispy_forms.layout import Submit
 from .utils import removesuffix
-
+from django.urls import reverse
 
 class UpdateClaim(forms.ModelForm):
 
@@ -56,6 +56,45 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
         self.helper.form_method='get'
         self.helper.form_class='ml-0'
         self.helper.form_id='search_form'
+
+    def no_query_found(self):
+        """
+        Determines the behavior when no query was found.
+
+        By default, no results are returned (``EmptySearchQuerySet``).
+
+        Should you want to show all results, override this method in your
+        own ``SearchForm`` subclass and do ``return self.searchqueryset.all()``.
+        """
+        return self.searchqueryset.all()
+
+    def search(self):
+        sqs = super().search()
+
+        if self.cleaned_data['sort_by']:
+            order = self.cleaned_data['sort_by']
+            sqs = sqs.order_by(order)
+
+        return sqs
+
+
+class DocumentFacetedSearchForm(FacetedSearchForm):
+
+
+    CHOICES = (
+        (None, 'Relevance'),
+        ('last_modified', 'Date Added (asc)'),
+        ('-last_modified', 'Date Added (desc)'),
+    )
+    sort_by = forms.ChoiceField(choices=CHOICES, required=False, widget=forms.Select(attrs={"onchange":"trigger_submit(this)"}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method='get'
+        self.helper.form_class='ml-0'
+        self.helper.form_id='search_form'
+        self.helper.form_action=reverse('document_list')
 
     def no_query_found(self):
         """

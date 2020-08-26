@@ -9,7 +9,7 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 import django_tables2 as tables
-from .models import Grant
+from .models import Grant, Document
 from django_tables2.utils import A
 
 
@@ -61,3 +61,37 @@ class GrantTable(tables.Table):
             'assigned_datacentre',
             '...'
         )
+
+
+class DocumentTable(tables.Table):
+
+    title = tables.LinkColumn(
+        viewname='document_detail',
+        args=[A('pk')],
+        verbose_name='Document Name'
+    )
+
+    grant_ref = tables.LinkColumn(
+        viewname='grant_detail',
+        args=[A('grant__pk')],
+        text=lambda document: document.grant.grant_ref
+    )
+
+    tags = tables.TemplateColumn(
+        accessor='assigned_data_centre',
+        template_name='datamad2/fields/document_tags.html',
+    )
+
+    last_modified = tables.DateTimeColumn(
+        accessor='last_modified',
+        verbose_name='Upload Date'
+    )
+
+    class Meta:
+        model = Document
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        fields = (
+            'last_modified',
+            'type',
+        )
+        sequence = ('title','grant_ref','...','last_modified')

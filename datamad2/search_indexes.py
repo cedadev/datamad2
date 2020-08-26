@@ -9,6 +9,7 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from datamad2.models.grants import Grant
+from datamad2.models.document_store import Document
 from haystack import indexes
 
 
@@ -57,3 +58,21 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
         )
 
         return list(labels)
+
+
+class DocumentIndex(indexes.SearchIndex, indexes.Indexable):
+
+    text = indexes.CharField(document=True, use_template=True)
+    type = indexes.CharField(model_attr='type', faceted=True)
+    last_modified = indexes.DateTimeField(model_attr='last_modified')
+    tags = indexes.CharField(model_attr='tags', faceted=True)
+    dmp_agreed = indexes.CharField(model_attr='grant__dmp_agreed', faceted=True, default=False)
+
+    def get_model(self):
+        return Document
+
+    def prepare_tags(self, obj):
+        if obj.tags:
+            return obj.tags.split(',')
+
+

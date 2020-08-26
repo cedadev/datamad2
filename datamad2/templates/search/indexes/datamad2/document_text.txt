@@ -1,0 +1,4 @@
+{{ object.title }}
+{{ object.download_title }}
+{{ object.tags }}
+{{ object.grant.grant_ref }}
