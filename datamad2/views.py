@@ -17,7 +17,7 @@ from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
 from django.views.generic.edit import FormView
 
-DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*) (?P<doc_type>\w*)(?P<extension>\.\w*)$")
+DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
 
 class FormatError(Exception):
@@ -153,6 +153,7 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
         'lead',
         'ncas',
         'nceo',
+        'dmp_agreed'
 
     ]
     template_name = 'datamad2/grant_list.html'
@@ -270,6 +271,11 @@ def document_upload(request, pk):
                 if file_type != 'dmp':
                     file_type = 'support'
 
+                if file_type == 'dmp' and grant.dmp_agreed:
+                    raise PermissionError('You are trying to upload a DMP to a grant where the DMP has been marked '
+                                          'as final. If you intend to provide an update, you must clear the agreed '
+                                          'status for the DMP before trying again.')
+
                 # Create the document object
                 document = form.save(commit=False)
                 document.grant = grant
@@ -282,12 +288,12 @@ def document_upload(request, pk):
             except ValidationError as exc:
                 messages.error(request, f'The file {name} has already been uploaded ')
 
-            except FormatError as exc:
+            except (FormatError, PermissionError) as exc:
                 messages.error(request, f"{exc}")
     else:
         form = DocumentForm(instance=grant)
 
-    return render(request, 'datamad2/document_upload.html', {'form': form})
+    return render(request, 'datamad2/document_upload.html', {'form': form, 'grant': grant})
 
 
 def delete_file(request, pk):
