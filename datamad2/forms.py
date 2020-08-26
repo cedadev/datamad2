@@ -23,8 +23,18 @@ class GrantInfoForm(forms.ModelForm):
 
     class Meta:
         model = Grant
-        fields = ('alt_data_contact', 'alt_data_contact_email', 'alt_data_contact_phone', 'other_data_centre', 'date_contacted_pi',
-                  'will_grant_produce_data', 'datasets_delivered', 'sanctions_recommended', 'case_for_support_found')
+        fields = (
+            'alt_data_contact',
+            'alt_data_contact_email',
+            'alt_data_contact_phone',
+            'other_data_centre',
+            'date_contacted_pi',
+            'will_grant_produce_data',
+            'datasets_delivered',
+            'sanctions_recommended',
+            'case_for_support_found',
+            'dmp_agreed'
+        )
         widgets = {'date_contacted_pi': DateInput()}
 
 
@@ -70,10 +80,14 @@ class DocumentForm(forms.ModelForm):
 
     class Meta:
         model = Document
+        fields = ('upload', 'tags')
+
+
+class MultipleDocumentUploadForm(forms.ModelForm):
+
+    class Meta:
+        model = Document
         fields = ('upload',)
-
-
-class MultipleDocumentUploadForm(DocumentForm):
 
     upload = forms.FileField(
         widget=forms.ClearableFileInput(attrs={'multiple': True}))

@@ -12,6 +12,12 @@
                         </a>
                     {% endif %}
                     <br>
+                    {% if doc.tags %}
+                        {% for tag in doc.get_tags %}
+                            <span class="badge badge-info">{{ tag }}</span>
+                        {% endfor %}
+                        <br>
+                    {% endif %}
                     <small class="text-secondary">{{ doc.last_modified }}</small>
                 {% endif %}
             </td>

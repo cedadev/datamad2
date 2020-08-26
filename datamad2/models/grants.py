@@ -11,6 +11,7 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 from django.db import models
 from django.utils import timezone
 import re
+from model_utils.fields import MonitorField
 
 science_area_pattern = re.compile('(?P<area>\w+):\s?(?P<percentage>\d{1,3})%', re.M)
 
@@ -55,6 +56,9 @@ class Grant(models.Model):
     science_area = models.CharField(max_length=256, null=True, blank=True)
 
     jira_ticket = models.URLField(null=True, blank=True)
+
+    dmp_agreed = models.BooleanField(default=False)
+    dmp_agreed_date = MonitorField(monitor='dmp_agreed', when=[True])
 
     @property
     def importedgrant(self):
