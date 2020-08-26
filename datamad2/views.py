@@ -167,6 +167,7 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
             "size": settings.HAYSTACK_FACET_LIMIT
         }
         qs = super().get_queryset()
+        qs = qs.models(Grant)
         for field in self.facet_fields:
             qs = qs.facet(field, **options)
         return qs
