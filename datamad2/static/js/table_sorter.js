@@ -33,6 +33,11 @@ $('#search_form').submit(function(event){
         }
     }
 
+    // Delete the page param as we are starting a new search
+    if (urlParams.has('page')){
+        urlParams.delete('page')
+    }
+
     // Handle adding the search character
     let new_qs = urlParams.toString();
     if (new_qs) {

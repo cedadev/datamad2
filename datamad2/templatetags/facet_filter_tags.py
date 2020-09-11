@@ -12,6 +12,7 @@ from datamad2.search_indexes import ImportedGrantIndex
 from django import template
 from datamad2.utils import removesuffix
 from django.template.loader import get_template
+import urllib.parse
 
 register = template.Library()
 
@@ -50,3 +51,32 @@ def selected_facets(context):
     if converted_facets:
         template = get_template('datamad2/includes/selected_facets.html')
         return template.render({'converted_facets': converted_facets})
+
+
+@register.simple_tag
+def facet_filter_url(request, field, facet):
+    """
+    Generate the url for the facet filters
+    :param request: WSGIRequest
+    :param field: field to narrow
+    :param facet: facet value
+    :return: url to narrow on
+    """
+    path = request.path
+
+    # Make a copy so can modify it
+    if request.GET:
+        qs_copy = request.GET.copy()
+        if qs_copy.get('page'):
+            qs_copy.pop('page')
+
+        # Popping the page number can make the querystring 0 length
+        if qs_copy:
+            qs = f'?{qs_copy.urlencode()}&selected_facets={field}:{urllib.parse.quote(facet[0])}'
+        else:
+            qs = f'?selected_facets={field}:{urllib.parse.quote(facet[0])}'
+
+    else:
+        qs = f'?selected_facets={field}:{urllib.parse.quote(facet[0])}'
+
+    return f'{path}{qs}'
