@@ -176,6 +176,7 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
         # Add the facet fields to define an order of the facets
         context['facet_fields'] = self.facet_fields
         context['table'] = self.get_table(context)
+        context['containerfluid'] = True
         return context
 
 
