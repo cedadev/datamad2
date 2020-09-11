@@ -39,6 +39,10 @@ class GrantTable(tables.Table):
         attrs={'td':{'class': 'align-middle text-center'}}
     )
 
+    associated_grants = tables.TemplateColumn(
+        template_name='datamad2/fields/associated_grants_field.html'
+    )
+
     class Meta:
         model = Grant
         template_name = 'django_tables2/bootstrap-responsive.html'
