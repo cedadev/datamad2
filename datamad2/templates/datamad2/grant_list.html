@@ -7,12 +7,16 @@
 {% endblock filter_title %}
 
 {% block sidebar %}
-    {% include 'datamad2/includes/faceted_search.html' %}
+    <div class="col-xl-3">
+        {% include 'datamad2/includes/faceted_search.html' %}
+    </div>
 {% endblock %}
 
 {% block content %}
-    {% render_table table %}
-    {% include 'datamad2/includes/pagination.html' %}
+    <div class="col">
+        {% render_table table %}
+        {% include 'datamad2/includes/pagination.html' %}
+    </div>
 {% endblock content %}
 
 {% block tail_js_extra %}

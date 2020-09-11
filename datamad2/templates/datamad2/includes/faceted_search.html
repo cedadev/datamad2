@@ -3,35 +3,34 @@
 {% load crispy_forms_tags %}
 {% available_facets request as remaining_facets %}
 
-<div class="col-3">
-    {% crispy form %}
-    <div>
-        <label for="id_filter_by">Filter by</label>
-    </div>
-    <div class="card border-0" id="id_filter_by">
-        <dl>
-            {% if user.preferences.prefered_facets %}
-                {% for field in user.preferences.prefered_facets %}
-                    <div>
-                        {% include 'datamad2/includes/facet.html' %}
-                    </div>
-                {% endfor %}
-                {% for field in remaining_facets %}
-                    <div class="d-none" id="hidden-facet-section">
-                        {% include 'datamad2/includes/facet.html' %}
-                    </div>
-                {% endfor %}
-                <a onclick="display_hidden_facets(this,'div', 'hidden-facet-section', '');return false" href="#"
-                   data-label="Show All Filters ({{ remaining_facets | length }})">Show All Filters ({{ remaining_facets | length }})</a>
-            {% else %}
-                {% for field in facet_fields %}
-                    <div>
-                        {% include 'datamad2/includes/facet.html' %}
-                    </div>
-                {% endfor %}
-                <a href="{% url 'my_account' %}">Select Prefered Filters</a>
-            {% endif %}
-        </dl>
-    </div>
+{% crispy form %}
+<div>
+    <label for="id_filter_by">Filter by</label>
+</div>
+<div class="card border-0" id="id_filter_by">
+    <dl>
+        {% if user.preferences.prefered_facets %}
+            {% for field in user.preferences.prefered_facets %}
+                <div>
+                    {% include 'datamad2/includes/facet.html' %}
+                </div>
+            {% endfor %}
+            {% for field in remaining_facets %}
+                <div class="d-none" id="hidden-facet-section">
+                    {% include 'datamad2/includes/facet.html' %}
+                </div>
+            {% endfor %}
+            <a onclick="display_hidden_facets(this,'div', 'hidden-facet-section', '');return false" href="#"
+               data-label="Show All Filters ({{ remaining_facets | length }})">Show All Filters
+                ({{ remaining_facets | length }})</a>
+        {% else %}
+            {% for field in facet_fields %}
+                <div>
+                    {% include 'datamad2/includes/facet.html' %}
+                </div>
+            {% endfor %}
+            <a href="{% url 'my_account' %}">Select Prefered Filters</a>
+        {% endif %}
+    </dl>
 </div>
 
