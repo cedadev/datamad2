@@ -43,6 +43,10 @@ class GrantTable(tables.Table):
         template_name='datamad2/fields/associated_grants_field.html'
     )
 
+    grant_title = tables.TemplateColumn(
+        template_name='datamad2/fields/grant_title_field.html'
+    )
+
     class Meta:
         model = Grant
         template_name = 'django_tables2/bootstrap-responsive.html'
@@ -52,12 +56,11 @@ class GrantTable(tables.Table):
             }
         }
         fields = (
-            'importedgrant__title',
             'importedgrant__grant_holder',
         )
         sequence = (
             'grant_ref',
-            'importedgrant__title',
+            'grant_title',
             'importedgrant__grant_holder',
             'labels',
             'date_added',
