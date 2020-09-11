@@ -4,6 +4,9 @@
 {% available_facets request as remaining_facets %}
 
 {% crispy form %}
+<div class="mb-2">
+    <a class="btn btn-danger" href="{% url 'grant_list' %}">Clear All Filters</a>
+</div>
 <div>
     <label for="id_filter_by">Filter by</label>
 </div>
