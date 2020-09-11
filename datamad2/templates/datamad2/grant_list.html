@@ -1,6 +1,7 @@
 {% extends 'datamad2/base.html' %}
 {% load static %}
 {% load render_table from django_tables2 %}
+{% load facet_filter_tags %}
 
 {% block filter_title %}
     <h4>Data Centre</h4>
@@ -14,6 +15,7 @@
 
 {% block content %}
     <div class="col">
+        {% selected_facets %}
         {% render_table table %}
         {% include 'datamad2/includes/pagination.html' %}
     </div>

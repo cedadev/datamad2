@@ -1,0 +1,6 @@
+<div class="mb-4">
+    <h4>Selected Filters</h4>
+    {% for facet, value in converted_facets.items %}
+        <span class="badge badge-info badge-lg" style="font-size: medium">{{ facet }}: {{ value }}</span>
+    {% endfor %}
+</div>
