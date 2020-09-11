@@ -26,12 +26,8 @@
     </a>
 {% endblock %}
 
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-</button>
 {% block navigation %}
-    <div id="navbarResponsive" class="collapse navbar-collapse">
+    <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav mx-auto">
             {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
@@ -43,34 +39,20 @@
                         <a class="dropdown-item" href="{% url 'grant_list' %}">All</a>
                         <a class="dropdown-item"
                            href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:Unassigned">Unassigned</a>
-                        <a class="dropdown-item" href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:BODC">BODC</a>
-                        <a class="dropdown-item" href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:CEDA">CEDA</a>
-                        <a class="dropdown-item" href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:EIDC">EIDC</a>
-                        <a class="dropdown-item" href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:NGDC">NGDC</a>
-                        <a class="dropdown-item" href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:PDC">PDC</a>
-                        <a class="dropdown-item" href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:ADS">ADS</a>
+                        <a class="dropdown-item"
+                           href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:BODC">BODC</a>
+                        <a class="dropdown-item"
+                           href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:CEDA">CEDA</a>
+                        <a class="dropdown-item"
+                           href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:EIDC">EIDC</a>
+                        <a class="dropdown-item"
+                           href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:NGDC">NGDC</a>
+                        <a class="dropdown-item"
+                           href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:PDC">PDC</a>
+                        <a class="dropdown-item"
+                           href="{% url 'grant_list' %}?selected_facets=assigned_datacentre:ADS">ADS</a>
                     </div>
                 </li>
-{#                <li class="nav-item dropdown">#}
-{#                    <a class="nav-link dropdown-toggle" href="#" id="routingClassificationDropdown" role="button"#}
-{#                       data-toggle="dropdown">#}
-{#                        Routing Classification#}
-{#                    </a>#}
-{#                    <div class="dropdown-menu" aria-labelledby="routingClassificationDropdown">#}
-{#                        <a class="dropdown-item"#}
-{#                           href="{% url 'grant_list' %}?selected_facets=routing_classification:Unassigned">Unassigned</a>#}
-{#                        <a class="dropdown-item"#}
-{#                           href="{% url 'grant_list' %}?selected_facets=routing_classification:Marine">Marine</a>#}
-{#                        <a class="dropdown-item"#}
-{#                           href="{% url 'grant_list' %}?selected_facets=routing_classification:Earth">Earth</a>#}
-{#                        <a class="dropdown-item"#}
-{#                           href="{% url 'grant_list' %}?selected_facets=routing_classification:Atmospheric">Atmospheric</a>#}
-{#                        <a class="dropdown-item"#}
-{#                           href="{% url 'grant_list' %}?selected_facets=routing_classification:Freshwater">Freshwater</a>#}
-{#                        <a class="dropdown-item"#}
-{#                           href="{% url 'grant_list' %}?selected_facets=routing_classification:Terrestrial">Terrestrial</a>#}
-{#                    </div>#}
-{#                </li>#}
 
                 <li class="nav-item">
                     <a class="nav-link"
@@ -81,55 +63,86 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'multi_document_upload' %}">Upload Documents</a>
                 </li>
-
             {% endif %}
         </ul>
-
-    </div>
-    <div>
-        <ul class="navbar-nav">
-            {% if user.is_authenticated %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class='fa fa-user-alt'></i>&nbsp;{{ user.first_name }}
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{% url 'my_account' %}">My Account</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-                    </div>
-                </li>
-            {% else %}
-                <a class="nav-link" href="{% url 'login' %}"><i class='fa fa-user-alt'></i>&nbsp;Login</a>
-            {% endif %}
-        </ul>
-
     </div>
 {% endblock navigation %}
-{% block page_title %}{% endblock %}
-{% block info_panel %}{% endblock info_panel %}
 
-{% block content_panel %}
-    <div class="row">
-        <div class="col-12">
-            <h3>DataMAD</h3>
-        </div>
-    </div>
-    <div class="row">
-        {% block sidebar %}
-        {% endblock sidebar %}
-        <div class="col">
-            {% block content %}
-            {% endblock content %}
-        </div>
+{% block user_status %}
+    <ul class="navbar-nav">
+        {% if user.is_authenticated %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class='fa fa-user-alt'></i>&nbsp;{{ user.first_name }}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'my_account' %}">My Account</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                </div>
+            </li>
+        {% else %}
+            <a class="nav-link" href="{% url 'login' %}"><i class='fa fa-user-alt'></i>&nbsp;Login</a>
+        {% endif %}
+    </ul>
+{% endblock user_status %}
 
-        <div class="col-lg-4">
-            {% block rightsidebar %}
-            {% endblock rightsidebar %}
-        </div>
+{% block page_container %}
+    <div class="container{% if containerfluid %}-fluid m-4{% endif %}">
+        {% block content_main %}
+            {% block content_header %}
+                <div class="row mb-4">
+                    <div class="col">
+                        {% block page_title %}
+                            <h3>DataMad</h3>
+                        {% endblock page_title %}
+                    </div>
+                </div>
+                {% block info_panel %}
+                    <div class="row mb-4">
+                        <div class="col">
+                            {% block notifications %}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% if 'success' in message.tags %}
+                                            <div class="alert alert-with-icon alert-success" role="alert">
+                                                <i class="fa fa-check-circle"></i> <span>{{ message }}</span>
+                                            </div>
+                                        {% elif 'error' in message.tags %}
+                                            <div class="alert alert-with-icon alert-danger" role="alert">
+                                                <i class="fa fa-exclamation-circle"></i> <span>{{ message }}</span>
+                                            </div>
+                                        {% elif 'warning' in message.tags %}
+                                            <div class="alert alert-with-icon alert-warning" role="alert">
+                                                <i class="fa fa-exclamation-triangle"></i> <span>{{ message }}</span>
+                                            </div>
+                                        {% else %}
+                                            <div class="alert alert-with-icon alert-info" role="alert">
+                                                <i class="fa fa-info-circle"></i> <span>{{ message }}</span>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endblock notifications %}
+                        </div>
+                    </div>
+                {% endblock info_panel %}
+            {% endblock content_header %}
+            {% block content_panel %}
+                <div class="row">
+                    {% block sidebar %}
+                    {% endblock sidebar %}
+                    {% block content %}
+                    {% endblock content %}
+                    {% block rightsidebar %}
+                    {% endblock rightsidebar %}
+                </div>
+            {% endblock content_panel %}
+        {% endblock content_main %}
+
     </div>
-{% endblock content_panel %}
+{% endblock page_container %}
 
 
 {% block footer %}
