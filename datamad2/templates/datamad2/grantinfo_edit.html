@@ -1,14 +1,15 @@
-{%  extends 'datamad2/base.html' %}
+{% extends 'datamad2/base.html' %}
 {% load crispy_forms_tags %}
 
 {% block content_panel %}
     <div class="row">
-        <form method="post">{% csrf_token %}
-            <h4><label> Editable Grant Information: </label></h4>
-            <p>{{ form | crispy }}</p>
-            <p>
-                <button type="submit" class="save btn btn-primary" id="claim">Save</button>
-            </p>
-        </form>
+        <div class="col">
+            <form method="post">{% csrf_token %}
+                <h4><label> Editable Grant Information: </label></h4>
+                {{ form | crispy }}
+                <button type="submit" class="btn btn-primary pl-4 pr-4">Save</button>
+                <a href="javascript:void;" class="btn btn-secondary pl-4 pr-4" onclick="javascript:history.back();">Cancel</a>
+            </form>
+        </div>
     </div>
 {% endblock content_panel %}
