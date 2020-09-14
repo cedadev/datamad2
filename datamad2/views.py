@@ -163,7 +163,8 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
 
     def get_queryset(self):
         options = {
-            "size": settings.HAYSTACK_FACET_LIMIT
+            "size": settings.HAYSTACK_FACET_LIMIT,
+            "order":{"_key": "asc"}
         }
         qs = super().get_queryset()
         for field in self.facet_fields:
