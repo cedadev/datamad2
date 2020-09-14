@@ -43,10 +43,14 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
         (None, 'Relevance'),
         ('date_added', 'Date Added (asc)'),
         ('-date_added', 'Date Added (desc)'),
-        ('grant_ref_exact', 'Grant Ref (asc)'),
-        ('-grant_ref_exact', 'Grant Ref (desc)'),
         ('actual_start_date', 'Start Date (asc)'),
         ('-actual_start_date', 'Start Date (desc)'),
+        ('grant_ref_exact', 'Grant Ref (A-Z)'),
+        ('-grant_ref_exact', 'Grant Ref (Z-A)'),
+        ('grant_title_exact', 'Grant Title (A-Z)'),
+        ('-grant_title_exact', 'Grant Title (Z-A)'),
+        ('grant_holder_exact', 'Grant Holder (A-Z)'),
+        ('-grant_holder_exact', 'Grant Holder (Z-A)'),
     )
     sort_by = forms.ChoiceField(choices=CHOICES, required=False, widget=forms.Select(attrs={"onchange":"trigger_submit(this)"}))
 

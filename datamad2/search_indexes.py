@@ -31,6 +31,8 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
     date_added = indexes.DateTimeField(model_attr='importedgrant__creation_date', null=True)
     actual_start_date = indexes.DateField(model_attr='importedgrant__actual_start_date', null=True)
     dmp_agreed = indexes.CharField(model_attr='dmp_agreed', null=True, faceted=True)
+    grant_title = indexes.CharField(model_attr='importedgrant__title', faceted=True)
+    grant_holder = indexes.CharField(model_attr='importedgrant__grant_holder', faceted=True)
 
     def get_model(self):
         return Grant
