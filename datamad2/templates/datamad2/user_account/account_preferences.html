@@ -1,0 +1,15 @@
+{% extends 'datamad2/user_account/my_account.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="col">
+        <h4>Preferred Filters</h4>
+        <p>Select your preferred filters to show with the grant lists.</p>
+        <p>All filters will be available but non-preferred filters will be hidden unless requested</p>
+        <div class="row">
+            <div class="col">
+                {% crispy form %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

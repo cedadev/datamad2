@@ -1,0 +1,13 @@
+{% extends 'datamad2/user_account/my_account.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="col">
+        <h4>Datacentre Specific Options</h4>
+        <div class="row">
+            <div class="col">
+                {% crispy form %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -15,27 +15,55 @@ from django.utils import timezone
 
 
 class DataCentre(models.Model):
-    name = models.CharField(max_length=100, blank=True, null=True, unique=True)
-    jira_project = models.CharField(max_length=100, blank=True)
+    CHOICES = (
+        ('BODC', 'BODC'),
+        ('CEDA', 'CEDA'),
+        ('EIDC', 'EIDC'),
+        ('NGDC', 'NGDC'),
+        ('PDC', 'PDC'),
+        ('ADS', 'ADS')
+    )
+
+    name = models.CharField(max_length=100, null=True, unique=True, choices=CHOICES, verbose_name='Datacentre Name')
+    jira_project = models.CharField(max_length=100, blank=True, verbose_name='Data Management JIRA Project')
+
+    # Data Centre Specific JIRA Data Management Tracking JIRA issue details
+    issuetype = models.IntegerField(help_text='JIRA Data Management issue type ID', blank=True, null=True)
+    start_date_field = models.CharField(max_length=100, blank=True, verbose_name='Start Date Field ID')
+    end_date_field = models.CharField(max_length=100, blank=True, verbose_name='End Date Field ID')
+    grant_ref_field = models.CharField(max_length=100, blank=True, verbose_name='Grant Ref Field ID')
+    pi_field = models.CharField(max_length=100, verbose_name='Principle Investigator Field ID', blank=True)
+    research_org_field = models.CharField(max_length=100, verbose_name='Research Org Field ID', blank=True)
+    primary_datacentre_field = models.CharField(max_length=100, blank=True, verbose_name='Primary Datacentre Field ID')
 
     def __str__(self):
         return f"{self.name}"
+
+    @property
+    def jira_issue_fields(self):
+
+        issue_fields = {k:v for k,v in self.__dict__.items() if k.endswith('field') and v}
+        return issue_fields
 
 
 class Subtask(models.Model):
     data_centre = models.ForeignKey(to=DataCentre, on_delete=models.PROTECT, null=True, blank=True)
     name = models.CharField(max_length=200, blank=True, null=True)
-    schedule_time = models.IntegerField(blank=True, null=True, help_text='Time in weeks to at which to schedule sub-task in reference to the reference time. '
-                                                                         'Using a negative value schedules the task before the reference time', verbose_name='Schedule at') #in weeks
-    ref_time = models.CharField(max_length=200, blank=True, null=True, choices=(("start_date", "Start Date"), ("end_date", "End Date")), help_text=
-    'Start date means the sub-task will be scheduled in reference to the start date. End date means it will be scheduled in reference to the end date.', verbose_name='Reference time')
+    schedule_time = models.IntegerField(blank=True, null=True,
+                                        help_text='Time in weeks to at which to schedule sub-task in reference to the reference time. '
+                                                  'Using a negative value schedules the task before the reference time',
+                                        verbose_name='Schedule at')  # in weeks
+    ref_time = models.CharField(max_length=200, blank=True, null=True,
+                                choices=(("start_date", "Start Date"), ("end_date", "End Date")), help_text=
+                                'Start date means the sub-task will be scheduled in reference to the start date. End date means it will be scheduled in reference to the end date.',
+                                verbose_name='Reference time')
 
     def __str__(self):
         return f"{self.name}"
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, password, data_centre=None,  **extra_fields):
+    def _create_user(self, email, password, data_centre=None, **extra_fields):
         """
         Creates and saves a user with given email and password
         """
@@ -81,7 +109,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.EmailField(max_length=255)
     data_centre = models.ForeignKey('DataCentre', on_delete=models.SET_NULL, null=True, blank=True, to_field='name')
     prefered_facets = models.TextField(null=True)
-
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)

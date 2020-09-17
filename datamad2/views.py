@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant, Document, User
-from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm
+from .models import ImportedGrant, Grant, Document, User, DataCentre
+from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, DatacentreForm
 from django.http import HttpResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
@@ -15,7 +15,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from datamad2.tables import GrantTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
+from django.views.generic import TemplateView
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
@@ -111,6 +112,28 @@ def push_to_jira(request, pk):
     :return:
     """
     grant = get_object_or_404(Grant, pk=pk)
+    jira_required_fields = ['issuetype', 'jira_project']
+
+    # Make sure the user has a data centre
+    if not request.user.data_centre:
+        messages.error(request,
+                       f'Your account is not attributed to a Datacentre. You need to '
+                       f'have a Datacentre before you can perform this action')
+        return redirect('grant_detail', pk=pk)
+
+    # Make sure the users datacentre matches the grants primary datacentre
+    if not request.user.data_centre == grant.assigned_data_centre:
+        messages.error(request,
+                       f'The assigned datacentre for this grant does not match your datacentre. '
+                       f'You cannot create JIRA issues from this grant if yours is not the assigned datacentre.')
+        return redirect('grant_detail', pk=pk)
+
+    # Check for required fields in users datacentre
+    for field in jira_required_fields:
+        if not getattr(request.user.data_centre, field):
+            messages.error(request, f'Not all the required fields: {jira_required_fields} have been populated to allow this operation. '
+                                    f'Please update {reverse("datacentre", request.user.data_centre.pk)}')
+            return redirect('grant_detail', pk=pk)
 
     # There is no jira URL against this grant
     if not grant.jira_ticket:
@@ -211,10 +234,10 @@ def change_claim(request, pk):
     return render(request, 'datamad2/change_claim.html', {'change_claim': change_claim, 'form': form})
 
 
-class MyAccountView(LoginRequiredMixin, FormView):
-    template_name = 'registration/my_account.html'
+class MyAccountPreferencesView(LoginRequiredMixin, FormView):
+    template_name = 'datamad2/user_account/account_preferences.html'
     form_class = FacetPreferencesForm
-    success_url = reverse_lazy('my_account')
+    success_url = reverse_lazy('preferences')
 
     def get_initial(self):
         initial = {}
@@ -232,6 +255,26 @@ class MyAccountView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
+class MyAccountDatacentreView(LoginRequiredMixin, UpdateView):
+    template_name = 'datamad2/user_account/account_datacentre.html'
+    model = DataCentre
+    form_class = DatacentreForm
+
+    def get_success_url(self):
+        return reverse('datacentre', kwargs=self.kwargs)
+
+    def get_object(self, **kwargs):
+        """
+        Overwrite the get_object method to only display the datacentre object for
+        the current logged in user
+        :param kwargs:
+        :return: The current users datacentre
+        """
+        return get_object_or_404(self.model, pk=self.request.user.data_centre.pk)
+
+
+class MyAccountDetailsView(LoginRequiredMixin, TemplateView):
+    template_name = 'datamad2/user_account/my_account.html'
 
 
 @login_required

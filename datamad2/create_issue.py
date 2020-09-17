@@ -3,6 +3,15 @@ from django.conf import settings
 from django.urls import reverse
 import datetime
 
+FIELD_MAPPING = {
+    'start_date_field': 'str(imported_grant.actual_start_date)',
+    'end_date_field': 'str(imported_grant.actual_end_date)',
+    'grant_ref_field': 'imported_grant.grant_ref',
+    'pi_field': 'imported_grant.grant_holder',
+    'research_org_field': 'imported_grant.research_org',
+    'primary_datacentre_field': 'request.user.data_centre.name'
+}
+
 
 def get_jira_client(request):
     """
@@ -30,15 +39,16 @@ def make_issue(request, imported_grant):
         'project': str(request.user.data_centre.jira_project),
         'summary': f'{imported_grant.grant_ref}:{imported_grant.title}',
         'description': imported_grant.abstract,
-        'issuetype': {'name': 'Data Management Tracking'},
-        'customfield_11660': str(imported_grant.actual_start_date), # grant start
-        #'customfield_11662': str(imported_grant.grant.date_contacted_pi), # initial contact
-        'customfield_11658': imported_grant.grant_ref,# NERC reference
-        'customfield_11659': imported_grant.grant_holder,# PI
-        'customfield_11862': imported_grant.research_org, # Research organisation
-        'customfield_11663': {'value': request.user.data_centre.name},  # primary data centre
-        #'customfield_11664': [{'value': str(imported_grant.grant.other_data_centre)},]# secondary data centre
+        'issuetype': {'id': str(request.user.data_centre.issuetype)},
     }
+
+    for field, value in request.user.data_centre.jira_issue_fields.items():
+        mapped_datamad_field = FIELD_MAPPING.get(field)
+        if mapped_datamad_field:
+            if field == 'primary_datacentre_field':
+                issue_dict[value] = {'value': eval(mapped_datamad_field)}
+            else:
+                issue_dict[value] = eval(mapped_datamad_field)
 
     # Check if issue already exists
     grant_ref = imported_grant.grant_ref.replace('/', '\\u002f')
