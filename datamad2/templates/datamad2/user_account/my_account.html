@@ -1,0 +1,69 @@
+{% extends 'datamad2/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block sidebar %}
+    <div class="col-lg-3">
+        <nav class="nav flex-column">
+            <a class="nav-link" href="{% url 'my_account' %}">User Details</a>
+            <a class="nav-link" href="{% url 'preferences' %}">User Preferences</a>
+            <a class="nav-link" href="{% url 'datacentre' %}">Datacentre</a>
+        </nav>
+    </div>
+{% endblock sidebar %}
+{% block content %}
+    <div class="col">
+        <table class="row-border" id="grants" style="width:100%">
+            <tr>
+                <th><h4>Account Details </h4></th>
+            </tr>
+            <tr>
+                <th>First Name</th>
+                <td>{{ user.first_name }} </td>
+            </tr>
+            <tr>
+                <th>Surname</th>
+                <td>{{ user.last_name }} </td>
+            </tr>
+            <tr>
+                <th>Email Address</th>
+                <td>{{ user.get_username }}</td>
+            </tr>
+            <tr>
+                <th>Data Centre</th>
+                <td>{{ user.data_centre.name }} </td>
+            </tr>
+            <tr>
+                <th></th>
+                <td>
+                    <a href="{% url 'logout' %}">
+                        <button class="btn btn-primary" id="claim"> Logout</button>
+                    </a>
+                    <a href="{% url 'password_reset' %}">
+                        <button class="btn btn-primary" id="claim"> Change Password</button>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock content %}
+
+{#{% block content_panel %}#}
+{#    <div class="row">#}
+{#        <div class="col">#}
+
+{#        </div>#}
+{#    </div>#}
+{#    <br>#}
+{#    <div class="row">#}
+{#        <div class="col">#}
+{#            <h4>Preferred Filters</h4>#}
+{#            <p>Select your preferred filters to show with the grant lists.</p>#}
+{#            <p>All filters will be available but non-preferred filters will be hidden unless requested</p>#}
+{#        </div>#}
+{#    </div>#}
+{#    <div class="row">#}
+{#        <div class="col">#}
+{#            {% crispy form %}#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock content_panel %}#}
