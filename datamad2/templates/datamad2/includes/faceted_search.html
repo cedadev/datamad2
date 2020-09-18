@@ -3,10 +3,18 @@
 {% load crispy_forms_tags %}
 {% available_facets request as remaining_facets %}
 
+<form class="ml-0" id="search_form" method="get">
 {% crispy form %}
-<div class="mb-2">
-    <a class="btn btn-danger" href="{% url 'grant_list' %}">Clear All Filters</a>
+
+<div class="row">
+    <div class="col">
+        <input type="submit" class="btn btn-primary w-100" name="Search"/>
+    </div>
+    <div class="col">
+        <a class="btn btn-danger w-100" href="{% url 'grant_list' %}">Clear All Filters</a>
+    </div>
 </div>
+</form>
 <div>
     <label for="id_filter_by">Filter by</label>
 </div>
