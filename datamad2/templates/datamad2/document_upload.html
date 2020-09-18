@@ -1,6 +1,11 @@
 {% extends 'datamad2/base.html' %}
 {% load crispy_forms_tags %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'grant_detail' grant.pk %}">{{ grant.grant_ref }}</a></li>
+    <li class="breadcrumb-item active">Document Upload</li>
+{% endblock breadcrumb_items %}
 
 {% block content_panel %}
     {% include 'datamad2/includes/notifications.html' %}
@@ -10,8 +15,8 @@
             <div class="card-body">
                 <h4><label> Upload Document for {{ grant.grant_ref }}</label></h4>
                 {{ form | crispy }}
-                    <button type="submit" class="save btn btn-primary pl-4 pr-4">Upload</button>
-                    <a href="javascript:void;" class="btn btn-secondary pl-4 pr-4" onclick="javascript:history.back();">Cancel</a>
+                <button type="submit" class="save btn btn-primary pl-4 pr-4">Upload</button>
+                <a href="javascript:void;" class="btn btn-secondary pl-4 pr-4" onclick="javascript:history.back();">Cancel</a>
             </div>
         </div>
     </form>

@@ -1,6 +1,11 @@
 {% extends 'datamad2/base.html' %}
 {% load static see_more %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <li class="breadcrumb-item active">{{ imported_grant.grant_ref }}</li>
+{% endblock breadcrumb_items %}
+
 
 {% block content %}
 
@@ -265,7 +270,8 @@
         <div class="row">
             <div class="col">
                 {% if imported_grant.grant.jira_ticket %}
-                    <a class="btn btn-primary float-right" href="{{ imported_grant.grant.jira_ticket }}" target="_blank">
+                    <a class="btn btn-primary float-right" href="{{ imported_grant.grant.jira_ticket }}"
+                       target="_blank">
                         JIRA Issue
                     </a>
                 {% else %}
