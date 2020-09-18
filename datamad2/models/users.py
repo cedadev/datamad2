@@ -28,13 +28,13 @@ class DataCentre(models.Model):
     jira_project = models.CharField(max_length=100, blank=True, verbose_name='Data Management JIRA Project')
 
     # Data Centre Specific JIRA Data Management Tracking JIRA issue details
-    issuetype = models.IntegerField(help_text='JIRA Data Management issue type ID', blank=True, null=True)
-    start_date_field = models.CharField(max_length=100, blank=True, verbose_name='Start Date Field ID')
-    end_date_field = models.CharField(max_length=100, blank=True, verbose_name='End Date Field ID')
-    grant_ref_field = models.CharField(max_length=100, blank=True, verbose_name='Grant Ref Field ID')
-    pi_field = models.CharField(max_length=100, verbose_name='Principle Investigator Field ID', blank=True)
-    research_org_field = models.CharField(max_length=100, verbose_name='Research Org Field ID', blank=True)
-    primary_datacentre_field = models.CharField(max_length=100, blank=True, verbose_name='Primary Datacentre Field ID')
+    issuetype = models.IntegerField(help_text='JIRA Data Management issue type ID. e.g. 10602', blank=True, null=True)
+    start_date_field = models.CharField(max_length=100, blank=True, verbose_name='Start Date Field ID', help_text='Format: customfield_<number>')
+    end_date_field = models.CharField(max_length=100, blank=True, verbose_name='End Date Field ID', help_text='Format: customfield_<number>')
+    grant_ref_field = models.CharField(max_length=100, blank=True, verbose_name='Grant Ref Field ID', help_text='Format: customfield_<number>')
+    pi_field = models.CharField(max_length=100, verbose_name='Principle Investigator Field ID', blank=True, help_text='Format: customfield_<number>')
+    research_org_field = models.CharField(max_length=100, verbose_name='Research Org Field ID', blank=True, help_text='Format: customfield_<number>')
+    primary_datacentre_field = models.CharField(max_length=100, blank=True, verbose_name='Primary Datacentre Field ID', help_text='Format: customfield_<number>')
 
     def __str__(self):
         return f"{self.name}"
