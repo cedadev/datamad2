@@ -1,6 +1,12 @@
 {% extends 'datamad2/base.html' %}
 {% load crispy_forms_tags %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'grant_detail' grant.pk %}">{{ grant.grant_ref }}</a></li>
+    <li class="breadcrumb-item active">Edit</li>
+{% endblock breadcrumb_items %}
+
 {% block content_panel %}
     <div class="row">
         <div class="col">

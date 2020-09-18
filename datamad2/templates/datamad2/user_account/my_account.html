@@ -1,6 +1,11 @@
 {% extends 'datamad2/base.html' %}
 {% load crispy_forms_tags %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <li class="breadcrumb-item active">User Details</li>
+{% endblock breadcrumb_items %}
+
 {% block sidebar %}
     <div class="col-lg-3">
         <nav class="nav flex-column">

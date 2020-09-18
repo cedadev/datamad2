@@ -1,6 +1,11 @@
 {% extends 'datamad2/user_account/my_account.html' %}
 {% load crispy_forms_tags %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <li class="breadcrumb-item active">User Preferences</li>
+{% endblock breadcrumb_items %}
+
 {% block content %}
     <div class="col">
         <h4>Preferred Filters</h4>
