@@ -4,12 +4,11 @@
 
     <a class="btn btn-primary float-right" id="claim-button"
        href="{% url 'change_claim' pk=imported_grant.grant.pk %}">
-        ASSIGN
+        REASSIGN
     </a>
-    <button class="btn btn-primary claim-btn confirm {% if imported_grant.grant.claimed %}claimed{% endif %} float-right mr-1"
-            data-id="{{ imported_grant.grant.pk }}"
-            id="claim-button">
+    <a class="btn btn-primary float-right mr-1" id="claim-button"
+       href="{% url 'toggle_claim' pk=imported_grant.grant.pk %}?next={{ request.path }}">
         {{ imported_grant.grant.claimed | claim_status }}
-    </button>
+    </a>
 
 {% endif %}

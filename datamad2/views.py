@@ -203,22 +203,24 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
         context['containerfluid'] = True
         return context
 
-
 @login_required
-def claim(request, pk):
+def toggle_claim(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
     user = request.user
-    grant.assigned_data_centre = user.data_centre
-    grant.save()
-    return HttpResponse(status=200)
 
+    # Add a check to make sure that the user has permission to change this datacentre
+    if grant.assigned_data_centre and grant.assigned_data_centre == user.data_centre:
+        grant.assigned_data_centre = None
+    else:
+        grant.assigned_data_centre = user.data_centre
 
-@login_required
-def unclaim(request, pk):
-    grant = get_object_or_404(Grant, pk=pk)
-    grant.assigned_data_centre = None
     grant.save()
-    return HttpResponse(status=200)
+
+    if request.GET.get('next'):
+
+        return redirect(request.GET.get('next'))
+    else:
+        return HttpResponse(status=200)
 
 
 @login_required

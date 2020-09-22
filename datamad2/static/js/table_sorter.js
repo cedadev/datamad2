@@ -96,7 +96,7 @@ $(function () {
 
 $(".claim-btn").click(function () {
     let btn = $(this);
-    let url = 'grant/' + $(this).attr('data-id') + '/claim';
+    let url = 'grant/' + $(this).attr('data-id') + '/toggle_claim';
     let cell = btn.parent();
 
     $.ajax({
@@ -106,7 +106,6 @@ $(".claim-btn").click(function () {
         // handle a successful response
         success: function () {
             cell.html("CLAIMED");
-            cell.attr('id', 'claim');
         },
         // handle a non-successful response
         error: function () {
