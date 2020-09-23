@@ -1,6 +1,4 @@
 from django.urls import path, include
-from django.contrib.auth import views as auth_views
-from django.contrib.auth.decorators import permission_required
 from datamad2 import views
 
 urlpatterns = [
