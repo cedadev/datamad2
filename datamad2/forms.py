@@ -6,12 +6,8 @@ from .models.document_store import Document
 from datamad2.search_indexes import ImportedGrantIndex
 from crispy_forms.layout import Submit
 from .utils import removesuffix
-<<<<<<< HEAD
-from datamad2.models.users import DataCentre, User
+from datamad2.models.users import DataCentre, User, JIRAIssueType
 from django.contrib.auth.forms import UserCreationForm
-=======
-from datamad2.models.users import DataCentre, JIRAIssueType
->>>>>>> master
 
 
 class UpdateClaim(forms.ModelForm):

@@ -11,11 +11,8 @@ urlpatterns = [
     path('account/details', views.MyAccountDetailsView.as_view(), name='my_account'),
     path('account/preferences', views.MyAccountPreferencesView.as_view(), name='preferences'),
     path('account/datacentre', views.MyAccountDatacentreView.as_view(), name='datacentre'),
-<<<<<<< HEAD
     path('account/datacentre/new_users', views.MyAccountNewUserView.as_view(), name='new_users'),
-=======
     path('account/datacentre/jira-issue', views.MyAccountDatacentreIssueTypeView.as_view(), name='issue_type'),
->>>>>>> master
     path('grant/<int:pk>/change_claim/', views.change_claim, name='change_claim'),
     path('grant/<int:pk>/unclaim', views.unclaim, name='unclaim'),
     path('grant/<int:pk>/history/', views.grant_history, name='grant_history'),

@@ -1,13 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-<<<<<<< HEAD
-from .models import ImportedGrant, Grant, Document, User, DataCentre
-from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, \
-    FacetPreferencesForm, DatacentreForm, UserForm
-=======
 from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType
-from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, DatacentreForm, DatacentreIssueTypeForm
->>>>>>> master
+from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, \
+    DatacentreForm, DatacentreIssueTypeForm, UserForm
 from django.http import HttpResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
