@@ -1,0 +1,20 @@
+{% extends 'datamad2/user_account/my_account.html' %}
+{% load crispy_forms_tags %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <li class="breadcrumb-item active"><a href="{% url 'datacentre' %}">Datacentre</a></li>
+    <li class="breadcrumb-item active">JIRA Issue Fields</li>
+{% endblock breadcrumb_items %}
+
+{% block content %}
+    <div class="col">
+        <h4>Data Management JIRA Mapping</h4>
+        <p>This form sets up the mapping between datamad and JIRA for pushing content from datamad to JIRA tickets for grants.</p>
+        <div class="row">
+            <div class="col">
+                {% crispy form %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

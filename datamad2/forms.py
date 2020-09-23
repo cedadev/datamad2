@@ -6,7 +6,7 @@ from .models.document_store import Document
 from datamad2.search_indexes import ImportedGrantIndex
 from crispy_forms.layout import Submit
 from .utils import removesuffix
-from datamad2.models.users import DataCentre
+from datamad2.models.users import DataCentre, JIRAIssueType
 
 
 class UpdateClaim(forms.ModelForm):
@@ -118,6 +118,18 @@ class DatacentreForm(forms.ModelForm):
 
     class Meta:
         model = DataCentre
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Save'))
+
+
+class DatacentreIssueTypeForm(forms.ModelForm):
+
+    class Meta:
+        model = JIRAIssueType
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):

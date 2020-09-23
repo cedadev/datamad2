@@ -34,19 +34,19 @@ class DataCentre(models.Model):
 class JIRAIssueType(models.Model):
     # Data Centre Specific JIRA Data Management Tracking JIRA issue details
     datacentre = models.ForeignKey(DataCentre, on_delete=models.CASCADE)
-    issuetype = models.IntegerField(help_text='JIRA Data Management issue type ID. e.g. 10602', blank=True, null=True)
+    issuetype = models.IntegerField(help_text='JIRA Data Management issue type ID. e.g. 10602', blank=True, null=True, verbose_name='Issue Type Id')
     start_date_field = models.CharField(max_length=100, blank=True, verbose_name='Start Date Field ID',
                                         help_text='Format: customfield_{{number}}')
     end_date_field = models.CharField(max_length=100, blank=True, verbose_name='End Date Field ID',
-                                      help_text='Format: customfield_<number>')
+                                      help_text='Format: customfield_{{number}}')
     grant_ref_field = models.CharField(max_length=100, blank=True, verbose_name='Grant Ref Field ID',
-                                       help_text='Format: customfield_<number>')
+                                       help_text='Format: customfield_{{number}}')
     pi_field = models.CharField(max_length=100, verbose_name='Principle Investigator Field ID', blank=True,
-                                help_text='Format: customfield_<number>')
+                                help_text='Format: customfield_{{number}}')
     research_org_field = models.CharField(max_length=100, verbose_name='Research Org Field ID', blank=True,
-                                          help_text='Format: customfield_<number>')
+                                          help_text='Format: customfield_{{number}}')
     primary_datacentre_field = models.CharField(max_length=100, blank=True, verbose_name='Primary Datacentre Field ID',
-                                                help_text='Format: customfield_<number>')
+                                                help_text='Format: customfield_{{number}}')
 
     @property
     def jira_issue_fields(self):
