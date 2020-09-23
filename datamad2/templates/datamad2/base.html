@@ -79,7 +79,9 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{% url 'my_account' %}"><i class='fa fa-user-alt'></i>&nbsp;Account</a>
                     <a class="dropdown-item" href="{% url 'preferences' %}"><i class="fas fa-cog"></i>&nbsp;Preferences</a>
-                    <a class="dropdown-item" href="{% url 'datacentre' %}"><i class="fas fa-database"></i>&nbsp;Datacentre</a>
+                    {% if user.is_admin %}
+                        <a class="dropdown-item" href="{% url 'datacentre' %}"><i class="fas fa-database"></i>&nbsp;Datacentre</a>
+                    {% endif %}
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>&nbsp;Logout</a>
                 </div>

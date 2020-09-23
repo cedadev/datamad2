@@ -1,13 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType
-from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, DatacentreForm, DatacentreIssueTypeForm
+from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, \
+    DatacentreForm, DatacentreIssueTypeForm, UserForm
 from django.http import HttpResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
 from haystack.generic_views import FacetedSearchView
 from datamad2.forms import DatamadFacetedSearchForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 import re
@@ -16,7 +17,8 @@ from datamad2.tables import GrantTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
 from django.views.generic.edit import FormView, UpdateView
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, CreateView
+
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
@@ -255,10 +257,13 @@ class MyAccountPreferencesView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class MyAccountDatacentreView(LoginRequiredMixin, UpdateView):
+class MyAccountDatacentreView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'datamad2/user_account/account_datacentre.html'
     model = DataCentre
     form_class = DatacentreForm
+
+    def test_func(self):
+        return self.request.user.is_admin
 
     def get_success_url(self):
         return reverse('datacentre')
@@ -273,10 +278,13 @@ class MyAccountDatacentreView(LoginRequiredMixin, UpdateView):
         return get_object_or_404(self.model, pk=self.request.user.data_centre.pk)
 
 
-class MyAccountDatacentreIssueTypeView(LoginRequiredMixin, UpdateView):
+class MyAccountDatacentreIssueTypeView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'datamad2/user_account/account_datacentre_issuetype.html'
     model = JIRAIssueType
     form_class = DatacentreIssueTypeForm
+
+    def test_func(self):
+        return self.request.user.is_admin
 
     def get_success_url(self):
         return reverse('issue_type')
@@ -304,6 +312,27 @@ class MyAccountDatacentreIssueTypeView(LoginRequiredMixin, UpdateView):
 
 class MyAccountDetailsView(LoginRequiredMixin, TemplateView):
     template_name = 'datamad2/user_account/my_account.html'
+
+
+class MyAccountNewUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    template_name = 'datamad2/user_account/datacentre_new_users.html'
+    model = User
+    form_class = UserForm
+
+    def test_func(self):
+        return self.request.user.is_admin
+
+    def get_success_url(self):
+        messages.success(self.request, 'User added successfully')
+        return reverse('new_user')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'data_centre': self.request.user.data_centre
+            })
+        return initial
 
 
 @login_required
