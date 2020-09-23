@@ -34,7 +34,6 @@ class GrantInfoForm(forms.ModelForm):
             'will_grant_produce_data',
             'datasets_delivered',
             'sanctions_recommended',
-            'case_for_support_found',
             'dmp_agreed'
         )
         widgets = {'date_contacted_pi': DateInput()}
