@@ -17,3 +17,12 @@ navigation:
         url: admin_users.html#adding-sub-tasks
       - name: DMP Templating
         url: admin_users.html#dmp-templating
+  - name: Contributing
+    url: contributing.html
+    sublinks:
+      - name: Reporting Issues
+        url: contributing.html#reporting-issues
+      - name: Code Contributions
+        url: contributing.html#code-contributions
+      - name: Docs Contributions
+        url: contributing.html#docs-contributions
