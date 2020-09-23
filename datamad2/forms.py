@@ -145,7 +145,6 @@ class DatacentreIssueTypeForm(forms.ModelForm):
         model = JIRAIssueType
         fields = '__all__'
 
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()

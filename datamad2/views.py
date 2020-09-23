@@ -8,7 +8,7 @@ from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
 from haystack.generic_views import FacetedSearchView
 from datamad2.forms import DatamadFacetedSearchForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 import re
@@ -18,6 +18,7 @@ from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic import TemplateView, CreateView
+
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
@@ -307,11 +308,35 @@ class MyAccountDetailsView(LoginRequiredMixin, TemplateView):
     template_name = 'datamad2/user_account/my_account.html'
 
 
-class MyAccountNewUserView(LoginRequiredMixin, CreateView):
+class MyAccountNewUserView(PermissionRequiredMixin, CreateView):
     template_name = 'datamad2/user_account/datacentre_new_users.html'
+    permission_required = 'user.is_admin'
     model = User
     form_class = UserForm
-    success_url = reverse_lazy('new_users')
+
+    def get_success_url(self):
+        messages.success(self.request, 'User added successfully')
+        return reverse('new_user')
+
+    def get_object(self, **kwargs):
+        """
+        Overwrite the get_object method to only display the JIRAIssueType object for
+        the current logged in users datacentre. This modification also means this view
+        behaves as an update or create view. If the object doesn't exist, it will create
+        one.
+        """
+        try:
+            return self.model.objects.get(datacentre=self.request.user.data_centre)
+        except ObjectDoesNotExist:
+            return None
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'data_centre': self.request.user.data_centre
+            })
+        return initial
 
 
 @login_required
