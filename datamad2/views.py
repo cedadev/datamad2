@@ -326,18 +326,6 @@ class MyAccountNewUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         messages.success(self.request, 'User added successfully')
         return reverse('new_user')
 
-    def get_object(self, **kwargs):
-        """
-        Overwrite the get_object method to only display the JIRAIssueType object for
-        the current logged in users datacentre. This modification also means this view
-        behaves as an update or create view. If the object doesn't exist, it will create
-        one.
-        """
-        try:
-            return self.model.objects.get(datacentre=self.request.user.data_centre)
-        except ObjectDoesNotExist:
-            return None
-
     def get_initial(self):
         initial = super().get_initial()
         if not self.object:
