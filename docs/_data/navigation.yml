@@ -2,18 +2,18 @@ navigation:
   - name: Welcome to Datamad
     url: /
   - name: Getting Started
-    url: /tutorial.html
+    url: tutorial.html
     sublinks:
       - name: Finding Grants
-        url: /tutorial.html#finding-grants
+        url: tutorial.html#finding-grants
   - name: Admin Users
-    url: /admin_users.html
+    url: admin_users.html
     sublinks:
       - name: Adding new users
-        url: /admin_users.html#adding-new-users
+        url: admin_users.html#adding-new-users
       - name: Connecting to JIRA
-        url: /admin_users.html#adding-new-users
+        url: admin_users.html#adding-new-users
       - name: Sub Tasks
-        url: /admin_users.html#adding-sub-tasks
+        url: admin_users.html#adding-sub-tasks
       - name: DMP Templating
-        url: /admin_users.html#dmp-templating
+        url: admin_users.html#dmp-templating
