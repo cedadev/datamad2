@@ -69,12 +69,6 @@ def make_issue(request, imported_grant):
             'title': f'View grant: {imported_grant.grant_ref} in Datamad'
         })
 
-        # Assign issue to the creator
-        try:
-            jira.assign_issue(new_issue, request.user.email)
-        except JIRAError:
-            messages.warning(request, f'JIRA issue created successfully but unable to assign to JIRA user with username: {request.user.email}')
-
         # create subtasks
         subtasks = request.user.data_centre.subtask_set.all()
         for task in subtasks:
