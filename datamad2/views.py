@@ -1,8 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
+<<<<<<< HEAD
 from .models import ImportedGrant, Grant, Document, User, DataCentre
 from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, \
     FacetPreferencesForm, DatacentreForm, UserForm
+=======
+from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType
+from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, DatacentreForm, DatacentreIssueTypeForm
+>>>>>>> master
 from django.http import HttpResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
@@ -262,7 +267,7 @@ class MyAccountDatacentreView(LoginRequiredMixin, UpdateView):
     form_class = DatacentreForm
 
     def get_success_url(self):
-        return reverse('datacentre', kwargs=self.kwargs)
+        return reverse('datacentre')
 
     def get_object(self, **kwargs):
         """
@@ -272,6 +277,35 @@ class MyAccountDatacentreView(LoginRequiredMixin, UpdateView):
         :return: The current users datacentre
         """
         return get_object_or_404(self.model, pk=self.request.user.data_centre.pk)
+
+
+class MyAccountDatacentreIssueTypeView(LoginRequiredMixin, UpdateView):
+    template_name = 'datamad2/user_account/account_datacentre_issuetype.html'
+    model = JIRAIssueType
+    form_class = DatacentreIssueTypeForm
+
+    def get_success_url(self):
+        return reverse('issue_type')
+
+    def get_object(self, **kwargs):
+        """
+        Overwrite the get_object method to only display the JIRAIssueType object for
+        the current logged in users datacentre. This modification also means this view
+        behaves as an update or create view. If the object doesn't exist, it will create
+        one.
+        """
+        try:
+            return self.model.objects.get(datacentre=self.request.user.data_centre)
+        except ObjectDoesNotExist:
+            return None
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'datacentre': self.request.user.data_centre
+            })
+        return initial
 
 
 class MyAccountDetailsView(LoginRequiredMixin, TemplateView):

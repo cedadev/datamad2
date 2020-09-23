@@ -10,5 +10,5 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 
 from .grants import ImportedGrant, Grant
-from .users import User, DataCentre, Subtask
+from .users import User, DataCentre, Subtask, JIRAIssueType
 from .document_store import Document

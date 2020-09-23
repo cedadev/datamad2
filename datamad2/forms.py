@@ -6,8 +6,12 @@ from .models.document_store import Document
 from datamad2.search_indexes import ImportedGrantIndex
 from crispy_forms.layout import Submit
 from .utils import removesuffix
+<<<<<<< HEAD
 from datamad2.models.users import DataCentre, User
 from django.contrib.auth.forms import UserCreationForm
+=======
+from datamad2.models.users import DataCentre, JIRAIssueType
+>>>>>>> master
 
 
 class UpdateClaim(forms.ModelForm):
@@ -133,6 +137,18 @@ class UserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'data_centre', 'is_admin')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Save'))
+
+
+class DatacentreIssueTypeForm(forms.ModelForm):
+    class Meta:
+        model = JIRAIssueType
+        fields = '__all__'
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
