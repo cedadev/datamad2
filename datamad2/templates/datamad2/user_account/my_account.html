@@ -11,11 +11,11 @@
         <nav class="nav flex-column">
             <a class="nav-link" href="{% url 'my_account' %}"><i class='fa fa-user-alt'></i>&nbsp;User Details</a>
             <a class="nav-link" href="{% url 'preferences' %}"><i class="fas fa-cog"></i>&nbsp;User Preferences</a>
-            <a class="nav-link" href="{% url 'datacentre' %}"><i class="fas fa-database"></i>&nbsp;Datacentre</a>
-            <a class="nav-link ml-4" href="{% url 'issue_type' %}"><i class="fas fa-flag"></i>&nbsp;JIRA Issue Fields</a>
             {% if user.is_admin %}
+                <a class="nav-link" href="{% url 'datacentre' %}"><i class="fas fa-database"></i>&nbsp;Datacentre</a>
+                <a class="nav-link ml-4" href="{% url 'issue_type' %}"><i class="fas fa-flag"></i>&nbsp;JIRA Issue Fields</a>
                 <a class="nav-link ml-4" href="{% url 'new_user' %}"><i class="fas fa-user-plus"></i>&nbsp;Add New User</a>
-            {%  endif %}
+            {% endif %}
         </nav>
     </div>
 {% endblock sidebar %}

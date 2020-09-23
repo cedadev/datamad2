@@ -8,7 +8,7 @@ from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
 from haystack.generic_views import FacetedSearchView
 from datamad2.forms import DatamadFacetedSearchForm
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 import re
@@ -257,10 +257,13 @@ class MyAccountPreferencesView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class MyAccountDatacentreView(LoginRequiredMixin, UpdateView):
+class MyAccountDatacentreView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'datamad2/user_account/account_datacentre.html'
     model = DataCentre
     form_class = DatacentreForm
+
+    def test_func(self):
+        return self.request.user.is_admin
 
     def get_success_url(self):
         return reverse('datacentre')
@@ -275,10 +278,13 @@ class MyAccountDatacentreView(LoginRequiredMixin, UpdateView):
         return get_object_or_404(self.model, pk=self.request.user.data_centre.pk)
 
 
-class MyAccountDatacentreIssueTypeView(LoginRequiredMixin, UpdateView):
+class MyAccountDatacentreIssueTypeView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'datamad2/user_account/account_datacentre_issuetype.html'
     model = JIRAIssueType
     form_class = DatacentreIssueTypeForm
+
+    def test_func(self):
+        return self.request.user.is_admin
 
     def get_success_url(self):
         return reverse('issue_type')
@@ -308,11 +314,13 @@ class MyAccountDetailsView(LoginRequiredMixin, TemplateView):
     template_name = 'datamad2/user_account/my_account.html'
 
 
-class MyAccountNewUserView(PermissionRequiredMixin, CreateView):
+class MyAccountNewUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = 'datamad2/user_account/datacentre_new_users.html'
-    permission_required = 'user.is_admin'
     model = User
     form_class = UserForm
+
+    def test_func(self):
+        return self.request.user.is_admin
 
     def get_success_url(self):
         messages.success(self.request, 'User added successfully')
