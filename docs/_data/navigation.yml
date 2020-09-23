@@ -6,6 +6,10 @@ navigation:
     sublinks:
       - name: Finding Grants
         url: tutorial.html#finding-grants
+      - name: Grant Documents
+        url: tutorial.html#grant-documents
+      - name: User Preferences
+        url: tutorial.html#user-preferences
   - name: Admin Users
     url: admin_users.html
     sublinks:
@@ -17,6 +21,8 @@ navigation:
         url: admin_users.html#adding-sub-tasks
       - name: DMP Templating
         url: admin_users.html#dmp-templating
+      - name: Bulk Document Uploads
+        url: admin_users.html#bulk-documents
   - name: Contributing
     url: contributing.html
     sublinks:
