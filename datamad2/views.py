@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant, Document, User, DataCentre
-from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, DatacentreForm
+from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, \
+    FacetPreferencesForm, DatacentreForm, UserForm
 from django.http import HttpResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
@@ -16,7 +17,7 @@ from datamad2.tables import GrantTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
 from django.views.generic.edit import FormView, UpdateView
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, CreateView
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
@@ -275,6 +276,13 @@ class MyAccountDatacentreView(LoginRequiredMixin, UpdateView):
 
 class MyAccountDetailsView(LoginRequiredMixin, TemplateView):
     template_name = 'datamad2/user_account/my_account.html'
+
+
+class MyAccountNewUserView(LoginRequiredMixin, CreateView):
+    template_name = 'datamad2/user_account/datacentre_new_users.html'
+    model = User
+    form_class = UserForm
+    success_url = reverse_lazy('new_users')
 
 
 @login_required

@@ -6,7 +6,8 @@ from .models.document_store import Document
 from datamad2.search_indexes import ImportedGrantIndex
 from crispy_forms.layout import Submit
 from .utils import removesuffix
-from datamad2.models.users import DataCentre
+from datamad2.models.users import DataCentre, User
+from django.contrib.auth.forms import UserCreationForm
 
 
 class UpdateClaim(forms.ModelForm):
@@ -119,6 +120,19 @@ class DatacentreForm(forms.ModelForm):
     class Meta:
         model = DataCentre
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Save'))
+
+
+class UserForm(UserCreationForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'data_centre', 'is_admin')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

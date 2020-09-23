@@ -111,7 +111,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     prefered_facets = models.TextField(null=True)
 
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False, verbose_name='Give admin status')
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
