@@ -1,6 +1,6 @@
 navigation:
   - name: Welcome to Datamad
-    url: /
+    url: /index.html
   - name: Getting Started
     url: tutorial.html
     sublinks:
@@ -16,13 +16,13 @@ navigation:
       - name: Adding new users
         url: admin_users.html#adding-new-users
       - name: Connecting to JIRA
-        url: admin_users.html#adding-new-users
+        url: admin_users.html#connecting-to-jira
       - name: Sub Tasks
         url: admin_users.html#adding-sub-tasks
       - name: DMP Templating
         url: admin_users.html#dmp-templating
       - name: Bulk Document Uploads
-        url: admin_users.html#bulk-documents
+        url: admin_users.html#bulk-document-uploads
   - name: Contributing
     url: contributing.html
     sublinks:

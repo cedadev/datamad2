@@ -1,6 +1,6 @@
 ---
 layout: default
-title: DataMad Documentation
+title: DataMAD Documentation
 ---
 # DataMAD User Guide
 
