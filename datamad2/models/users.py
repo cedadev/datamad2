@@ -117,6 +117,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.EmailField(max_length=255)
     data_centre = models.ForeignKey('DataCentre', on_delete=models.SET_NULL, null=True, blank=True, to_field='name')
     prefered_facets = models.TextField(null=True)
+    prefered_sorting = models.TextField(null=True)
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -139,10 +140,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def preferences(self):
         prefered_facets = []
+        prefered_sorting = None
 
         if self.prefered_facets:
             prefered_facets = self.prefered_facets.split(',')
+        if self.prefered_sorting:
+            prefered_sorting = self.prefered_sorting
 
         return {
-            'prefered_facets': prefered_facets
+            'prefered_facets': prefered_facets,
+            'prefered_sorting': prefered_sorting
         }

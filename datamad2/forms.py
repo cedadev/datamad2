@@ -8,6 +8,7 @@ from crispy_forms.layout import Submit
 from .utils import removesuffix
 from datamad2.models.users import DataCentre, User, JIRAIssueType
 from django.contrib.auth.forms import UserCreationForm
+from django.forms.models import formset_factory
 
 
 class UpdateClaim(forms.ModelForm):
@@ -83,6 +84,22 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
         return sqs
 
 
+class MultipleForm(forms.Form):
+    action = forms.CharField(max_length=60, widget=forms.HiddenInput())
+
+
+class SortByPreferencesForm(MultipleForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Update Preferences'))
+        # self.helper.form_tag = False
+
+        for field, name in DatamadFacetedSearchForm.CHOICES:
+            self.fields[field] = forms.BooleanField(required=False, label=name)
+
+
 class DocumentForm(forms.ModelForm):
 
     class Meta:
@@ -100,11 +117,12 @@ class MultipleDocumentUploadForm(forms.ModelForm):
         widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
 
-class FacetPreferencesForm(forms.Form):
+class FacetPreferencesForm(MultipleForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        # self.helper.form_tag = False
         self.helper.add_input(Submit('submit', 'Update Preferences'))
 
         igx = ImportedGrantIndex()
@@ -148,3 +166,6 @@ class DatacentreIssueTypeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Save'))
+
+
+PreferencesFormSet = formset_factory(FacetPreferencesForm, SortByPreferencesForm)
