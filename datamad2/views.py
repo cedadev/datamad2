@@ -5,9 +5,10 @@ from django.http import HttpResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
 from haystack.generic_views import FacetedSearchView
-from datamad2.forms import DatamadFacetedSearchForm, DigitalDataProductFormset, UpdateClaimForm, GrantInfoForm, \
+from datamad2.forms import DatamadFacetedSearchForm, DigitalDataProductFormset, ModelSourceDataProductFormset, UpdateClaimForm, GrantInfoForm, \
     DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, \
     DatacentreForm, DatacentreIssueTypeForm, UserForm, DocumentTemplateForm
+from datamad2.forms.data_product import DataProductFormsetHelper
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -119,6 +120,11 @@ class DataProductView(LoginRequiredMixin, TemplateView):
 
         grant = get_object_or_404(Grant, pk=kwargs['pk'])
         context['grant'] = grant
+        context['formsets'] = {
+            'Digitial Data Products': DigitalDataProductFormset(instance=grant, prefix='digital'),
+            'Model Source Data Products': ModelSourceDataProductFormset(instance=grant, prefix='model')
+        }
+        context['helper'] = DataProductFormsetHelper()
         return context
 
 

@@ -84,7 +84,7 @@ class DataProduct(models.Model):
     data_volume = FileSizeField(default=0, blank=True)
     delivery_date = models.DateField(blank=True)
     embargo_date = models.DateField(blank=True)
-    doi = models.BooleanField(blank=True)
+    doi = models.BooleanField(blank=True, verbose_name='DOI')
     sample_type = models.CharField(max_length=50, blank=True)
     sample_destination = models.CharField(max_length=100, blank=True)
     issues = models.TextField(blank=True)

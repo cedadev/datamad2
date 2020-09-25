@@ -1,4 +1,5 @@
 {% extends 'datamad2/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
@@ -8,4 +9,15 @@
 
 
 {% block content %}
+    <div class="col">
+        <form method="POST">
+            {% for type, formset in formsets.items %}
+                <h3>{{ type }}</h3>
+                {% crispy formset helper %}
+            {% endfor %}
+            <div class="form-actions">
+                <input type="submit" name="submit" value="Save" class="btn btn-primary" id="submit-save">
+            </div>
+        </form>
+    </div>
 {% endblock %}

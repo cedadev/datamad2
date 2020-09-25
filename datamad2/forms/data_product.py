@@ -10,7 +10,9 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from django import forms
 from django.forms import formset_factory
-from datamad2.models import DataProduct
+from django.forms import inlineformset_factory
+from datamad2.models import DataProduct, Grant
+from crispy_forms.helper import FormHelper
 
 
 class DigitalDataProductForm(forms.ModelForm):
@@ -81,8 +83,37 @@ class ThirdPartyDataProductForm(forms.ModelForm):
         ]
 
 
-DigitalDataProductFormset = formset_factory(DigitalDataProductForm, extra=0, can_delete=True)
-ModelSourceDataProductFormset = formset_factory(ModelSourceDataProductForm, extra=0, can_delete=True)
+class DataProductFormsetHelper(FormHelper):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_tag = False
+
+DigitalDataProductFormset = inlineformset_factory(
+    Grant,
+    DataProduct,
+    fields=[
+        'description',
+        'contact',
+        'data_volume',
+        'delivery_date',
+        'embargo_date',
+        'doi',
+        'preservation_plan',
+        'additional_comments'
+    ],
+    extra=0,
+    can_delete=True)
+
+ModelSourceDataProductFormset = inlineformset_factory(Grant, DataProduct, fields=[
+            'name',
+            'contact',
+            'description',
+            'sample_destination',
+            'additional_comments'
+        ], extra=0)
+
+# ModelSourceDataProductFormset = formset_factory(ModelSourceDataProductForm, extra=0, can_delete=True)
 PysicalDataProductFormset = formset_factory(PysicalDataProductForm, extra=0, can_delete=True)
 HardcopyDataProductFormset = formset_factory(HardcopyDataProductForm, extra=0, can_delete=True)
 ThirdPartyDataProductFormset = formset_factory(ThirdPartyDataProductForm, extra=0, can_delete=True)
