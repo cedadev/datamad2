@@ -24,7 +24,8 @@
         <p>All filters will be available but non-preferred filters will be hidden unless requested.</p>
         <div class="row">
             <div class="col">
-                {% crispy forms.facets %}
+{#                {% crispy forms.facets %}#}
+                {{ facet_form | crispy }}
             </div>
         </div>
     </div>
@@ -36,7 +37,8 @@
         <p>All sorting options will be available but this will be applied unless another is requested.</p>
         <div class="row">
             <div class="col">
-                {% crispy forms.sort_by %}
+{#                {% crispy forms.sort_by %}#}
+                {{ sort_by_form | crispy }}
             </div>
         </div>
     </div>

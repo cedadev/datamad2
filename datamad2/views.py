@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType
 from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, \
     DatacentreForm, DatacentreIssueTypeForm, UserForm, SortByPreferencesForm, PreferencesFormSet
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
 from haystack.generic_views import FacetedSearchView
@@ -237,51 +237,125 @@ def change_claim(request, pk):
     return render(request, 'datamad2/change_claim.html', {'change_claim': change_claim, 'form': form})
 
 
-class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
-    template_name = 'datamad2/user_account/account_preferences.html'
-    form_classes = {'sort_by': SortByPreferencesForm,
-                    'facets': FacetPreferencesForm}
-    # form_class = PreferencesFormSet
-    # form_class = FacetPreferencesForm
-    # form_class = SortByPreferencesForm
-    success_url = reverse_lazy('preferences')
+# class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
+#     template_name = 'datamad2/user_account/account_preferences.html'
+#     form_classes = {'sort_by': SortByPreferencesForm,
+#                     'facets': FacetPreferencesForm}
+#     # form_class = PreferencesFormSet
+#     # form_class = FacetPreferencesForm
+#     # form_class = SortByPreferencesForm
+#     success_url = reverse_lazy('preferences')
+#
+#     # def post(self, request):
+#     #     post_data = request.POST or None
+#     #     facet_form = self.facet_form_class(post_data, prefix='post')
+#     #     sort_by_form = self.sort_by_form_class(post_data, prefix='comment')
+#     #
+#     #     context = self.get_context_data(facet_form=facet_form,
+#     #                                     sort_by_form=sort_by_form)
+#
+#     def get_facets_initial(self):
+#         initial = {}
+#         prefered_facets = self.request.user.preferences.get('prefered_facets',[])
+#         for facet in prefered_facets:
+#             initial[facet] = True
+#         return initial
+#
+#     def get_sort_by_initial(self):
+#         initial = {}
+#         sorting = self.request.user.preferences.get('prefered_sorting', None)
+#         initial[sorting] = True
+#         return initial
+#
+#     def facets_form_valid(self, form):
+#         preferences = [field for field, value in form.cleaned_data.items() if value]
+#         user = User.objects.get(pk=self.request.user.pk)
+#         user.prefered_facets = ','.join(preferences)
+#         user.save()
+#
+#         # return super().form_valid(form)
+#
+#         return HttpResponseRedirect(self.get_success_url)
+#
+#     def sort_by_form_valid(self, form):
+#         sorting, value = form.cleaned_data.items()
+#         user = User.objects.get(pk=self.request.user.pk)
+#         user.prefered_sorting = value
+#         user.save()
+#
+#         # return super().form_valid(form)
+#
+#         return HttpResponseRedirect(self.success_url)
 
-    # def post(self, request):
-    #     post_data = request.POST or None
-    #     facet_form = self.facet_form_class(post_data, prefix='post')
-    #     sort_by_form = self.sort_by_form_class(post_data, prefix='comment')
-    #
-    #     context = self.get_context_data(facet_form=facet_form,
-    #                                     sort_by_form=sort_by_form)
+# class MyAccountPreferencesView(LoginRequiredMixin, TemplateView):
+#     template_name = 'datamad2/user_account/account_preferences.html'
+#     sort_by_form_class = SortByPreferencesForm
+#     facets_form_class = FacetPreferencesForm
+#     success_url = reverse_lazy('preferences')
+#
+#     def post(self, request):
+#         post_data = request.POST or None
+#         facets_form = self.facets_form_class(post_data, prefix='facets')
+#         sort_by_form = self.sort_by_form_class(post_data, prefix='sort_by')
+#
+#         context = self.get_context_data(facets_form=facets_form,
+#                                         sort_by_form=sort_by_form)
+#
+#         if sort_by_form.is_valid():
+#             return self.sort_by_form_valid(sort_by_form)
+#         if facets_form.is_valid():
+#             return self.sort_by_form_valid(facets_form)
+#
+#         return self.render_to_response(context)
+#
+#     def get_facets_initial(self):
+#         initial = {}
+#         prefered_facets = self.request.user.preferences.get('prefered_facets',[])
+#         for facet in prefered_facets:
+#             initial[facet] = True
+#         return initial
+#
+#     def get_sort_by_initial(self):
+#         initial = {}
+#         sorting = self.request.user.preferences.get('prefered_sorting', None)
+#         initial[sorting] = True
+#         return initial
+#
+#     def facets_form_valid(self, form):
+#         preferences = [field for field, value in form.cleaned_data.items() if value]
+#         user = User.objects.get(pk=self.request.user.pk)
+#         user.prefered_facets = ','.join(preferences)
+#         user.save()
+#
+#         return HttpResponseRedirect(self.success_url)
+#
+#     def sort_by_form_valid(self, form):
+#         sorting, value = form.cleaned_data.items()
+#         user = User.objects.get(pk=self.request.user.pk)
+#         user.prefered_sorting = value
+#         user.save()
+#
+#         return HttpResponseRedirect(self.success_url)
+#
+#     def get(self, request, *args, **kwargs):
+#         return self.post(request, *args, **kwargs)
 
-    def get_facets_initial(self):
-        initial = {}
-        prefered_facets = self.request.user.preferences.get('prefered_facets',[])
-        for facet in prefered_facets:
-            initial[facet] = True
-        return initial
 
-    def get_sort_by_initial(self):
-        initial = {}
-        sorting = self.request.user.preferences.get('prefered_sorting', None)
-        initial[sorting] = True
-        return initial
+def multiple_forms(request):
+    if request.method == 'POST':
+        sort_by_form = SortByPreferencesForm(request.POST)
+        facet_form = FacetPreferencesForm(request.POST)
+        if sort_by_form.is_valid() or facet_form.is_valid():
+            # Do the needful
+            return HttpResponseRedirect(reverse('preferences'))
+    else:
+        sort_by_form = SortByPreferencesForm()
+        facet_form = FacetPreferencesForm()
 
-    def facets_form_valid(self, form):
-        preferences = [field for field, value in form.cleaned_data.items() if value]
-        user = User.objects.get(pk=self.request.user.pk)
-        user.prefered_facets = ','.join(preferences)
-        user.save()
-
-        return super().form_valid(form)
-
-    def sort_by_form_valid(self, form):
-        sorting, value = form.cleaned_data.items()
-        user = User.objects.get(pk=self.request.user.pk)
-        user.prefered_sorting = sorting
-        user.save()
-
-        return super().form_valid(form)
+    return render(request, 'datamad2/user_account/account_preferences.html', {
+        'sort_by_form': sort_by_form,
+        'facet_form': facet_form,
+    })
 
 
 class MyAccountDatacentreView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

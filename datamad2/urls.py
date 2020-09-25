@@ -8,7 +8,7 @@ urlpatterns = [
     path('grant/<int:pk>/claim', views.claim, name='claim'),
     path('accounts/', include('django.contrib.auth.urls',)),
     path('account/details', views.MyAccountDetailsView.as_view(), name='my_account'),
-    path('account/preferences', views.MyAccountPreferencesView.as_view(), name='preferences'),
+    path('account/preferences', views.multiple_forms, name='preferences'),
     path('account/datacentre', (views.MyAccountDatacentreView.as_view()), name='datacentre'),
     path('account/datacentre/new_user', (views.MyAccountNewUserView.as_view()), name='new_user'),
     path('account/datacentre/jira-issue', (views.MyAccountDatacentreIssueTypeView.as_view()), name='issue_type'),
