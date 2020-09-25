@@ -1,0 +1,27 @@
+{% extends 'datamad2/user_account/my_account.html' %}
+{% load crispy_forms_tags %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'datacentre' %}">Datacentre</a></li>
+    <li class="breadcrumb-item active">Document Templates</li>
+{% endblock breadcrumb_items %}
+
+
+{% block content %}
+    <div class="col">
+        <h4>Document Templates</h4>
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-primary float-right" href="{% url 'document_template_create' %}"><i class="fas fa-file-word"></i>&nbsp;Add Template</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% for template in object_list %}
+                <a href="{% url 'document_template_update' template.pk %}">{{ template.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

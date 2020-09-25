@@ -1,13 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType
-from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, \
-    DatacentreForm, DatacentreIssueTypeForm, UserForm
+from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate
 from django.http import HttpResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
 from haystack.generic_views import FacetedSearchView
-from datamad2.forms import DatamadFacetedSearchForm
+from datamad2.forms import DatamadFacetedSearchForm, DigitalDataProductFormset, UpdateClaimForm, GrantInfoForm, \
+    DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, \
+    DatacentreForm, DatacentreIssueTypeForm, UserForm, DocumentTemplateForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -16,15 +16,23 @@ from django.core.exceptions import ObjectDoesNotExist
 from datamad2.tables import GrantTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
-from django.views.generic.edit import FormView, UpdateView
-from django.views.generic import TemplateView, CreateView
-
+from django.views.generic.edit import FormView, UpdateView, CreateView, DeleteView
+from django.views.generic import TemplateView, ListView, DetailView
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
 
 class FormatError(Exception):
     pass
+
+
+class DatacentreAdminTestMixin(UserPassesTestMixin):
+    """
+    Checks if the user is an admin
+    """
+
+    def test_func(self):
+        return self.request.user.is_admin
 
 
 class FileFieldView(LoginRequiredMixin, FormView):
@@ -103,6 +111,17 @@ def grant_detail(request, pk):
     })
 
 
+class DataProductView(LoginRequiredMixin, TemplateView):
+    template_name = 'datamad2/dataproduct_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        grant = get_object_or_404(Grant, pk=kwargs['pk'])
+        context['grant'] = grant
+        return context
+
+
 @login_required
 @jira_access_token_required
 def push_to_jira(request, pk):
@@ -133,8 +152,9 @@ def push_to_jira(request, pk):
     # Check for required fields in users datacentre
     for field in jira_required_fields:
         if not getattr(request.user.data_centre, field):
-            messages.error(request, f'Not all the required fields: {jira_required_fields} have been populated to allow this operation. '
-                                    f'Please update {reverse("datacentre", request.user.data_centre.pk)}')
+            messages.error(request,
+                           f'Not all the required fields: {jira_required_fields} have been populated to allow this operation. '
+                           f'Please update {reverse("datacentre", request.user.data_centre.pk)}')
             return redirect('grant_detail', pk=pk)
 
     # There is no jira URL against this grant
@@ -189,7 +209,7 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     def get_queryset(self):
         options = {
             "size": settings.HAYSTACK_FACET_LIMIT,
-            "order":{"_key": "asc"}
+            "order": {"_key": "asc"}
         }
         qs = super().get_queryset()
         for field in self.facet_fields:
@@ -227,12 +247,12 @@ def unclaim(request, pk):
 def change_claim(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
     if request.method == 'POST':
-        form = UpdateClaim(request.POST, instance=grant)
+        form = UpdateClaimForm(request.POST, instance=grant)
         if form.is_valid():
             form.save()
         return redirect(reverse('grant_detail', kwargs={'pk': pk}))
     else:
-        form = UpdateClaim(instance=grant)
+        form = UpdateClaimForm(instance=grant)
     return render(request, 'datamad2/change_claim.html', {'change_claim': change_claim, 'form': form})
 
 
@@ -243,7 +263,7 @@ class MyAccountPreferencesView(LoginRequiredMixin, FormView):
 
     def get_initial(self):
         initial = {}
-        prefered_facets = self.request.user.preferences.get('prefered_facets',[])
+        prefered_facets = self.request.user.preferences.get('prefered_facets', [])
         for facet in prefered_facets:
             initial[facet] = True
         return initial
@@ -278,13 +298,10 @@ class MyAccountDatacentreView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         return get_object_or_404(self.model, pk=self.request.user.data_centre.pk)
 
 
-class MyAccountDatacentreIssueTypeView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class MyAccountDatacentreIssueTypeView(LoginRequiredMixin, DatacentreAdminTestMixin, UpdateView):
     template_name = 'datamad2/user_account/account_datacentre_issuetype.html'
     model = JIRAIssueType
     form_class = DatacentreIssueTypeForm
-
-    def test_func(self):
-        return self.request.user.is_admin
 
     def get_success_url(self):
         return reverse('issue_type')
@@ -314,13 +331,10 @@ class MyAccountDetailsView(LoginRequiredMixin, TemplateView):
     template_name = 'datamad2/user_account/my_account.html'
 
 
-class MyAccountNewUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class MyAccountNewUserView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateView):
     template_name = 'datamad2/user_account/datacentre_new_users.html'
     model = User
     form_class = UserForm
-
-    def test_func(self):
-        return self.request.user.is_admin
 
     def get_success_url(self):
         messages.success(self.request, 'User added successfully')
@@ -333,6 +347,42 @@ class MyAccountNewUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                 'data_centre': self.request.user.data_centre
             })
         return initial
+
+
+class DocumentTemplateListView(LoginRequiredMixin, DatacentreAdminTestMixin, ListView):
+    model = DocumentTemplate
+    template_name = 'datamad2/user_account/datacentre_document_template_list.html'
+
+
+class DocumentTemplateCreateView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateView):
+    model = DocumentTemplate
+    template_name = 'datamad2/user_account/datacentre_document_template_form.html'
+    form_class = DocumentTemplateForm
+
+    def get_success_url(self):
+        return reverse('document_template_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'datacentre': self.request.user.data_centre
+            })
+        return initial
+
+
+class DocumentTemplateUpdateView(LoginRequiredMixin, DatacentreAdminTestMixin, UpdateView):
+    model = DocumentTemplate
+    template_name = 'datamad2/user_account/datacentre_document_template_form.html'
+    form_class = DocumentTemplateForm
+
+    def get_success_url(self):
+        return reverse('document_template_list')
+
+
+# class DocumentTemplateDeleteView(LoginRequiredMixin, DatacentreAdminTestMixin, DeleteView):
+#     model = DocumentTemplate
+#     template_name = 'datamad2/user_account/datacentre_document_template_form.html'
 
 
 @login_required
