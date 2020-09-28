@@ -40,10 +40,10 @@ def available_facets(request):
 @register.simple_tag(takes_context=True)
 def selected_facets(context):
     request = context.request
-    selected = request.GET.getlist('selected_facets')
+    selected_facets = request.GET.getlist('selected_facets')
     converted_facets = {}
 
-    for facet in selected:
+    for facet in selected_facets:
         f, label = facet.split(':')
         title = f.replace('_', ' ').title()
         converted_facets[title] = label
