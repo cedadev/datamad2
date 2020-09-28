@@ -243,6 +243,9 @@ class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
                     'sort_by': SortByPreferencesForm}
     success_url = reverse_lazy('preferences')
 
+    def post(self, *args, **kwargs):
+        return super().post(*args, **kwargs)
+
     def get_facets_initial(self):
         initial = {}
         prefered_facets = self.request.user.preferences.get('prefered_facets',[])
@@ -262,7 +265,7 @@ class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
         user.prefered_facets = ','.join(preferences)
         user.save()
 
-        return HttpResponseRedirect(self.success_url)
+        # return HttpResponseRedirect(self.success_url)
 
     def sort_by_form_valid(self, form):
         preference = [field for field, value in form.cleaned_data.items() if value]
@@ -273,7 +276,7 @@ class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
         user.prefered_sorting = preference
         user.save()
 
-        return HttpResponseRedirect(self.success_url)
+        # return HttpResponseRedirect(self.success_url)
 
 
 class MyAccountDatacentreView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
