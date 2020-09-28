@@ -8,6 +8,8 @@
 
 {% block content %}
     <div class="col">
+    <form method="POST" action="{% url 'preferences' %}">{% csrf_token %}
+
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a href="#filters" class="nav-link active" data-toggle="tab">Preferred Filters</a>
@@ -24,6 +26,7 @@
         <p>All filters will be available but non-preferred filters will be hidden unless requested.</p>
         <div class="row">
             <div class="col">
+
                 {% crispy forms.facets %}
             </div>
         </div>
@@ -41,9 +44,10 @@
         </div>
     </div>
     </div>
-        <form method="POST" action="{% url 'preferences' %}">{% csrf_token %}
             <button type="submit" class="btn btn-primary">Update Preferences</button>
-        </form>
+    </form>
     </div>
+
+
 {% endblock content %}
 
