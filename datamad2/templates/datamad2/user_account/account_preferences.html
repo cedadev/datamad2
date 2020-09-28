@@ -24,8 +24,7 @@
         <p>All filters will be available but non-preferred filters will be hidden unless requested.</p>
         <div class="row">
             <div class="col">
-{#                {% crispy forms.facets %}#}
-                {{ facet_form | crispy }}
+                {% crispy forms.facets %}
             </div>
         </div>
     </div>
@@ -33,19 +32,18 @@
 
         <h4>Preferred Sorting</h4>
         <p>Select your preferred sorting to show with the grant lists.</p>
-        <p>Only one preferred sorting option can be selected.</p>
+        <p>Only one preferred sorting option should be selected.</p>
         <p>All sorting options will be available but this will be applied unless another is requested.</p>
         <div class="row">
             <div class="col">
-{#                {% crispy forms.sort_by %}#}
-                {{ sort_by_form | crispy }}
+                {% crispy forms.sort_by %}
             </div>
         </div>
     </div>
     </div>
-{#        <form>#}
-{#     <input type="submit" value="Update Preferences">#}
-{#    </form>#}
+        <form method="POST" action="{% url 'preferences' %}">{% csrf_token %}
+            <button type="submit" class="btn btn-primary">Update Preferences</button>
+        </form>
     </div>
 {% endblock content %}
 
