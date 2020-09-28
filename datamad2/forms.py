@@ -85,14 +85,13 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
 
 class SortByPreferencesForm(forms.Form):
 
+    sort_by = forms.ChoiceField(choices=DatamadFacetedSearchForm.CHOICES, required=False)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        # self.helper.add_input(Submit('submit', 'Update Preferences'))
         self.helper.form_tag = False
-
-        for field, name in DatamadFacetedSearchForm.CHOICES:
-            self.fields[field] = forms.BooleanField(required=False, label=name)
+        # self.helper.add_input(Submit('submit', 'Update Preferences'))
 
 
 class DocumentForm(forms.ModelForm):

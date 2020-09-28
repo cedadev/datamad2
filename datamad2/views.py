@@ -243,6 +243,9 @@ class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
                     'sort_by': SortByPreferencesForm}
     success_url = reverse_lazy('preferences')
 
+    def post(self, *args, **kwargs):
+        return super().post(*args, **kwargs)
+
     def get_facets_initial(self):
         initial = {}
         prefered_facets = self.request.user.preferences.get('prefered_facets',[])
@@ -253,7 +256,7 @@ class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
     def get_sort_by_initial(self):
         initial = {}
         sorting = self.request.user.preferences.get('prefered_sorting', None)
-        initial[sorting] = True
+        initial['sort_by'] = sorting
         return initial
 
     def facets_form_valid(self, form):
@@ -262,18 +265,11 @@ class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
         user.prefered_facets = ','.join(preferences)
         user.save()
 
-        return HttpResponseRedirect(self.success_url)
-
     def sort_by_form_valid(self, form):
-        preference = [field for field, value in form.cleaned_data.items() if value]
-        if len(preference):
-            messages.error("Only one sorting option can be selected")
-            raise ValidationError
+        preference = [value for field, value in form.cleaned_data.items() if value]
         user = User.objects.get(pk=self.request.user.pk)
-        user.prefered_sorting = preference
+        user.prefered_sorting = preference[0]
         user.save()
-
-        return HttpResponseRedirect(self.success_url)
 
 
 class MyAccountDatacentreView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
