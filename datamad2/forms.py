@@ -30,13 +30,13 @@ class GrantInfoForm(forms.ModelForm):
             'alt_data_contact_email',
             'alt_data_contact_phone',
             'other_data_centre',
-            'date_contacted_pi',
+            'date_contacted_PI',
             'will_grant_produce_data',
             'datasets_delivered',
             'sanctions_recommended',
             'dmp_agreed'
         )
-        widgets = {'date_contacted_pi': DateInput()}
+        widgets = {'date_contacted_PI': DateInput()}
 
 
 class DatamadFacetedSearchForm(FacetedSearchForm):
