@@ -51,6 +51,8 @@ def selected_facets(context):
     if converted_facets:
         template = get_template('datamad2/includes/selected_facets.html')
         return template.render({'converted_facets': converted_facets})
+    
+    return ''
 
 
 @register.simple_tag
