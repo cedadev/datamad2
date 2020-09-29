@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 {% available_facets request as remaining_facets %}
 
+
 {% crispy form %}
 <div class="mb-2">
     <a class="btn btn-danger" href="{% url 'grant_list' %}">Clear All Filters</a>

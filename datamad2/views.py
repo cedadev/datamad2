@@ -206,6 +206,12 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
         context['containerfluid'] = True
         return context
 
+    def get_initial(self):
+        initial = super().get_initial()
+        sorting = self.request.user.preferences.get('prefered_sorting', None)
+        initial['sort_by'] = sorting
+        return initial
+
 
 @login_required
 def claim(request, pk):
@@ -268,7 +274,10 @@ class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
     def sort_by_form_valid(self, form):
         preference = [value for field, value in form.cleaned_data.items() if value]
         user = User.objects.get(pk=self.request.user.pk)
-        user.prefered_sorting = preference[0]
+        if preference:
+            user.prefered_sorting = preference[0]
+        else:
+            user.prefered_sorting = None
         user.save()
 
 
