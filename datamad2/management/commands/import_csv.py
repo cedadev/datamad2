@@ -141,7 +141,7 @@ mapping = {
     'proposed_start_date': 'proposed_start_date',
     'proposed_end_date': 'proposed_end_date',
     'will_grant_produce_data': 'will_grant_produce_data',
-    'datecontact_with_pi': 'date_contacted_pi',
+    'datecontact_with_pi': 'date_contacted_PI',
     'department': 'department',
     'city': 'city',
     'address_2': 'address2',
@@ -268,7 +268,7 @@ boolean_fields = ('hide_record',
                   'ncas',
                   'nceo')
 
-date_fields = ('date_contacted_pi',
+date_fields = ('date_contacted_PI',
                'proposed_start_date',
                'proposed_end_date',
                'actual_start_date',
