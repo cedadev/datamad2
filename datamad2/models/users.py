@@ -110,7 +110,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=200, blank=True, null=True)
     last_name = models.CharField(max_length=200, blank=True, null=True)
     email = models.EmailField(
-        verbose_name='email address',
+        verbose_name='Email Address',
         max_length=255,
         unique=True,
     )
@@ -119,7 +119,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     prefered_facets = models.TextField(null=True)
 
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False, verbose_name="Admin Status")
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,

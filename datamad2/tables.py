@@ -9,8 +9,10 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 import django_tables2 as tables
-from .models import Grant
+from .models import Grant, User
 from django_tables2.utils import A
+from django.utils.safestring import mark_safe
+from django.urls import reverse
 
 
 class GrantTable(tables.Table):
@@ -68,3 +70,23 @@ class GrantTable(tables.Table):
             'assigned_datacentre',
             '...'
         )
+
+
+class UserTable(tables.Table):
+
+    actions = tables.TemplateColumn(
+        template_name='datamad2/fields/user_action_field.html'
+    )
+
+    class Meta:
+        model = User
+        orderable = False
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        attrs = {
+            'td': {
+                'class': 'align-middle'
+            }
+        }
+        sequence = ("first_name", "last_name", "email", "is_admin", "actions")
+        exclude = ("id", "password", "last_login", "is_superuser", "username", "data_centre",
+                   "prefered_facets", "is_active", "is_staff", "date_joined")

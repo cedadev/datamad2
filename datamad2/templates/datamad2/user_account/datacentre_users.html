@@ -1,0 +1,28 @@
+{% extends 'datamad2/user_account/my_account.html' %}
+{% load crispy_forms_tags %}
+{% load django_tables2 %}
+{%  load static %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'datacentre' %}">Datacentre</a></li>
+    <li class="breadcrumb-item active">{{ user.data_centre.name }} Users</li>
+{% endblock breadcrumb_items %}
+
+
+{% block content %}
+    <div class="col">
+        <h4>{{ user.data_centre.name }} Users</h4>
+        <div class="row">
+            <div class="col">
+                {% render_table table %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block tail_js_extra %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/claim_button.js' %}?version=1.1"></script>
+    <script type="text/javascript" src="{% static 'js/see_more.js' %}?version=1.0"></script>
+{% endblock tail_js_extra %}

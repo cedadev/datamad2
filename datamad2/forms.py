@@ -139,6 +139,20 @@ class UserForm(UserCreationForm):
         self.helper.add_input(Submit('submit', 'Save'))
 
 
+class UserEditForm(forms.ModelForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'is_admin')
+        exclude = ('password',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Save'))
+
+
 class DatacentreIssueTypeForm(forms.ModelForm):
     class Meta:
         model = JIRAIssueType
