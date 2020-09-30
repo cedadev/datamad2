@@ -1,26 +1,42 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate
+from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate, DataProduct
 from django.http import HttpResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
 from haystack.generic_views import FacetedSearchView
-from datamad2.forms import DatamadFacetedSearchForm, DigitalDataProductFormset, ModelSourceDataProductFormset, UpdateClaimForm, GrantInfoForm, \
+from datamad2.forms import DatamadFacetedSearchForm, UpdateClaimForm, GrantInfoForm, \
     DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, \
     DatacentreForm, DatacentreIssueTypeForm, UserForm, DocumentTemplateForm
-from datamad2.forms.data_product import DataProductFormsetHelper
+from datamad2.forms.data_product import DigitalDataProductForm, ModelSourceDataProductForm, PhysicalDataProductForm, HardcopyDataProductForm, ThirdPartyDataProductForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ImproperlyConfigured
 import re
 from django.core.exceptions import ObjectDoesNotExist
-from datamad2.tables import GrantTable
+from datamad2.tables import GrantTable, DigitalDataProductTable, ModelSourceDataProductTable, PhysicalDataProductTable, HardcopyDataProductTable, ThirdPartyDataProductTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
 from django.views.generic.edit import FormView, UpdateView, CreateView, DeleteView
 from django.views.generic import TemplateView, ListView, DetailView
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
+
+DATAPRODUCT_FORM_CLASS_MAP = {
+    'digital': DigitalDataProductForm,
+    'model_source': ModelSourceDataProductForm,
+    'physical': PhysicalDataProductForm,
+    'hardcopy': HardcopyDataProductForm,
+    'third-party': ThirdPartyDataProductForm
+}
+
+DATAPRODUCT_TABLE_CLASS_MAP = {
+    'digital': DigitalDataProductTable,
+    'model_source': ModelSourceDataProductTable,
+    'physical': PhysicalDataProductTable,
+    'hardcopy': HardcopyDataProductTable,
+    'third-party': ThirdPartyDataProductTable
+}
 
 
 class FormatError(Exception):
@@ -120,12 +136,55 @@ class DataProductView(LoginRequiredMixin, TemplateView):
 
         grant = get_object_or_404(Grant, pk=kwargs['pk'])
         context['grant'] = grant
-        context['formsets'] = {
-            'Digitial Data Products': DigitalDataProductFormset(instance=grant, prefix='digital'),
-            'Model Source Data Products': ModelSourceDataProductFormset(instance=grant, prefix='model')
-        }
-        context['helper'] = DataProductFormsetHelper()
+        context['data_products'] = {product:table(grant.dataproduct_set.filter(data_product_type=product)) for product,table in DATAPRODUCT_TABLE_CLASS_MAP.items()}
         return context
+
+
+class DataProductUpdateCreateView(LoginRequiredMixin, UpdateView):
+    template_name = 'datamad2/dataproduct_form_view.html'
+    model = DataProduct
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['grant_id'] = get_object_or_404(Grant, pk=self.kwargs['pk']).pk
+        initial['data_product_type'] = self.kwargs['data_product_type']
+        return initial
+
+    def get_success_url(self):
+        return reverse('dataproduct_view', kwargs={'pk': self.kwargs['pk']})
+
+    def get_form_class(self):
+        """Return the form class to use in this view."""
+        if self.fields is not None and self.form_class:
+            raise ImproperlyConfigured(
+                "Specifying both 'fields' and 'form_class' is not permitted."
+            )
+
+        form_class = DATAPRODUCT_FORM_CLASS_MAP.get(self.kwargs['data_product_type'])
+        return form_class
+
+    def get_object(self, **kwargs):
+        """
+        This modification means this view behaves as an update or create view.
+        If the object doesn't exist, it will create one.
+        """
+        try:
+            return self.model.objects.get(pk=self.kwargs['dp_pk'])
+        except (ObjectDoesNotExist, KeyError):
+            return None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['grant'] = get_object_or_404(Grant, pk=self.kwargs['pk'])
+        context['data_product_type'] = self.kwargs['data_product_type']
+        return context
+
+
+@login_required
+def delete_dataproduct(request, pk, dp_pk):
+    data_product = DataProduct.objects.get(pk=dp_pk)
+    data_product.delete()
+    return redirect(reverse('dataproduct_view', kwargs={'pk':pk}))
 
 
 @login_required

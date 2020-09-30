@@ -13,9 +13,13 @@ from django.forms import formset_factory
 from django.forms import inlineformset_factory
 from datamad2.models import DataProduct, Grant
 from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 
 class DigitalDataProductForm(forms.ModelForm):
+
+    grant_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+
     class Meta:
         model = DataProduct
         fields = [
@@ -26,8 +30,24 @@ class DigitalDataProductForm(forms.ModelForm):
             'embargo_date',
             'doi',
             'preservation_plan',
-            'additional_comments'
+            'additional_comments',
+            'data_product_type',
         ]
+
+        widgets = {
+            'data_product_type': forms.HiddenInput
+        }
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Save'))
+
+    def save(self, **kwargs):
+        # Save the related grant for this data product
+        self.instance.grant = Grant.objects.get(pk=self.cleaned_data['grant_id'])
+        return super().save()
 
 
 class ModelSourceDataProductForm(forms.ModelForm):
@@ -42,7 +62,7 @@ class ModelSourceDataProductForm(forms.ModelForm):
         ]
 
 
-class PysicalDataProductForm(forms.ModelForm):
+class PhysicalDataProductForm(forms.ModelForm):
     class Meta:
         model = DataProduct
         fields = [
@@ -83,37 +103,18 @@ class ThirdPartyDataProductForm(forms.ModelForm):
         ]
 
 
-class DataProductFormsetHelper(FormHelper):
+# class DataProductFormsetHelper(FormHelper):
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.form_tag = False
+#
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.form_tag = False
+# DigitalDataProductFormset = inlineformset_factory(Grant, DataProduct, form=DigitalDataProductForm, extra=1, can_delete=True)
 
-DigitalDataProductFormset = inlineformset_factory(
-    Grant,
-    DataProduct,
-    fields=[
-        'description',
-        'contact',
-        'data_volume',
-        'delivery_date',
-        'embargo_date',
-        'doi',
-        'preservation_plan',
-        'additional_comments'
-    ],
-    extra=0,
-    can_delete=True)
-
-ModelSourceDataProductFormset = inlineformset_factory(Grant, DataProduct, fields=[
-            'name',
-            'contact',
-            'description',
-            'sample_destination',
-            'additional_comments'
-        ], extra=0)
+# ModelSourceDataProductFormset = inlineformset_factory(Grant, DataProduct,  extra=0)
 
 # ModelSourceDataProductFormset = formset_factory(ModelSourceDataProductForm, extra=0, can_delete=True)
-PysicalDataProductFormset = formset_factory(PysicalDataProductForm, extra=0, can_delete=True)
-HardcopyDataProductFormset = formset_factory(HardcopyDataProductForm, extra=0, can_delete=True)
-ThirdPartyDataProductFormset = formset_factory(ThirdPartyDataProductForm, extra=0, can_delete=True)
+# PysicalDataProductFormset = formset_factory(PysicalDataProductForm, extra=0, can_delete=True)
+# HardcopyDataProductFormset = formset_factory(HardcopyDataProductForm, extra=0, can_delete=True)
+# ThirdPartyDataProductFormset = formset_factory(ThirdPartyDataProductForm, extra=0, can_delete=True)

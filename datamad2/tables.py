@@ -9,7 +9,7 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 import django_tables2 as tables
-from .models import Grant
+from .models import Grant, DataProduct
 from django_tables2.utils import A
 
 
@@ -68,3 +68,96 @@ class GrantTable(tables.Table):
             'assigned_datacentre',
             '...'
         )
+
+
+class DataProductTableMixin(tables.Table):
+    actions = tables.TemplateColumn(
+        template_name='datamad2/fields/data_product_action_field.html'
+    )
+
+
+class DataProductMeta:
+    model = DataProduct
+    template_name = 'django_tables2/bootstrap-responsive.html'
+    orderable = False
+    empty_text = "No data products in this category"
+
+    fields = [
+        'added',
+        'modified',
+        'actions'
+    ]
+
+    sequence = [
+        '...',
+        'added',
+        'modified',
+        'actions'
+    ]
+
+
+class DigitalDataProductTable(DataProductTableMixin, tables.Table):
+    class Meta(DataProductMeta):
+        fields = [
+            'description',
+            'contact',
+            'data_volume',
+            'delivery_date',
+            'embargo_date',
+            'doi',
+            'preservation_plan',
+            'additional_comments',
+            'data_product_type',
+        ] + DataProductMeta.fields
+
+
+class ModelSourceDataProductTable(DataProductTableMixin):
+    class Meta(DataProductMeta):
+        fields = [
+            'name',
+            'contact',
+            'description',
+            'sample_destination',
+            'additional_comments',
+        ] + DataProductMeta.fields
+
+
+class PhysicalDataProductTable(DataProductTableMixin):
+    class Meta(DataProductMeta):
+        fields = [
+            'name',
+            'contact',
+            'data_format',
+            'issues',
+            'delivery_date',
+            'additional_comments',
+        ] + DataProductMeta.fields
+
+
+class HardcopyDataProductTable(DataProductTableMixin):
+    class Meta(DataProductMeta):
+        fields = [
+            'name',
+            'contact',
+            'data_format',
+            'issues',
+            'delivery_date',
+            'additional_comments',
+        ] + DataProductMeta.fields
+
+
+class ThirdPartyDataProductTable(DataProductTableMixin):
+    class Meta(DataProductMeta):
+        fields = [
+            'name',
+            'contact',
+            'data_location',
+            'description',
+            'data_volume',
+            'responsibility',
+            'issues',
+            'additional_comments',
+            'added',
+            'modified',
+            'actions'
+        ]

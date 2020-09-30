@@ -1,0 +1,18 @@
+{% extends 'datamad2/base.html' %}
+{% load crispy_forms_tags %}
+{% load string_tags %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <li class="breadcrumb-item active"><a href="{% url 'grant_detail' grant.pk %}">{{ grant.grant_ref }}</a></li>
+    <li class="breadcrumb-item active"><a href="{% url 'dataproduct_view' grant.pk %}">Data Products</a></li>
+    <li class="breadcrumb-item active">{{ data_product_type | facet_title }} Data Product</li>
+{% endblock breadcrumb_items %}
+
+
+{% block content %}
+    <div class="col">
+        <h3>{{ data_product_type | facet_title }} Data Product</h3>
+        {% crispy form %}
+    </div>
+{% endblock %}

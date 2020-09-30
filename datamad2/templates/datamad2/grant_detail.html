@@ -260,22 +260,6 @@
                 </table>
             </div>
         </div>
-
-        <div class="card card-shaded" id="data-products">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <h3>Data Products</h3>
-                    </div>
-                    <div class="col">
-                        <a class="btn btn-primary float-right" href="{% url 'dataproduct_view' imported_grant.grant.pk %}">Edit Data Products</a>
-                    </div>
-                </div>
-                {% if dataproducts %}
-                {% include 'datamad2/includes/dataproducts.html' %}
-                {% endif %}
-            </div>
-        </div>
     </div>
 
 
@@ -290,7 +274,7 @@
             </div>
             <div class="list-group">
                 <a class="list-group-item" href="#editable-info">Editable Grant Info</a>
-                <a class="list-group-item" href="#data-products">Data Products</a>
+                <a class="list-group-item" href="{% url 'dataproduct_view' imported_grant.grant.pk %}">Data Products</a>
             </div>
         </div>
         <div class="card mt-3">
