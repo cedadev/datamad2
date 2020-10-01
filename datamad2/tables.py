@@ -11,8 +11,7 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 import django_tables2 as tables
 from .models import Grant, User
 from django_tables2.utils import A
-from django.utils.safestring import mark_safe
-from django.urls import reverse
+
 
 
 class GrantTable(tables.Table):

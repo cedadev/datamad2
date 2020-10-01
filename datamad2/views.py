@@ -362,9 +362,6 @@ class MyAccountRemoveUserView(LoginRequiredMixin, UserPassesTestMixin, DeleteVie
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     return super(MyAccountRemoveUserView, self).dispatch(request, *args, **kwargs)
-
 
 class MyAccountEditUserView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'datamad2/user_account/datacentre_edit_user.html'
