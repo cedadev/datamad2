@@ -56,7 +56,24 @@ class DocumentTemplateForm(forms.ModelForm):
         model = DocumentTemplate
         fields = '__all__'
 
+        widgets = {
+            'datacentre': forms.HiddenInput
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Save'))
+
+
+class DocumentGenerationForm(forms.Form):
+    document_template = forms.ModelChoiceField(queryset=None)
+
+    def __init__(self, *args, **kwargs):
+        datacentre = kwargs.pop('datacentre', None)
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Generate'))
+
+        self.fields['document_template'].queryset = DocumentTemplate.objects.filter(datacentre=datacentre)
+

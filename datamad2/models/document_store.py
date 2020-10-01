@@ -15,6 +15,11 @@ import hashlib
 import os
 from datamadsite import settings
 
+DOCUMENT_TYPES = (
+    ("support", "Support"),
+    ("dmp", "DMP")
+)
+
 
 class MediaFileSystemStorage(FileSystemStorage):
     def get_available_name(self, name, max_length=None):
@@ -41,7 +46,7 @@ class Document(models.Model):
 
     title = models.CharField(max_length=100, blank=True)
     download_title = models.CharField(max_length=100, blank=True)
-    type = models.CharField(choices=(("support", "Support"), ("dmp", "DMP")), max_length=100)
+    type = models.CharField(choices=DOCUMENT_TYPES, max_length=100)
     upload = models.FileField(upload_to=file_name, storage=MediaFileSystemStorage())
     last_modified = models.DateTimeField(auto_now=True)
     grant = models.ForeignKey('Grant', on_delete=models.CASCADE)
@@ -90,7 +95,7 @@ class Document(models.Model):
             title = self.title
 
         self.title = title
-        self.download_title = self.title+f'.{self.file_ext}'
+        self.download_title = self.title + f'.{self.file_ext}'
 
         super().save(*args, **kwargs)
 
@@ -100,4 +105,3 @@ class Document(models.Model):
 
     def __str__(self):
         return f"{self.title}"
-

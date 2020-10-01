@@ -20,6 +20,7 @@ urlpatterns = [
     path('grant/<int:pk>/history/', views.grant_history, name='grant_history'),
     path('grant/<int:pk>/history/<int:imported_pk>', views.grant_history_detail, name='grant_history_detail'),
     path('grant/<int:pk>/edit/', views.grantinfo_edit, name='grantinfo_edit'),
+    path('grant/<int:pk>/generate_document/', views.DocumentGenerationSelectView.as_view(), name='grant_generate_document_select'),
     path('grant/<int:pk>/dataproducts', views.DataProductView.as_view(), name='dataproduct_view'),
     path('grant/<int:pk>/dataproducts/<str:data_product_type>/new', views.DataProductUpdateCreateView.as_view(), name='dataproduct_new'),
     path('grant/<int:pk>/dataproducts/<str:data_product_type>/<int:dp_pk>', views.DataProductUpdateCreateView.as_view(), name='dataproduct_update'),

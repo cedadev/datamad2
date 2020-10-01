@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col">
                 {% for template in object_list %}
-                <a href="{% url 'document_template_update' template.pk %}">{{ template.name }}</a>
+                <a href="{% url 'document_template_update' template.pk %}"><i class="far fa-file-word"></i> {{ template.name }}</a>
                 {% endfor %}
             </div>
         </div>

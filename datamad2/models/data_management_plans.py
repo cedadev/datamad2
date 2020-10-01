@@ -16,6 +16,15 @@ import os
 from sizefield.models import FileSizeField
 import hashlib
 
+DOCUMENT_TYPES = (
+    ('dmp', 'DMP'),
+    ('odmp', 'ODMP'),
+    ('cfs', 'CFS'),
+    ('ta', 'TA'),
+    ('jor', 'JOR'),
+    ('proforma', 'PROFORMA')
+)
+
 
 def file_name(instance, filename):
     h = instance.checksum
@@ -28,17 +37,18 @@ class DocumentTemplate(models.Model):
     datacentre = models.ForeignKey(DataCentre, on_delete=models.CASCADE)
     template = models.FileField(upload_to=file_name, storage=MediaFileSystemStorage())
     name = models.CharField(max_length=100, blank=True, help_text='Name will default to mach uploaded file')
-    description = models.TextField(blank=True, help_text="Short description to help other users understand what the template is used for")
+    description = models.TextField(blank=True,
+                                   help_text="Short description to help other users understand what the template is used for")
+    type = models.CharField(max_length=50, choices=DOCUMENT_TYPES)
 
     def _generate_checksum(self):
         """
         Generate an MD5 checksum to check for file changes
         """
-        if not self.pk:
-            md5 = hashlib.md5()
-            for chunk in self.template.chunks():
-                md5.update(chunk)
-            self.checksum = md5.hexdigest()
+        md5 = hashlib.md5()
+        for chunk in self.template.chunks():
+            md5.update(chunk)
+        self.checksum = md5.hexdigest()
 
     def save(self, *args, **kwargs):
         """
@@ -54,6 +64,9 @@ class DocumentTemplate(models.Model):
 
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f'{self.name} - {self.description}'
+
 
 class DataFormat(models.Model):
     format = models.CharField(max_length=50)
@@ -67,7 +80,7 @@ class PreservationPlan(models.Model):
 class DataProduct(models.Model):
     CHOICES = (
         ('digital', 'Digital Dataset'),
-        ('model', 'Model Source Code'),
+        ('model_source', 'Model Source Code'),
         ('physical', 'Pysical Collections & Samples'),
         ('hardcopy', 'Hardcopy Records'),
         ('third_party', 'Third Party/Existing Datasets'),

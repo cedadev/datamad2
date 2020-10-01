@@ -1,13 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate, DataProduct
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
 from haystack.generic_views import FacetedSearchView
 from datamad2.forms import DatamadFacetedSearchForm, UpdateClaimForm, GrantInfoForm, \
     DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, \
-    DatacentreForm, DatacentreIssueTypeForm, UserForm, DocumentTemplateForm
+    DatacentreForm, DatacentreIssueTypeForm, UserForm, DocumentTemplateForm, DocumentGenerationForm
 from datamad2.forms.data_product import DigitalDataProductForm, ModelSourceDataProductForm, PhysicalDataProductForm, HardcopyDataProductForm, ThirdPartyDataProductForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
@@ -17,8 +17,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from datamad2.tables import GrantTable, DigitalDataProductTable, ModelSourceDataProductTable, PhysicalDataProductTable, HardcopyDataProductTable, ThirdPartyDataProductTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
-from django.views.generic.edit import FormView, UpdateView, CreateView, DeleteView
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic.edit import FormView, UpdateView, CreateView
+from django.views.generic import TemplateView, ListView
+from datamad2.utils import generate_document_from_template
+import os
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
@@ -27,7 +29,7 @@ DATAPRODUCT_FORM_CLASS_MAP = {
     'model_source': ModelSourceDataProductForm,
     'physical': PhysicalDataProductForm,
     'hardcopy': HardcopyDataProductForm,
-    'third-party': ThirdPartyDataProductForm
+    'third_party': ThirdPartyDataProductForm
 }
 
 DATAPRODUCT_TABLE_CLASS_MAP = {
@@ -35,7 +37,7 @@ DATAPRODUCT_TABLE_CLASS_MAP = {
     'model_source': ModelSourceDataProductTable,
     'physical': PhysicalDataProductTable,
     'hardcopy': HardcopyDataProductTable,
-    'third-party': ThirdPartyDataProductTable
+    'third_party': ThirdPartyDataProductTable
 }
 
 
@@ -185,6 +187,35 @@ def delete_dataproduct(request, pk, dp_pk):
     data_product = DataProduct.objects.get(pk=dp_pk)
     data_product.delete()
     return redirect(reverse('dataproduct_view', kwargs={'pk':pk}))
+
+
+class DocumentGenerationSelectView(LoginRequiredMixin, FormView):
+    template_name = 'datamad2/generate_document_from_template.html'
+    form_class = DocumentGenerationForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['imported_grant'] = get_object_or_404(Grant, pk=self.kwargs['pk']).importedgrant
+        return context
+
+    def form_valid(self, form):
+        template = form.cleaned_data['document_template']
+        grant = Grant.objects.get(pk=self.kwargs['pk'])
+        context = {
+            'grant': grant
+        }
+
+        doc = generate_document_from_template(template, context)
+
+        download_filename = f'{grant.grant_ref.replace("/","_")}_{template.type.upper()}{os.path.splitext(template.template.name)[1]}'
+
+        return FileResponse(open(doc,'rb'), as_attachment=True, filename=download_filename)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['datacentre'] = self.request.user.data_centre
+        return kwargs
+
 
 
 @login_required

@@ -1,5 +1,5 @@
 {% extends 'datamad2/base.html' %}
-{% load static see_more %}
+{% load static see_more claim_status %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
@@ -274,7 +274,8 @@
             </div>
             <div class="list-group">
                 <a class="list-group-item" href="#editable-info">Editable Grant Info</a>
-                <a class="list-group-item" href="{% url 'dataproduct_view' imported_grant.grant.pk %}">Data Products</a>
+                <a class="list-group-item" href="{% url 'dataproduct_view' imported_grant.grant.pk %}">Data Products
+                    <span class="badge badge-secondary">{{ imported_grant.grant.dataproduct_set.count }}</span></a>
             </div>
         </div>
         <div class="card mt-3">
@@ -282,17 +283,22 @@
                 <h4 class="card-title">Grant Actions</h4>
             </div>
             <div class="list-group">
-
-                <a class="list-group-item" href="#">Reassign</a>
-                <a class="list-group-item" href="#">Unclaim</a>
-                {% if imported_grant.grant.jira_ticket %}
-                    <a class="list-group-item" href="{{ imported_grant.grant.jira_ticket }}" target="_blank">View JIRA
-                        Ticket</a>
-                {% else %}
-                    <a class="list-group-item" href="{% url 'jira_convert' imported_grant.grant.pk %}">Convert to JIRA
-                        Ticket</a>
-                {% endif %}
-                <a class="list-group-item" href="#">Generate Document from Template</a>
+                <a class="list-group-item claim-btn confirm {% if imported_grant.grant.claimed %}claimed{% endif %}"
+                   href="#"
+                   data-id="{{ imported_grant.grant.pk }}">{{ imported_grant.grant.claimed | claim_status | title }}</a>
+                    <a class="list-group-item" href="{% url 'change_claim' pk=imported_grant.grant.pk %}">Reassign</a>
+                    {% if imported_grant.grant.jira_ticket %}
+                        <a class="list-group-item" href="{{ imported_grant.grant.jira_ticket }}" target="_blank">View
+                            JIRA
+                            Ticket</a>
+                    {% else %}
+                        <a class="list-group-item" href="{% url 'jira_convert' imported_grant.grant.pk %}">Convert to
+                            JIRA
+                            Ticket</a>
+                    {% endif %}
+                    <a class="list-group-item"
+                       href="{% url 'grant_generate_document_select' imported_grant.grant.pk %}">Generate Document from
+                        Template</a>
             </div>
         </div>
         <div class="card mt-3">

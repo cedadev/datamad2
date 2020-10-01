@@ -12,11 +12,11 @@ $(".claim-btn").click(function (event) {
 
     // Prepare values for the URL and button after the fact
     if (claimed) {
-        btn_value = 'CLAIM';
+        btn_value = 'Claim';
         action = 'unclaim';
 
     } else {
-        btn_value = 'UNCLAIM';
+        btn_value = 'Unclaim';
         action = 'claim';
     }
 
