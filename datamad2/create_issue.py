@@ -90,7 +90,7 @@ def create_subtask(subtask, request, new_issue, imported_grant):
         ref_time = imported_grant.actual_start_date
 
     subtask_dict = {'project': str(request.user.data_centre.jira_project),
-                    'summary': subtask.name,
+                    'summary': f"{imported_grant.grant_ref}:{subtask.name}",
                     'description': '',
                     'issuetype': {'name': 'Sub-Task'},
                     'parent': {'key': new_issue.key},
@@ -98,4 +98,4 @@ def create_subtask(subtask, request, new_issue, imported_grant):
                     'duedate': str(ref_time + datetime.timedelta(weeks=subtask.schedule_time))}
 
     subtask = jira.create_issue(fields=subtask_dict)
-    jira.assign_issue(subtask, request.user.email)
+    # jira.assign_issue(subtask, request.user.email)
