@@ -324,8 +324,11 @@ class MyAccountUsersView(LoginRequiredMixin, UserPassesTestMixin, SingleTableVie
         return self.request.user.is_admin
 
     def get_queryset(self):
-        return User.objects.filter(data_centre=
-                                   self.request.user.data_centre).exclude(email=self.request.user.email)
+        """
+        Filter user list just to show users from the admins datacentre
+        :return:
+        """
+        return User.objects.filter(data_centre=self.request.user.data_centre)
 
 
 class MyAccountNewUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -338,7 +341,7 @@ class MyAccountNewUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, 'User added successfully')
-        return reverse('new_user')
+        return reverse('users')
 
     def get_initial(self):
         initial = super().get_initial()

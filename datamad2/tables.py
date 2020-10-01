@@ -74,7 +74,24 @@ class GrantTable(tables.Table):
 class UserTable(tables.Table):
 
     actions = tables.TemplateColumn(
-        template_name='datamad2/fields/user_action_field.html'
+        template_name='datamad2/fields/user_action_field.html',
+        attrs={
+            'td': {},
+            'th': {}
+        }
+    )
+
+    admin_status = tables.TemplateColumn(
+        accessor=A('is_admin'),
+        template_name='datamad2/fields/boolean_field.html',
+        attrs={
+            'td': {
+                'class': 'text-center'
+            },
+            'th': {
+                'class': 'text-center'
+            }
+        }
     )
 
     class Meta:
@@ -83,9 +100,15 @@ class UserTable(tables.Table):
         template_name = 'django_tables2/bootstrap-responsive.html'
         attrs = {
             'td': {
-                'class': 'align-middle'
+                'class': 'text-center'
+            },
+            'th': {
+                'class': 'text-center'
             }
         }
-        sequence = ("first_name", "last_name", "email", "is_admin", "actions")
-        exclude = ("id", "password", "last_login", "is_superuser", "username", "data_centre",
-                   "prefered_facets", "is_active", "is_staff", "date_joined")
+        sequence = ("...", "actions")
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+        ]
