@@ -14,44 +14,31 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib.auth.forms import UserCreationForm
 
+from datamad2.forms.mixins import CrispySubmitMixin
 
-class DatacentreForm(forms.ModelForm):
+
+class DatacentreForm(CrispySubmitMixin, forms.ModelForm):
 
     class Meta:
         model = DataCentre
         fields = '__all__'
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Save'))
 
-
-class UserForm(UserCreationForm):
+class UserForm(CrispySubmitMixin, UserCreationForm):
     email = forms.EmailField()
 
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'data_centre', 'is_admin')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Save'))
 
-
-class DatacentreIssueTypeForm(forms.ModelForm):
+class DatacentreIssueTypeForm(CrispySubmitMixin, forms.ModelForm):
     class Meta:
         model = JIRAIssueType
         fields = '__all__'
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Save'))
 
-
-class DocumentTemplateForm(forms.ModelForm):
+class DocumentTemplateForm(CrispySubmitMixin, forms.ModelForm):
     class Meta:
         model = DocumentTemplate
         fields = '__all__'
@@ -59,11 +46,6 @@ class DocumentTemplateForm(forms.ModelForm):
         widgets = {
             'datacentre': forms.HiddenInput
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Save'))
 
 
 class DocumentGenerationForm(forms.Form):

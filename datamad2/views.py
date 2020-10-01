@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate, DataProduct
+from datamad2.models.data_management_plans import DataFormat, PreservationPlan
 from django.http import HttpResponse, FileResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
@@ -8,19 +9,20 @@ from haystack.generic_views import FacetedSearchView
 from datamad2.forms import DatamadFacetedSearchForm, UpdateClaimForm, GrantInfoForm, \
     DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, \
     DatacentreForm, DatacentreIssueTypeForm, UserForm, DocumentTemplateForm, DocumentGenerationForm
-from datamad2.forms.data_product import DigitalDataProductForm, ModelSourceDataProductForm, PhysicalDataProductForm, HardcopyDataProductForm, ThirdPartyDataProductForm
+from datamad2.forms.data_product import DigitalDataProductForm, ModelSourceDataProductForm, PhysicalDataProductForm, HardcopyDataProductForm, ThirdPartyDataProductForm, PreservationPlanForm, DataFormatForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 import re
 from django.core.exceptions import ObjectDoesNotExist
-from datamad2.tables import GrantTable, DigitalDataProductTable, ModelSourceDataProductTable, PhysicalDataProductTable, HardcopyDataProductTable, ThirdPartyDataProductTable
+from datamad2.tables import GrantTable, DigitalDataProductTable, ModelSourceDataProductTable, PhysicalDataProductTable, HardcopyDataProductTable, ThirdPartyDataProductTable, DataFormatTable, PreservationPlanTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
 from django.views.generic.edit import FormView, UpdateView, CreateView
 from django.views.generic import TemplateView, ListView
 from datamad2.utils import generate_document_from_template
 import os
+from django_tables2.views import SingleTableView
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
@@ -43,6 +45,44 @@ DATAPRODUCT_TABLE_CLASS_MAP = {
 
 class FormatError(Exception):
     pass
+
+
+class UpdateOrCreateMixin:
+    def get_object(self, queryset=None):
+        """
+        Overwrite the get_object method so this view behaves as an update or create view.
+        If the object doesn't exist, it will render a blank form so you can create one.
+        """
+
+        # Use a custom queryset if provided; this is required for subclasses
+        # like DateDetailView
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        # Next, try looking up by primary key.
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        slug = self.kwargs.get(self.slug_url_kwarg)
+        if pk is not None:
+            queryset = queryset.filter(pk=pk)
+
+        # Next, try looking up by slug.
+        if slug is not None and (pk is None or self.query_pk_and_slug):
+            slug_field = self.get_slug_field()
+            queryset = queryset.filter(**{slug_field: slug})
+
+        # # If none of those are defined, it's an error.
+        # if pk is None and slug is None:
+        #     raise AttributeError(
+        #         "Generic detail view %s must be called with either an object "
+        #         "pk or a slug in the URLconf." % self.__class__.__name__
+        #     )
+
+        try:
+            # Get the single item from the filtered queryset
+            return queryset.get()
+
+        except queryset.model.DoesNotExist:
+            return None
 
 
 class DatacentreAdminTestMixin(UserPassesTestMixin):
@@ -478,11 +518,6 @@ class DocumentTemplateUpdateView(LoginRequiredMixin, DatacentreAdminTestMixin, U
         return reverse('document_template_list')
 
 
-# class DocumentTemplateDeleteView(LoginRequiredMixin, DatacentreAdminTestMixin, DeleteView):
-#     model = DocumentTemplate
-#     template_name = 'datamad2/user_account/datacentre_document_template_form.html'
-
-
 @login_required
 def grantinfo_edit(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
@@ -551,3 +586,57 @@ def delete_file(request, pk):
     document = Document.objects.get(pk=pk)
     document.delete_file()
     return redirect(reverse('grant_detail', kwargs={'pk': document.grant.pk}))
+
+
+class DataFormatListView(LoginRequiredMixin, SingleTableView):
+    model = DataFormat
+    template_name = 'datamad2/user_account/data_format_list.html'
+    table_class = DataFormatTable
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs.filter(datacentre=self.request.user.data_centre)
+        return qs
+
+
+class DataFormatUpdateCreateView(LoginRequiredMixin, UpdateOrCreateMixin, UpdateView):
+    model = DataFormat
+    template_name = 'datamad2/user_account/data_format_form.html'
+    form_class = DataFormatForm
+    success_url = reverse_lazy('data_format_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'datacentre': self.request.user.data_centre
+            })
+        return initial
+
+
+class PreservationPlanListView(LoginRequiredMixin, SingleTableView):
+    model = PreservationPlan
+    template_name = 'datamad2/user_account/preservation_plan_list.html'
+    table_class = PreservationPlanTable
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs.filter(datacentre=self.request.user.data_centre)
+
+        return qs
+
+
+class PreservationPlanUpdateCreateView(LoginRequiredMixin, UpdateOrCreateMixin, UpdateView):
+    model = PreservationPlan
+    template_name = 'datamad2/user_account/preservation_plan_form.html'
+    form_class = PreservationPlanForm
+    success_url = reverse_lazy('preservation_plan_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'datacentre': self.request.user.data_centre
+            })
+        return initial
+

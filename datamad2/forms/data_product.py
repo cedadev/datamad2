@@ -10,16 +10,15 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from django import forms
 from datamad2.models import DataProduct, Grant
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from datamad2.models.data_management_plans import PreservationPlan, DataFormat
+
+from datamad2.forms.mixins import CrispySubmitMixin
 
 
-class DataProductBaseFormMixin:
+class DataProductBaseFormMixin(CrispySubmitMixin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Save'))
         self.fields['grant_id'] = forms.IntegerField(required=False, widget=forms.HiddenInput)
 
     def save(self, **kwargs):
@@ -103,3 +102,25 @@ class ThirdPartyDataProductForm(DataProductBaseFormMixin, forms.ModelForm):
             'issues',
             'additional_comments'
         ] + DataProductMetaBase.fields
+
+
+class PreservationPlanForm(CrispySubmitMixin, forms.ModelForm):
+
+    class Meta:
+        model = PreservationPlan
+        fields = '__all__'
+
+        widgets = {
+            'datacentre': forms.HiddenInput
+        }
+
+
+class DataFormatForm(CrispySubmitMixin, forms.ModelForm):
+
+    class Meta:
+        model = DataFormat
+        fields = '__all__'
+
+        widgets = {
+            'datacentre': forms.HiddenInput
+        }

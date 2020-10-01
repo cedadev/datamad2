@@ -10,6 +10,7 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 import django_tables2 as tables
 from .models import Grant, DataProduct
+from .models.data_management_plans import PreservationPlan, DataFormat
 from django_tables2.utils import A
 
 
@@ -161,3 +162,47 @@ class ThirdPartyDataProductTable(DataProductTableMixin):
             'modified',
             'actions'
         ]
+
+
+class PreservationPlanTable(tables.Table):
+
+    actions = tables.TemplateColumn(
+        template_name='datamad2/fields/preservation_plan_action_field.html'
+    )
+
+    class Meta:
+        model= PreservationPlan
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        orderable = False
+        empty_text = "No preservations plans to display"
+
+        fields = [
+            'short_name',
+            'description'
+        ]
+
+        sequence = (
+            '...',
+            'actions'
+        )
+
+class DataFormatTable(tables.Table):
+
+    actions = tables.TemplateColumn(
+        template_name='datamad2/fields/data_format_action_field.html'
+    )
+
+    class Meta:
+        model= DataFormat
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        orderable = False
+        empty_text = "No data formats to display"
+
+        fields = [
+            'format',
+        ]
+
+        sequence = (
+            '...',
+            'actions'
+        )

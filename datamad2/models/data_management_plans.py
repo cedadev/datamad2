@@ -69,12 +69,20 @@ class DocumentTemplate(models.Model):
 
 
 class DataFormat(models.Model):
+    datacentre = models.ForeignKey(DataCentre, on_delete=models.CASCADE)
     format = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.format
 
 
 class PreservationPlan(models.Model):
+    datacentre = models.ForeignKey(DataCentre, on_delete=models.CASCADE)
     short_name = models.CharField(max_length=50)
-    description = models.CharField(max_length=100, blank=True)
+    description = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f'{self.description}'
 
 
 class DataProduct(models.Model):

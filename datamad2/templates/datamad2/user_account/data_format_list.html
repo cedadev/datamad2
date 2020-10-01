@@ -1,0 +1,24 @@
+{% extends 'datamad2/user_account/my_account.html' %}
+{% load render_table from django_tables2 %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'datacentre' %}">Datacentre</a></li>
+    <li class="breadcrumb-item active">Data Formats</li>
+{% endblock breadcrumb_items %}
+
+
+{% block content %}
+    <div class="col">
+        <div class="row mb-4">
+            <div class="col"><h4>Data Formats</h4></div>
+            <div class="col"><a class="btn btn-primary float-right" href="{% url 'data_format_create' %}"><i class="fas fa-plus"></i>&nbsp;Add Format</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% render_table table %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
