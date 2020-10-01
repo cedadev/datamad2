@@ -326,16 +326,18 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
 def claim(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
     user = request.user
-    grant.assigned_data_centre = user.data_centre
-    grant.save()
+    if not grant.assigned_data_centre:
+        grant.assigned_data_centre = user.data_centre
+        grant.save()
     return HttpResponse(status=200)
 
 
 @login_required
 def unclaim(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
-    grant.assigned_data_centre = None
-    grant.save()
+    if request.user.data_centre == grant.assigned_data_centre:
+        grant.assigned_data_centre = None
+        grant.save()
     return HttpResponse(status=200)
 
 
