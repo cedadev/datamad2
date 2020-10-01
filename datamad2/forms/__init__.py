@@ -13,3 +13,4 @@ from .document import DocumentForm, MultipleDocumentUploadForm
 from .grant import GrantInfoForm, UpdateClaimForm
 from .preferences import FacetPreferencesForm
 from .search import DatamadFacetedSearchForm
+from .data_product import DigitalDataProductForm, ModelSourceDataProductForm, PhysicalDataProductForm, HardcopyDataProductForm, ThirdPartyDataProductForm, PreservationPlanForm, DataFormatForm
