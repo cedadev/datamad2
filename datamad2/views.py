@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType
 from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, \
-    DatacentreForm, DatacentreIssueTypeForm, UserForm
+    DatacentreForm, DatacentreIssueTypeForm, UserForm, UserEditForm
 from django.http import HttpResponse
 from .create_issue import make_issue
 from django.urls import reverse, reverse_lazy
@@ -13,11 +13,12 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 import re
 from django.core.exceptions import ObjectDoesNotExist
-from datamad2.tables import GrantTable
+from datamad2.tables import GrantTable, UserTable
 from jira_oauth.decorators import jira_access_token_required
 from django.conf import settings
 from django.views.generic.edit import FormView, UpdateView
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, DeleteView
+from django_tables2 import SingleTableView
 
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
@@ -314,6 +315,22 @@ class MyAccountDetailsView(LoginRequiredMixin, TemplateView):
     template_name = 'datamad2/user_account/my_account.html'
 
 
+class MyAccountUsersView(LoginRequiredMixin, UserPassesTestMixin, SingleTableView):
+    template_name = 'datamad2/user_account/datacentre_users.html'
+    model = User
+    table_class = UserTable
+
+    def test_func(self):
+        return self.request.user.is_admin
+
+    def get_queryset(self):
+        """
+        Filter user list just to show users from the admins datacentre
+        :return:
+        """
+        return User.objects.filter(data_centre=self.request.user.data_centre)
+
+
 class MyAccountNewUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = 'datamad2/user_account/datacentre_new_users.html'
     model = User
@@ -324,7 +341,7 @@ class MyAccountNewUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, 'User added successfully')
-        return reverse('new_user')
+        return reverse('users')
 
     def get_initial(self):
         initial = super().get_initial()
@@ -333,6 +350,34 @@ class MyAccountNewUserView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                 'data_centre': self.request.user.data_centre
             })
         return initial
+
+
+class MyAccountRemoveUserView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = User
+
+    def test_func(self):
+        return self.request.user.is_admin
+
+    def get_success_url(self):
+        messages.success(self.request, 'User deleted successfully')
+        return reverse('users')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+
+class MyAccountEditUserView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    template_name = 'datamad2/user_account/datacentre_edit_user.html'
+    model = User
+    form_class = UserEditForm
+
+    def test_func(self):
+        return self.request.user.is_admin
+
+    def get_success_url(self):
+        messages.success(self.request, 'User updated successfully')
+        return reverse('users')
+
 
 
 @login_required

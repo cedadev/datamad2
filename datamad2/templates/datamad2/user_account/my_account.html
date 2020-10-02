@@ -14,7 +14,7 @@
             {% if user.is_admin %}
                 <a class="nav-link" href="{% url 'datacentre' %}"><i class="fas fa-database"></i>&nbsp;Datacentre</a>
                 <a class="nav-link ml-4" href="{% url 'issue_type' %}"><i class="fas fa-flag"></i>&nbsp;JIRA Issue Fields</a>
-                <a class="nav-link ml-4" href="{% url 'new_user' %}"><i class="fas fa-user-plus"></i>&nbsp;Add New User</a>
+                <a class="nav-link ml-4" href="{% url 'users' %}"><i class="fas fa-users"></i>&nbsp;{{ user.data_centre.name }} Users</a>
             {% endif %}
         </nav>
     </div>
@@ -55,6 +55,7 @@
         </table>
     </div>
 {% endblock content %}
+
 
 {#{% block content_panel %}#}
 {#    <div class="row">#}
