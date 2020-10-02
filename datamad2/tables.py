@@ -10,7 +10,7 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 import django_tables2 as tables
 from .models import Grant, DataProduct
-from .models.data_management_plans import PreservationPlan, DataFormat
+from .models.data_management_plans import PreservationPlan, DataFormat, DocumentTemplate
 from django_tables2.utils import A
 
 
@@ -200,6 +200,29 @@ class DataFormatTable(tables.Table):
 
         fields = [
             'format',
+        ]
+
+        sequence = (
+            '...',
+            'actions'
+        )
+
+class DocumentTemplateTable(tables.Table):
+
+    actions = tables.TemplateColumn(
+        template_name='datamad2/fields/document_template_action_field.html'
+    )
+
+    class Meta:
+        model= DocumentTemplate
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        orderable = False
+        empty_text = "No data formats to display"
+
+        fields = [
+            'name',
+            'description',
+            'type'
         ]
 
         sequence = (

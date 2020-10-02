@@ -2,5 +2,5 @@
 <a href="{% url 'dataproduct_update' grant.pk type record.pk %}"><i class="fas fa-edit text-primary"></i></a>
 {% endif %}
 {% if request.user.is_admin %}
-<a class="confirm" href="{% url 'dataproduct_delete' grant.pk record.pk %}"><i class="fas fa-trash-alt text-danger"></i></a>
+<a href="{% url 'dataproduct_delete' grant.pk record.pk %}"><i class="fas fa-trash-alt text-danger"></i></a>
 {% endif %}

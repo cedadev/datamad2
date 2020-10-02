@@ -1,5 +1,5 @@
 {% extends 'datamad2/user_account/my_account.html' %}
-{% load crispy_forms_tags %}
+{% load render_table from django_tables2 %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
@@ -10,17 +10,14 @@
 
 {% block content %}
     <div class="col">
-        <div class="row">
+        <div class="row mb-4">
             <div class="col"><h4>Document Templates</h4></div>
             <div class="col"><a class="btn btn-primary float-right" href="{% url 'document_template_create' %}"><i class="fas fa-plus"></i>&nbsp;Add Template</a>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                {% for template in object_list %}
-                    <a href="{% url 'document_template_update' template.pk %}"><i
-                            class="far fa-file-word"></i> {{ template.name }}</a>
-                {% endfor %}
+                {% render_table table %}
             </div>
         </div>
     </div>

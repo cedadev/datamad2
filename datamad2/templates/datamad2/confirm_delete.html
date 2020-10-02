@@ -1,0 +1,15 @@
+{% extends 'datamad2/base.html' %}
+
+{% block breadcrumbs %}
+{% endblock %}
+
+{% block content %}
+    <div class="col text-center">
+        <form method="post">{% csrf_token %}
+            <p>Are you sure you want to delete "{{ object }}"?</p>
+            <button type="submit" class="btn btn-danger pl-4 pr-4">Delete</button>
+            <a href="javascript:void;" class="btn btn-secondary pl-4 pr-4"
+               onclick="javascript:history.back();">Cancel</a>
+        </form>
+    </div>
+{% endblock content %}

@@ -11,6 +11,7 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 from django import forms
 from datamad2.models import DataProduct, Grant
 from datamad2.models.data_management_plans import PreservationPlan, DataFormat
+from bootstrap_datepicker_plus import DatePickerInput
 
 from datamad2.forms.mixins import CrispySubmitMixin
 
@@ -29,7 +30,9 @@ class DataProductBaseFormMixin(CrispySubmitMixin):
 
 class DataProductMetaBase:
     widgets = {
-        'data_product_type': forms.HiddenInput
+        'data_product_type': forms.HiddenInput,
+        'delivery_date': DatePickerInput,
+        'embargo_date': DatePickerInput
     }
 
     fields = ['data_product_type']

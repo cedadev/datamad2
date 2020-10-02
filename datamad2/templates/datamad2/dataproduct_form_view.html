@@ -16,3 +16,8 @@
         {% crispy form %}
     </div>
 {% endblock %}
+
+{% block tail_js_extra %}
+    {{ block.super }}
+    {{ form.media }}
+{% endblock tail_js_extra %}

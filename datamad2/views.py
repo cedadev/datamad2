@@ -1,4 +1,3 @@
-
 # Django Imports
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -9,17 +8,19 @@ from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView
-from django.views.generic.edit import FormView, UpdateView, CreateView
+from django.views.generic.edit import FormView, UpdateView, CreateView, DeleteView
 
 # Datamad Model Imports
-from datamad2.models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate, DataProduct
+from datamad2.models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate, \
+    DataProduct
 from datamad2.models.data_management_plans import DataFormat, PreservationPlan
 
 # Datamad Form Imports
 import datamad2.forms as datamad_forms
 
 # Datamad Table Imports
-from datamad2.tables import GrantTable, DigitalDataProductTable, ModelSourceDataProductTable, PhysicalDataProductTable, HardcopyDataProductTable, ThirdPartyDataProductTable, DataFormatTable, PreservationPlanTable
+from datamad2.tables import GrantTable, DigitalDataProductTable, ModelSourceDataProductTable, PhysicalDataProductTable, \
+    HardcopyDataProductTable, ThirdPartyDataProductTable, DataFormatTable, PreservationPlanTable, DocumentTemplateTable
 from django_tables2.views import SingleTableView
 
 # Haystack Imports
@@ -33,7 +34,6 @@ from jira_oauth.decorators import jira_access_token_required
 # Python Imports
 import re
 import os
-
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
@@ -96,6 +96,13 @@ class DatacentreAdminTestMixin(UserPassesTestMixin):
 
     def test_func(self):
         return self.request.user.is_admin
+
+
+class ObjectDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    Class based view to provide a delete via a GET call
+    """
+    template_name = 'datamad2/confirm_delete.html'
 
 
 @login_required
@@ -168,7 +175,10 @@ class DataProductView(LoginRequiredMixin, TemplateView):
 
         grant = get_object_or_404(Grant, pk=kwargs['pk'])
         context['grant'] = grant
-        context['data_products'] = {product:table(grant.dataproduct_set.filter(data_product_type=product)) for product,table in DATAPRODUCT_TABLE_CLASS_MAP.items()}
+        context['data_products'] = {
+            product: table(grant.dataproduct_set.filter(data_product_type=product))
+            for product, table in DATAPRODUCT_TABLE_CLASS_MAP.items()
+        }
         return context
 
 
@@ -212,11 +222,12 @@ class DataProductUpdateCreateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-@login_required
-def delete_dataproduct(request, pk, dp_pk):
-    data_product = DataProduct.objects.get(pk=dp_pk)
-    data_product.delete()
-    return redirect(reverse('dataproduct_view', kwargs={'pk':pk}))
+class DataProductDeleteView(ObjectDeleteView):
+    model = DataProduct
+    pk_url_kwarg = 'dp_pk'
+
+    def get_success_url(self):
+        return reverse('dataproduct_view', kwargs={'pk': self.kwargs['pk']})
 
 
 class DocumentGenerationSelectView(LoginRequiredMixin, FormView):
@@ -237,15 +248,14 @@ class DocumentGenerationSelectView(LoginRequiredMixin, FormView):
 
         doc = generate_document_from_template(template, context)
 
-        download_filename = f'{grant.grant_ref.replace("/","_")}_{template.type.upper()}{os.path.splitext(template.template.name)[1]}'
+        download_filename = f'{grant.grant_ref.replace("/", "_")}_{template.type.upper()}{os.path.splitext(template.template.name)[1]}'
 
-        return FileResponse(open(doc,'rb'), as_attachment=True, filename=download_filename)
+        return FileResponse(open(doc, 'rb'), as_attachment=True, filename=download_filename)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['datacentre'] = self.request.user.data_centre
         return kwargs
-
 
 
 @login_required
@@ -377,7 +387,7 @@ class ChangeClaimFormView(LoginRequiredMixin, UpdateView):
     form_class = datamad_forms.UpdateClaimForm
 
     def get_success_url(self):
-        return reverse('grant_detail', kwargs={'pk':self.kwargs['pk']})
+        return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']})
 
 
 class MyAccountPreferencesView(LoginRequiredMixin, FormView):
@@ -473,9 +483,10 @@ class MyAccountNewUserView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateV
         return initial
 
 
-class DocumentTemplateListView(LoginRequiredMixin, DatacentreAdminTestMixin, ListView):
+class DocumentTemplateListView(LoginRequiredMixin, DatacentreAdminTestMixin, SingleTableView):
     model = DocumentTemplate
     template_name = 'datamad2/user_account/datacentre_document_template_list.html'
+    table_class = DocumentTemplateTable
 
 
 class DocumentTemplateCreateView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateView):
@@ -504,13 +515,18 @@ class DocumentTemplateUpdateView(LoginRequiredMixin, DatacentreAdminTestMixin, U
         return reverse('document_template_list')
 
 
+class DocumentTemplateDeleteView(ObjectDeleteView):
+    model = DocumentTemplate
+    success_url = reverse_lazy('document_template_list')
+
+
 class GrantInfoEditView(LoginRequiredMixin, UpdateView):
     model = Grant
     form_class = datamad_forms.GrantInfoForm
     template_name = 'datamad2/grantinfo_edit.html'
 
     def get_success_url(self):
-        return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']})+'#editable-info'
+        return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']}) + '#editable-info'
 
 
 @login_required
@@ -594,6 +610,11 @@ class DataFormatUpdateCreateView(LoginRequiredMixin, UpdateOrCreateMixin, Update
         return initial
 
 
+class DataFormatDeleteView(ObjectDeleteView):
+    model = DataFormat
+    success_url = reverse_lazy('data_format_list')
+
+
 class PreservationPlanListView(LoginRequiredMixin, SingleTableView):
     model = PreservationPlan
     template_name = 'datamad2/user_account/preservation_plan_list.html'
@@ -620,3 +641,7 @@ class PreservationPlanUpdateCreateView(LoginRequiredMixin, UpdateOrCreateMixin, 
             })
         return initial
 
+
+class PreservationPlanDeleteView(ObjectDeleteView):
+    model = PreservationPlan
+    success_url = reverse_lazy('preservation_plan_list')

@@ -1,6 +1,6 @@
 <a href="{% url 'preservation_plan_update' record.pk %}">
     <i class="fas fa-edit text-primary"></i>
 </a>
-<a class="confirm" href="#">
+<a class="confirm" href="{% url 'preservation_plan_delete' record.pk %}">
     <i class="fas fa-trash-alt text-danger"></i>
 </a>
