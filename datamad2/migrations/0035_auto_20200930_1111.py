@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datamad2', '0034_auto_20200929_1357'),
+        ('datamad2', '0034_dataformat_dataproduct_documenttemplate_preservationplan'),
     ]
 
     operations = [

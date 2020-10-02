@@ -22,6 +22,6 @@ def claim_status(value):
     :return:
     """
     if value:
-        return 'UNCLAIM'
+        return 'Unclaim'
 
-    return 'CLAIM'
+    return 'Claim'

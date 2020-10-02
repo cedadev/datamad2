@@ -35,7 +35,7 @@ class Grant(models.Model):
     # Hide Record	Sharepoint
     hide_record = models.BooleanField(null=True, blank=True)
     # DateContact with PI	Sharepoint	Date or Null
-    date_contacted_PI = models.DateField(null=True, blank=True)
+    date_contacted_pi = models.DateField(null=True, blank=True, verbose_name='Date contacted PI')
     # Will Grant Produce Data	Sharepoint	Y/N
     will_grant_produce_data = models.BooleanField(null=True, blank=True)
     # Datasets Delivered as per DMP?	Sharepoint	Yes, No or Null

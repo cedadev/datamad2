@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'datamad2_api',
     'haystack',
     'django_tables2',
+    'bootstrap_datepicker_plus',
     'django_unused_media',
     'django.contrib.admin',
     'django.contrib.auth',
