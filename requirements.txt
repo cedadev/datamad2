@@ -22,6 +22,7 @@ docxtpl==0.10.0
 elasticsearch==7.6.0
 git+https://github.com/cedadev/fwtheme-django.git
 git+https://github.com/cedadev/fwtheme-django-ceda-serv.git
+git+https://github.com/cedadev/orgtheme-datamad.git
 idna==2.9
 Jinja2==2.11.2
 jira==2.0.0

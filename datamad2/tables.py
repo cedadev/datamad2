@@ -9,7 +9,7 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 import django_tables2 as tables
-from .models import Grant, DataProduct
+from .models import Grant, DataProduct, User
 from .models.data_management_plans import PreservationPlan, DataFormat, DocumentTemplate
 from django_tables2.utils import A
 
@@ -229,3 +229,46 @@ class DocumentTemplateTable(tables.Table):
             '...',
             'actions'
         )
+
+
+class UserTable(tables.Table):
+
+    actions = tables.TemplateColumn(
+        template_name='datamad2/fields/user_action_field.html',
+        attrs={
+            'td': {},
+            'th': {}
+        }
+    )
+
+    admin_status = tables.TemplateColumn(
+        accessor=A('is_admin'),
+        template_name='datamad2/fields/boolean_field.html',
+        attrs={
+            'td': {
+                'class': 'text-center'
+            },
+            'th': {
+                'class': 'text-center'
+            }
+        }
+    )
+
+    class Meta:
+        model = User
+        orderable = False
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        attrs = {
+            'td': {
+                'class': 'text-center'
+            },
+            'th': {
+                'class': 'text-center'
+            }
+        }
+        sequence = ("...", "actions")
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+        ]

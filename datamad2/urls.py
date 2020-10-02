@@ -2,15 +2,23 @@ from django.urls import path, include
 from datamad2 import views
 
 urlpatterns = [
+
+    # Home
     path('', views.FacetedGrantListView.as_view(), name='grant_list'),
-    path('grant/<int:pk>/', views.grant_detail, name='grant_detail'),
-    path('grant/<int:pk>/jira_convert', views.push_to_jira, name='jira_convert'),
-    path('grant/<int:pk>/claim', views.claim, name='claim'),
+
+    # Django account management
     path('accounts/', include('django.contrib.auth.urls',)),
+
+    # User Account
     path('account/details', views.MyAccountDetailsView.as_view(), name='my_account'),
     path('account/preferences', views.MyAccountPreferencesView.as_view(), name='preferences'),
+
+    # Datacentre URLs
     path('account/datacentre', (views.MyAccountDatacentreView.as_view()), name='datacentre'),
+    path('account/datacentre/users', views.MyAccountUsersView.as_view(), name='users'),
     path('account/datacentre/new_user', (views.MyAccountNewUserView.as_view()), name='new_user'),
+    path('account/datacentre/edit_user/<int:pk>/', views.MyAccountEditUserView.as_view(), name='edit_user'),
+    path('account/datacentre/remove_user/<int:pk>/', views.MyAccountRemoveUserView.as_view(), name='delete_user'),
     path('account/datacentre/jira-issue', (views.MyAccountDatacentreIssueTypeView.as_view()), name='issue_type'),
     path('account/datacentre/templates', (views.DocumentTemplateListView.as_view()), name='document_template_list'),
     path('account/datacentre/template/new', (views.DocumentTemplateCreateView.as_view()), name='document_template_create'),
@@ -24,6 +32,11 @@ urlpatterns = [
     path('account/datacentre/preservation_plans/new', (views.PreservationPlanUpdateCreateView.as_view()), name='preservation_plan_create'),
     path('account/datacentre/preservation_plans/<int:pk>', (views.PreservationPlanUpdateCreateView.as_view()), name='preservation_plan_update'),
     path('account/datacentre/preservation_plans/<int:pk>/delete', (views.PreservationPlanDeleteView.as_view()), name='preservation_plan_delete'),
+
+    # Grant URLs
+    path('grant/<int:pk>/', views.grant_detail, name='grant_detail'),
+    path('grant/<int:pk>/jira_convert', views.push_to_jira, name='jira_convert'),
+    path('grant/<int:pk>/claim', views.claim, name='claim'),
     path('grant/<int:pk>/change_claim/', views.ChangeClaimFormView.as_view(), name='change_claim'),
     path('grant/<int:pk>/unclaim', views.unclaim, name='unclaim'),
     path('grant/<int:pk>/history/', views.grant_history, name='grant_history'),
@@ -34,6 +47,8 @@ urlpatterns = [
     path('grant/<int:pk>/dataproducts/<str:data_product_type>/new', views.DataProductUpdateCreateView.as_view(), name='dataproduct_new'),
     path('grant/<int:pk>/dataproducts/<str:data_product_type>/<int:dp_pk>', views.DataProductUpdateCreateView.as_view(), name='dataproduct_update'),
     path('grant/<int:pk>/dataproducts/<int:dp_pk>/delete', views.DataProductDeleteView.as_view(), name='dataproduct_delete'),
+
+    # Document URLs
     path('document/upload/<int:pk>', views.document_upload, name='document_upload'),
     path('document/<int:pk>/delete/', views.delete_file, name='delete_file'),
     path('document/multiple_upload/', views.multiple_document_upload, name='multi_document_upload'),

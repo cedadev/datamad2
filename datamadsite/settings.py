@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'orgtheme_datamad',
     'fwtheme_django_ceda_serv',
     'fwtheme_django',
     'jira_oauth',

@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError, ImproperlyConfigured, ObjectDoesNotExist
 from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
+
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import FormView, UpdateView, CreateView, DeleteView
@@ -20,7 +21,7 @@ import datamad2.forms as datamad_forms
 
 # Datamad Table Imports
 from datamad2.tables import GrantTable, DigitalDataProductTable, ModelSourceDataProductTable, PhysicalDataProductTable, \
-    HardcopyDataProductTable, ThirdPartyDataProductTable, DataFormatTable, PreservationPlanTable, DocumentTemplateTable
+    HardcopyDataProductTable, ThirdPartyDataProductTable, DataFormatTable, PreservationPlanTable, DocumentTemplateTable, UserTable
 from django_tables2.views import SingleTableView
 
 # Haystack Imports
@@ -465,6 +466,19 @@ class MyAccountDetailsView(LoginRequiredMixin, TemplateView):
     template_name = 'datamad2/user_account/my_account.html'
 
 
+class MyAccountUsersView(LoginRequiredMixin, DatacentreAdminTestMixin, SingleTableView):
+    template_name = 'datamad2/user_account/datacentre_users.html'
+    model = User
+    table_class = UserTable
+
+    def get_queryset(self):
+        """
+        Filter user list just to show users from the admins datacentre
+        :return:
+        """
+        return User.objects.filter(data_centre=self.request.user.data_centre)
+
+
 class MyAccountNewUserView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateView):
     template_name = 'datamad2/user_account/datacentre_new_users.html'
     model = User
@@ -472,7 +486,7 @@ class MyAccountNewUserView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateV
 
     def get_success_url(self):
         messages.success(self.request, 'User added successfully')
-        return reverse('new_user')
+        return reverse('users')
 
     def get_initial(self):
         initial = super().get_initial()
@@ -481,6 +495,24 @@ class MyAccountNewUserView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateV
                 'data_centre': self.request.user.data_centre
             })
         return initial
+
+
+class MyAccountRemoveUserView(DatacentreAdminTestMixin, ObjectDeleteView):
+    model = User
+
+    def get_success_url(self):
+        messages.success(self.request, 'User deleted successfully')
+        return reverse('users')
+
+
+class MyAccountEditUserView(LoginRequiredMixin, DatacentreAdminTestMixin, UpdateView):
+    template_name = 'datamad2/user_account/datacentre_edit_user.html'
+    model = User
+    form_class = datamad_forms.UserEditForm
+
+    def get_success_url(self):
+        messages.success(self.request, 'User updated successfully')
+        return reverse('users')
 
 
 class DocumentTemplateListView(LoginRequiredMixin, DatacentreAdminTestMixin, SingleTableView):
