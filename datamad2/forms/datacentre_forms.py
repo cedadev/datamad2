@@ -32,18 +32,13 @@ class UserForm(CrispySubmitMixin, UserCreationForm):
         fields = ('first_name', 'last_name', 'email', 'data_centre', 'is_admin')
 
 
-class UserEditForm(forms.ModelForm):
+class UserEditForm(CrispySubmitMixin, forms.ModelForm):
     email = forms.EmailField()
 
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'is_admin')
         exclude = ('password',)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Save'))
 
 
 class DatacentreIssueTypeForm(CrispySubmitMixin, forms.ModelForm):
