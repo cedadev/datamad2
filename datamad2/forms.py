@@ -58,7 +58,6 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.default = kwargs['initial']['sort_by']
         self.helper = FormHelper()
         self.helper.form_method='get'
         self.helper.form_class='ml-0'
@@ -81,9 +80,6 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
         if self.cleaned_data['sort_by']:
             order = self.cleaned_data['sort_by']
             sqs = sqs.order_by(order)
-
-        if self.default:
-            sqs = sqs.order_by(self.default)
 
         return sqs
 

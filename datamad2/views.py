@@ -206,11 +206,12 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
         context['containerfluid'] = True
         return context
 
-    def get_initial(self):
-        initial = super().get_initial()
-        sorting = self.request.user.preferences.get('prefered_sorting', None)
-        initial['sort_by'] = sorting
-        return initial
+    def get(self, request, *args, **kwargs):
+        user_preferred_sorting = request.user.preferences.get('prefered_sorting', None)
+        if not request.GET.get('sort_by') and user_preferred_sorting:
+            return HttpResponseRedirect(f'{reverse("grant_list")}?sort_by={user_preferred_sorting}')
+
+        return super().get(request, *args, **kwargs)
 
 
 @login_required
