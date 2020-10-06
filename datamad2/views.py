@@ -486,7 +486,7 @@ class MyAccountNewUserView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateV
 
     def get_success_url(self):
         messages.success(self.request, 'User added successfully')
-        return reverse('users')
+        return reverse('user_list')
 
     def get_initial(self):
         initial = super().get_initial()
@@ -502,7 +502,7 @@ class MyAccountRemoveUserView(DatacentreAdminTestMixin, ObjectDeleteView):
 
     def get_success_url(self):
         messages.success(self.request, 'User deleted successfully')
-        return reverse('users')
+        return reverse('user_list')
 
 
 class MyAccountEditUserView(LoginRequiredMixin, DatacentreAdminTestMixin, UpdateView):
@@ -512,7 +512,7 @@ class MyAccountEditUserView(LoginRequiredMixin, DatacentreAdminTestMixin, Update
 
     def get_success_url(self):
         messages.success(self.request, 'User updated successfully')
-        return reverse('users')
+        return reverse('user_list')
 
 
 class DocumentTemplateListView(LoginRequiredMixin, DatacentreAdminTestMixin, SingleTableView):

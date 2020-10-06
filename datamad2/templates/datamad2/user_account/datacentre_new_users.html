@@ -4,7 +4,7 @@
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'datacentre' %}">Datacentre</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'users' %}">{{ user.data_centre }} Users</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'user_list' %}">{{ user.data_centre }} Users</a></li>
     <li class="breadcrumb-item active">Add New User</li>
 {% endblock breadcrumb_items %}
 
