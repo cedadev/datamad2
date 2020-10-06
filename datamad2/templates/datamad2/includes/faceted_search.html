@@ -13,8 +13,8 @@
 </div>
 <div class="card border-0" id="id_filter_by">
     <dl>
-        {% if user.preferences.prefered_facets %}
-            {% for field in user.preferences.prefered_facets %}
+        {% if user.preferences.preferred_facets %}
+            {% for field in user.preferences.preferred_facets %}
                 <div>
                     {% include 'datamad2/includes/facet.html' %}
                 </div>
@@ -33,7 +33,7 @@
                     {% include 'datamad2/includes/facet.html' %}
                 </div>
             {% endfor %}
-            <a href="{% url 'preferences' %}">Select Prefered Filters</a>
+            <a href="{% url 'preferences' %}">Select Preferred Filters</a>
         {% endif %}
     </dl>
 </div>

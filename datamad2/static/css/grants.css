@@ -23,11 +23,6 @@
   text-align: center
 }
 
-/*form {*/
-/*  display:table;*/
-/*  margin:auto;*/
-/*}*/
-
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-menu {
   display: block;
@@ -60,4 +55,3 @@
 #grant-docs tr {
   vertical-align:top;
 }
-

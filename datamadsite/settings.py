@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'orgtheme_datamad',
     'fwtheme_django_ceda_serv',
     'fwtheme_django',
     'jira_oauth',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'datamad2_api',
     'haystack',
     'django_tables2',
+    'bootstrap_datepicker_plus',
     'django_unused_media',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -28,7 +28,7 @@ def available_facets(request):
 
     fields = [removesuffix(field, '_exact') for field in igx.field_map if field.endswith('_exact')]
     preferences = request.user.preferences
-    facet_preferences = preferences.get('prefered_facets',[])
+    facet_preferences = preferences.get('preferred_facets',[])
     avail_facets = []
     for field in fields:
         if field not in facet_preferences:

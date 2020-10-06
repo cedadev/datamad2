@@ -1,5 +1,5 @@
 {% extends 'datamad2/base.html' %}
-{% load static see_more %}
+{% load static see_more claim_status %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
@@ -19,8 +19,6 @@
     <div class="col">
         <div class="card card-shaded">
             <div class="card-body">
-                {% include 'datamad2/includes/claim_assign_buttons.html' %}
-
                 <table class="table-responsive" id="grant-info">
 
                     <tr>
@@ -229,7 +227,7 @@
                     </tr>
                     <tr>
                         <th>Date contacted PI</th>
-                        <td>{{ imported_grant.grant.date_contacted_pi |default_if_none:"N/A" }} </td>
+                        <td>{{ imported_grant.grant.date_contacted_PI |default_if_none:"N/A" }} </td>
                     </tr>
                     <tr>
                     <tr>
@@ -262,27 +260,47 @@
                 </table>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col">
-                {% if imported_grant.grant.jira_ticket %}
-                    <a class="btn btn-primary float-right" href="{{ imported_grant.grant.jira_ticket }}"
-                       target="_blank">
-                        JIRA Issue
-                    </a>
-                {% else %}
-                    <a class="btn btn-primary float-right" href="{% url 'jira_convert' imported_grant.grant.pk %}">
-                        Convert to JIRA Issue
-                    </a>
-                {% endif %}
-            </div>
-        </div>
     </div>
+
+
 
 {% endblock content %}
 
 {% block rightsidebar %}
     <div class="col-lg-4">
+        <div class="card mt-3">
+            <div class="card-header">
+                <h4 class="card-title">Quick Links</h4>
+            </div>
+            <div class="list-group">
+                <a class="list-group-item" href="#editable-info">Editable Grant Info</a>
+                <a class="list-group-item" href="{% url 'dataproduct_view' imported_grant.grant.pk %}">Data Products
+                    <span class="badge badge-secondary">{{ imported_grant.grant.dataproduct_set.count }}</span></a>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h4 class="card-title">Grant Actions</h4>
+            </div>
+            <div class="list-group">
+                <a class="list-group-item claim-btn {% if imported_grant.grant.claimed %}claimed{% endif %}"
+                   href="#"
+                   data-id="{{ imported_grant.grant.pk }}" data-dc="{{ request.user.data_centre.id }}">{{ imported_grant.grant.claimed | claim_status | title }}</a>
+                    <a class="list-group-item" href="{% url 'change_claim' pk=imported_grant.grant.pk %}">Reassign</a>
+                    {% if imported_grant.grant.jira_ticket %}
+                        <a class="list-group-item" href="{{ imported_grant.grant.jira_ticket }}" target="_blank">View
+                            JIRA
+                            Ticket</a>
+                    {% else %}
+                        <a class="list-group-item" href="{% url 'jira_convert' imported_grant.grant.pk %}">Convert to
+                            JIRA
+                            Ticket</a>
+                    {% endif %}
+                    <a class="list-group-item"
+                       href="{% url 'grant_generate_document_select' imported_grant.grant.pk %}">Generate Document from
+                        Template</a>
+            </div>
+        </div>
         <div class="card mt-3">
             <div class="card-header">
                 <h4 class="card-title">Supporting Documents</h4>
@@ -311,7 +329,8 @@
 
 {% block tail_js_extra %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static 'js/claim_button.js' %}?version=1.1"></script>
+    <script type="text/javascript" src="{% static 'js/get_cookie.js' %}?version=1.0"></script>
+    <script type="text/javascript" src="{% static 'js/claim_button.js' %}?version=1.2"></script>
     <script type="text/javascript" src="{% static 'js/see_more.js' %}?version=1.0"></script>
 {% endblock tail_js_extra %}
 

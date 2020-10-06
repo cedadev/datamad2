@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='user',
-            name='prefered_facets',
+            name='preferred_facets',
             field=models.TextField(null=True),
         ),
     ]

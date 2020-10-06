@@ -110,17 +110,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=200, blank=True, null=True)
     last_name = models.CharField(max_length=200, blank=True, null=True)
     email = models.EmailField(
-        verbose_name='email address',
+        verbose_name='Email Address',
         max_length=255,
         unique=True,
     )
     username = models.EmailField(max_length=255)
     data_centre = models.ForeignKey('DataCentre', on_delete=models.SET_NULL, null=True, blank=True, to_field='name')
-    prefered_facets = models.TextField(null=True)
-    prefered_sorting = models.TextField(null=True)
+    preferred_facets = models.TextField(null=True)
+    preferred_sorting = models.TextField(null=True)
 
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False, verbose_name="Admin Status")
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
@@ -139,15 +139,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def preferences(self):
-        prefered_facets = []
-        prefered_sorting = None
+        preferred_facets = []
+        preferred_sorting = None
 
-        if self.prefered_facets:
-            prefered_facets = self.prefered_facets.split(',')
-        if self.prefered_sorting:
-            prefered_sorting = self.prefered_sorting
+        if self.preferred_facets:
+            preferred_facets = self.preferred_facets.split(',')
+        if self.preferred_sorting:
+            preferred_sorting = self.preferred_sorting
 
         return {
-            'prefered_facets': prefered_facets,
-            'prefered_sorting': prefered_sorting
+            'preferred_facets': preferred_facets,
+            'preferred_sorting': preferred_sorting
         }
