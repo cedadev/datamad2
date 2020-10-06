@@ -370,6 +370,14 @@ class ChangeClaimFormView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     permission_denied_message = "Your data centre does not match the datacentre of the grant"
 
     def test_func(self):
+        """
+        Test to make sure that the user either comes from a datacentre which
+        has responsibility for the grant or the grant has not been claimed.
+        Aims to prevent users from unclaiming or reassigning grants already
+        assigned to another datacentre
+
+        :return: bool
+        """
         grant = get_object_or_404(Grant, pk=self.kwargs['pk'])
         user_datacentre = self.request.user.data_centre
         grant_datacentre = grant.assigned_data_centre
