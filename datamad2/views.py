@@ -363,29 +363,17 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
         return context
 
 
-@login_required
-def claim(request, pk):
-    grant = get_object_or_404(Grant, pk=pk)
-    user = request.user
-    if not grant.assigned_data_centre:
-        grant.assigned_data_centre = user.data_centre
-        grant.save()
-    return HttpResponse(status=200)
-
-
-@login_required
-def unclaim(request, pk):
-    grant = get_object_or_404(Grant, pk=pk)
-    if request.user.data_centre == grant.assigned_data_centre:
-        grant.assigned_data_centre = None
-        grant.save()
-    return HttpResponse(status=200)
-
-
-class ChangeClaimFormView(LoginRequiredMixin, UpdateView):
+class ChangeClaimFormView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Grant
     template_name = 'datamad2/change_claim.html'
     form_class = datamad_forms.UpdateClaimForm
+    permission_denied_message = "Your data centre does not match the datacentre of the grant"
+
+    def test_func(self):
+        grant = get_object_or_404(Grant, pk=self.kwargs['pk'])
+        user_datacentre = self.request.user.data_centre
+        grant_datacentre = grant.assigned_data_centre
+        return grant_datacentre is None or grant_datacentre == user_datacentre
 
     def get_success_url(self):
         return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']})

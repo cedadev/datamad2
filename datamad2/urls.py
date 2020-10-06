@@ -36,9 +36,7 @@ urlpatterns = [
     # Grant URLs
     path('grant/<int:pk>/', views.grant_detail, name='grant_detail'),
     path('grant/<int:pk>/jira_convert', views.push_to_jira, name='jira_convert'),
-    path('grant/<int:pk>/claim', views.claim, name='claim'),
     path('grant/<int:pk>/change_claim/', views.ChangeClaimFormView.as_view(), name='change_claim'),
-    path('grant/<int:pk>/unclaim', views.unclaim, name='unclaim'),
     path('grant/<int:pk>/history/', views.grant_history, name='grant_history'),
     path('grant/<int:pk>/history/<int:imported_pk>', views.grant_history_detail, name='grant_history_detail'),
     path('grant/<int:pk>/edit/', views.GrantInfoEditView.as_view(), name='grantinfo_edit'),

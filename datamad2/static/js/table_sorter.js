@@ -96,12 +96,18 @@ $(function () {
 
 $(".claim-btn").click(function () {
     let btn = $(this);
-    let url = 'grant/' + $(this).attr('data-id') + '/claim';
+    let url = 'grant/' + $(this).attr('data-id') + '/change_claim/';
+    let datacentre = $(this).attr('data-dc');
+    let csrftoken = getCookie('csrftoken')
     let cell = btn.parent();
 
     $.ajax({
-        type: "GET",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        type: "POST",
         url: url,
+        data: {'assigned_data_centre': datacentre},
 
         // handle a successful response
         success: function () {
@@ -110,7 +116,8 @@ $(".claim-btn").click(function () {
         },
         // handle a non-successful response
         error: function () {
-            alert('Claim failed');
+            alert('There was an error claiming the grant');
         }
     });
 });
+
