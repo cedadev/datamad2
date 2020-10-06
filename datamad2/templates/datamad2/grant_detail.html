@@ -283,9 +283,9 @@
                 <h4 class="card-title">Grant Actions</h4>
             </div>
             <div class="list-group">
-                <a class="list-group-item claim-btn confirm {% if imported_grant.grant.claimed %}claimed{% endif %}"
+                <a class="list-group-item claim-btn {% if imported_grant.grant.claimed %}claimed{% endif %}"
                    href="#"
-                   data-id="{{ imported_grant.grant.pk }}">{{ imported_grant.grant.claimed | claim_status | title }}</a>
+                   data-id="{{ imported_grant.grant.pk }}" data-dc="{{ request.user.data_centre.id }}">{{ imported_grant.grant.claimed | claim_status | title }}</a>
                     <a class="list-group-item" href="{% url 'change_claim' pk=imported_grant.grant.pk %}">Reassign</a>
                     {% if imported_grant.grant.jira_ticket %}
                         <a class="list-group-item" href="{{ imported_grant.grant.jira_ticket }}" target="_blank">View
@@ -329,6 +329,7 @@
 
 {% block tail_js_extra %}
     {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/get_cookie.js' %}?version=1.0"></script>
     <script type="text/javascript" src="{% static 'js/claim_button.js' %}?version=1.2"></script>
     <script type="text/javascript" src="{% static 'js/see_more.js' %}?version=1.0"></script>
 {% endblock tail_js_extra %}
