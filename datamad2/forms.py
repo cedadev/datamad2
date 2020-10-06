@@ -92,7 +92,6 @@ class SortByPreferencesForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        # self.helper.add_input(Submit('submit', 'Update Preferences'))
 
 
 class DocumentForm(forms.ModelForm):
@@ -118,7 +117,6 @@ class FacetPreferencesForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        # self.helper.add_input(Submit('submit', 'Update Preferences'))
 
         igx = ImportedGrantIndex()
         preference_fields = [removesuffix(field, '_exact') for field in igx.field_map if field.endswith('_exact')]
