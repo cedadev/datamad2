@@ -11,6 +11,6 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 from .datacentre_forms import DatacentreForm, UserForm, DatacentreIssueTypeForm, DocumentTemplateForm, DocumentGenerationForm, UserEditForm
 from .document import DocumentForm, MultipleDocumentUploadForm
 from .grant import GrantInfoForm, UpdateClaimForm
-from .preferences import FacetPreferencesForm
+from .preferences import FacetPreferencesForm, SortByPreferencesForm
 from .search import DatamadFacetedSearchForm
 from .data_product import DigitalDataProductForm, ModelSourceDataProductForm, PhysicalDataProductForm, HardcopyDataProductForm, ThirdPartyDataProductForm, PreservationPlanForm, DataFormatForm

@@ -13,6 +13,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from datamad2.search_indexes import ImportedGrantIndex
 from datamad2.utils import removesuffix
+from .search import DatamadFacetedSearchForm
 
 
 class FacetPreferencesForm(forms.Form):
@@ -20,10 +21,19 @@ class FacetPreferencesForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Update Preferences'))
+        self.helper.form_tag = False
 
         igx = ImportedGrantIndex()
         preference_fields = [removesuffix(field, '_exact') for field in igx.field_map if field.endswith('_exact')]
 
         for field in preference_fields:
             self.fields[field] = forms.BooleanField(required=False)
+
+class SortByPreferencesForm(forms.Form):
+
+    sort_by = forms.ChoiceField(choices=DatamadFacetedSearchForm.CHOICES, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False

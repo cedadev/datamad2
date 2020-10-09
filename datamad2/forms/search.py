@@ -26,7 +26,8 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
         ('grant_holder_exact', 'Grant Holder (A-Z)'),
         ('-grant_holder_exact', 'Grant Holder (Z-A)'),
     )
-    sort_by = forms.ChoiceField(choices=CHOICES, required=False, widget=forms.Select(attrs={"onchange":"trigger_submit(this)"}))
+    sort_by = forms.ChoiceField(choices=CHOICES, required=False,
+                                widget=forms.Select(attrs={"onchange":"trigger_submit(this)"}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

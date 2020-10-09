@@ -4,11 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError, ImproperlyConfigured, ObjectDoesNotExist
-from django.http import HttpResponse, FileResponse
+from django.http import FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
-
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, UpdateView, CreateView, DeleteView
 
 # Datamad Model Imports
@@ -31,6 +30,7 @@ from haystack.generic_views import FacetedSearchView
 from .create_issue import make_issue
 from datamad2.utils import generate_document_from_template
 from jira_oauth.decorators import jira_access_token_required
+from .multiforms import MultiFormsView
 
 # Python Imports
 import re
@@ -362,6 +362,13 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
         context['containerfluid'] = True
         return context
 
+    def get(self, request, *args, **kwargs):
+        user_preferred_sorting = request.user.preferences.get('preferred_sorting', None)
+        if not request.GET.get('sort_by') and user_preferred_sorting:
+            return HttpResponseRedirect(f'{reverse("grant_list")}?sort_by={user_preferred_sorting}')
+
+        return super().get(request, *args, **kwargs)
+
 
 class ChangeClaimFormView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Grant
@@ -387,25 +394,42 @@ class ChangeClaimFormView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']})
 
 
-class MyAccountPreferencesView(LoginRequiredMixin, FormView):
+class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
     template_name = 'datamad2/user_account/account_preferences.html'
-    form_class = datamad_forms.FacetPreferencesForm
+    form_classes = {'facets': datamad_forms.FacetPreferencesForm,
+                    'sort_by': datamad_forms.SortByPreferencesForm}
     success_url = reverse_lazy('preferences')
 
-    def get_initial(self):
+    def post(self, *args, **kwargs):
+        return super().post(*args, **kwargs)
+
+    def get_facets_initial(self):
         initial = {}
-        prefered_facets = self.request.user.preferences.get('prefered_facets', [])
-        for facet in prefered_facets:
+        preferred_facets = self.request.user.preferences.get('preferred_facets', [])
+        for facet in preferred_facets:
             initial[facet] = True
         return initial
 
-    def form_valid(self, form):
+    def get_sort_by_initial(self):
+        initial = {}
+        sorting = self.request.user.preferences.get('preferred_sorting', None)
+        initial['sort_by'] = sorting
+        return initial
+
+    def facets_form_valid(self, form):
         preferences = [field for field, value in form.cleaned_data.items() if value]
         user = User.objects.get(pk=self.request.user.pk)
-        user.prefered_facets = ','.join(preferences)
+        user.preferred_facets = ','.join(preferences)
         user.save()
 
-        return super().form_valid(form)
+    def sort_by_form_valid(self, form):
+        preference = [value for field, value in form.cleaned_data.items() if value]
+        user = User.objects.get(pk=self.request.user.pk)
+        if preference:
+            user.preferred_sorting = preference[0]
+        else:
+            user.preferred_sorting = None
+        user.save()
 
 
 class MyAccountDatacentreView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
