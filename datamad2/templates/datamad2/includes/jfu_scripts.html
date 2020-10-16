@@ -247,7 +247,9 @@
             { name: "csrfmiddlewaretoken", value: "{{ csrf_token }}" }
         );
 
-        $('#fileupload').fileupload({
+        let uploadwidget = $('#fileupload')
+
+        uploadwidget.fileupload({
 
             formData: formData,
 
@@ -256,6 +258,14 @@
             {% endblock %}
 
         });
+
+        uploadwidget.on('fileuploadadd', function (e, data) {
+                let dragndrop =$('#dragndrop')
+                if(!dragndrop.hasClass('d-none')){
+                    dragndrop.addClass('d-none')
+                }
+            })
+
         {% endblock %}
 
     });

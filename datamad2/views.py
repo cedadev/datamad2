@@ -164,6 +164,8 @@ def multiple_document_upload(request):
         form = datamad_forms.MultipleDocumentUploadForm()
     return render(request, 'datamad2/multiple_document_upload.html', {
         'form': form,
+        'JQ_OPEN': '{%',
+        'JQ_CLOSE': '%}'
     })
 
 
