@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'haystack',
     'django_tables2',
     'bootstrap_datepicker_plus',
+    'jfu',
     'django_unused_media',
     'django.contrib.admin',
     'django.contrib.auth',

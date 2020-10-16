@@ -26,6 +26,10 @@ from django_tables2.views import SingleTableView
 # Haystack Imports
 from haystack.generic_views import FacetedSearchView
 
+# Jquery file uploader imports
+from jfu.http import upload_receive, UploadResponse, JFUResponse
+from django.http import HttpResponse
+
 # Utility Imports
 from .create_issue import make_issue
 from datamad2.utils import generate_document_from_template
@@ -109,40 +113,60 @@ class ObjectDeleteView(LoginRequiredMixin, DeleteView):
 @login_required
 def multiple_document_upload(request):
     if request.method == 'POST':
-        form = datamad_forms.MultipleDocumentUploadForm(request.POST, request.FILES)
-        files = request.FILES.getlist('upload')
-        if form.is_valid():
-            for f in files:
-                name = str(f)
 
-                try:
-                    m = DOCUMENT_NAMING_PATTERN.match(name)
-                    if not m:
-                        raise FormatError(f"File name {name} is not formatted correctly")
+        file = upload_receive(request)
 
-                    grant_ref = m.group('grant_ref').replace('_', '/')
+        name = str(file)
 
-                    file_type = m.group('doc_type').lower()
-                    if file_type != 'dmp':
-                        file_type = 'support'
+        try:
+            m = DOCUMENT_NAMING_PATTERN.match(name)
+            if not m:
+                raise FormatError(f"File name does not match convention. e.g NE_G0123X_1_DMP.docx")
 
-                    document = Document(upload=f)
+            grant_ref = m.group('grant_ref').replace('_', '/')
 
-                    try:
-                        document.grant = Grant.objects.get(grant_ref=grant_ref)
-                    except ObjectDoesNotExist:
-                        raise FormatError(f"Grant {grant_ref} does not exist")
-                    document.type = file_type
-                    document.save()
+            file_type = m.group('doc_type').lower()
+            if file_type != 'dmp':
+                file_type = 'support'
 
-                except ValidationError:
-                    messages.error(request, f'The file {name} has already been uploaded')
-                except FormatError as exc:
-                    messages.error(request, f"{exc}")
-            messages.success(request, 'Upload complete')
+            document = Document(upload=file)
+
+            document.grant = Grant.objects.get(grant_ref=grant_ref)
+            document.type = file_type
+            document.save()
+        except ValidationError:
+            response = HttpResponse(status=400)
+            response.reason_phrase = 'File already uploaded'
+
+        except FormatError as exc:
+            response = HttpResponse(status=400)
+            response.reason_phrase = f'{exc}'
+
+        except ObjectDoesNotExist:
+            response = HttpResponse(status=404)
+            response.reason_phrase = f'Grant ref: {grant_ref} not found'
+
+        else:
+
+            file_dict = {
+                'name': file.name,
+                'size': file.size,
+
+                'url': document.upload.url,
+
+                'deleteUrl': reverse('delete_file', kwargs={'pk': document.pk}),
+                'deleteType': 'POST',
+            }
+            response = UploadResponse(request, file_dict)
+
+        return response
     else:
         form = datamad_forms.MultipleDocumentUploadForm()
-    return render(request, 'datamad2/multiple_document_upload.html', {'form': form})
+    return render(request, 'datamad2/multiple_document_upload.html', {
+        'form': form,
+        'JQ_OPEN': '{%',
+        'JQ_CLOSE': '%}'
+    })
 
 
 @login_required
@@ -629,8 +653,18 @@ def document_upload(request, pk):
 
     return render(request, 'datamad2/document_upload.html', {'form': form, 'grant': grant})
 
-
+@login_required()
 def delete_file(request, pk):
+    if request.POST:
+        success = True
+        try:
+            instance = Document.objects.get(pk=pk)
+            instance.delete_file()
+        except Document.DoesNotExist:
+            success = False
+
+        return JFUResponse(request, success)
+
     document = Document.objects.get(pk=pk)
     document.delete_file()
     return redirect(reverse('grant_detail', kwargs={'pk': document.grant.pk}))
