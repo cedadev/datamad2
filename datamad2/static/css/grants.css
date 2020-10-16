@@ -55,3 +55,7 @@
 #grant-docs tr {
   vertical-align:top;
 }
+
+.fade.in {
+  opacity: 1;
+}

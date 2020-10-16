@@ -1,0 +1,18 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/jquery.fileupload.css' %}">
+<link rel="stylesheet" href="{% static 'css/jquery.fileupload-ui.css' %}">
+<noscript>
+    <link rel="stylesheet"
+          href="{% static 'css/jquery.fileupload-ui-noscript.css' %}"
+    >
+</noscript>
+
+{% comment %}
+     Shim to make HTML5 elements usable in older Internet Explorer versions
+    {% endcomment %}
+
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
+</script>
+<![endif]-->
