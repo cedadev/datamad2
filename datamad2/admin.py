@@ -4,8 +4,9 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models.grants import ImportedGrant, Grant
-from .models.users import User, DataCentre, Subtask
+from .models.users import User, DataCentre, Subtask, JIRAIssueType
 from .models.document_store import Document
+from .models.data_management_plans import *
 
 
 class UserAdmin(BaseUserAdmin):
@@ -75,3 +76,28 @@ class SubtaskAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(Subtask, SubtaskAdmin)
+
+
+class JIRAIssueTypeAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(JIRAIssueType, JIRAIssueTypeAdmin)
+
+
+class DocumentTemplateAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(DocumentTemplate, DocumentTemplateAdmin)
+
+
+class DataFormatAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(DataFormat, DataFormatAdmin)
+
+
+class PreservationPlanAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(PreservationPlan, PreservationPlanAdmin)
+
+
+class DataProductAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(DataProduct, DataProductAdmin)
