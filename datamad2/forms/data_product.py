@@ -31,14 +31,17 @@ class DataProductBaseFormMixin(CrispySubmitMixin):
 class DataProductMetaBase:
     widgets = {
         'data_product_type': forms.HiddenInput,
-        'delivery_date': DatePickerInput,
-        'embargo_date': DatePickerInput
+        'delivery_date': DatePickerInput(options={'format':'DD/MM/YYYY'}),
+        'embargo_date': DatePickerInput(options={'format':'DD/MM/YYYY'})
     }
 
     fields = ['data_product_type']
 
 
 class DigitalDataProductForm(DataProductBaseFormMixin, forms.ModelForm):
+
+    delivery_date = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(format='%d/%m/%Y'))
+    embargo_date = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(format='%d/%m/%Y'))
 
     class Meta(DataProductMetaBase):
         model = DataProduct
@@ -67,6 +70,9 @@ class ModelSourceDataProductForm(DataProductBaseFormMixin, forms.ModelForm):
 
 
 class PhysicalDataProductForm(DataProductBaseFormMixin, forms.ModelForm):
+
+    delivery_date = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(format='%d/%m/%Y'))
+
     class Meta(DataProductMetaBase):
         model = DataProduct
         fields = [
@@ -80,6 +86,9 @@ class PhysicalDataProductForm(DataProductBaseFormMixin, forms.ModelForm):
 
 
 class HardcopyDataProductForm(DataProductBaseFormMixin, forms.ModelForm):
+
+    delivery_date = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(format='%d/%m/%Y'))
+
     class Meta(DataProductMetaBase):
         model = DataProduct
         fields = [
