@@ -11,7 +11,17 @@ FIELD_MAPPING = {
     'grant_ref_field': 'imported_grant.grant_ref',
     'pi_field': 'imported_grant.grant_holder',
     'research_org_field': 'imported_grant.research_org',
-    'primary_datacentre_field': 'request.user.data_centre.name'
+    'primary_datacentre_field': 'request.user.data_centre.name',
+    'amount_awarded_field': 'imported_grant.amount_awarded',
+    'grant_type_field': 'imported_grant.grant_type',
+    'lead_grant_field': 'imported_grant.lead_grant',
+    'parent_grant_field': 'imported_grant.parent_grant.grant_ref',
+    'child_grants_field': '", ".join([child.grant_ref for child in imported_grant.grant.child_grant.get_queryset])',
+    'email_field': 'imported_grant.email',
+    'work_number_field': 'imported_grant.work_number',
+    'alt_data_contact_field': 'imported_grant.grant.alt_data_contact',
+    'alt_data_contact_email_field': 'imported_grant.grant.alt_data_contact_email',
+    'other_datacentre_field': 'imported_grant.grant.other_data_centre.name'
 }
 
 
@@ -81,7 +91,6 @@ def make_issue(request, imported_grant):
 
 
 def create_subtask(subtask, request, new_issue, imported_grant):
-
     jira = get_jira_client(request)
 
     if subtask.ref_time == 'end_date':
@@ -94,7 +103,7 @@ def create_subtask(subtask, request, new_issue, imported_grant):
                     'description': '',
                     'issuetype': {'name': 'Sub-Task'},
                     'parent': {'key': new_issue.key},
-                    'customfield_11660': str(imported_grant.actual_start_date), # grant start date
+                    'customfield_11660': str(imported_grant.actual_start_date),  # grant start date
                     'duedate': str(ref_time + datetime.timedelta(weeks=subtask.schedule_time))}
 
     subtask = jira.create_issue(fields=subtask_dict)
