@@ -41,7 +41,7 @@ def make_issue(request, imported_grant):
         'project': str(request.user.data_centre.jira_project),
         'summary': f'{imported_grant.grant_ref}:{imported_grant.title}',
         'description': imported_grant.abstract,
-        'issuetype': {'id': str(request.user.data_centre.issuetype)},
+        'issuetype': {'id': str(request.user.data_centre.jiraissuetype_set.first().issuetype)},
     }
 
     for field, value in request.user.data_centre.jira_issue_fields.items():
