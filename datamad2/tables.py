@@ -75,6 +75,8 @@ class DataProductTableMixin(tables.Table):
     actions = tables.TemplateColumn(
         template_name='datamad2/fields/data_product_action_field.html'
     )
+    added = tables.DateColumn(format='d/m/Y')
+    modified = tables.DateTimeColumn(format('d/m/y H:i a'))
 
 
 class DataProductMeta:
@@ -98,6 +100,11 @@ class DataProductMeta:
 
 
 class DigitalDataProductTable(DataProductTableMixin, tables.Table):
+
+    delivery_date = tables.DateColumn(format='d/m/Y')
+    embargo_date = tables.DateColumn(format='d/m/Y')
+
+
     class Meta(DataProductMeta):
         fields = [
             'description',
@@ -124,6 +131,9 @@ class ModelSourceDataProductTable(DataProductTableMixin):
 
 
 class PhysicalDataProductTable(DataProductTableMixin):
+
+    delivery_date = tables.DateColumn(format='d/m/Y')
+
     class Meta(DataProductMeta):
         fields = [
             'name',
@@ -136,6 +146,9 @@ class PhysicalDataProductTable(DataProductTableMixin):
 
 
 class HardcopyDataProductTable(DataProductTableMixin):
+
+    delivery_date = tables.DateColumn(format='d/m/Y')
+
     class Meta(DataProductMeta):
         fields = [
             'name',

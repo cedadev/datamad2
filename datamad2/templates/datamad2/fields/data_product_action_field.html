@@ -1,6 +1,9 @@
 {% if request.user.data_centre == grant.assigned_data_centre %}
 <a href="{% url 'dataproduct_update' grant.pk type record.pk %}"><i class="fas fa-edit text-primary"></i></a>
 {% endif %}
-{% if request.user.is_admin %}
+{% if request.user.data_centre == grant.assigned_data_centre and request.user.is_admin %}
 <a href="{% url 'dataproduct_delete' grant.pk record.pk %}"><i class="fas fa-trash-alt text-danger"></i></a>
+{% endif %}
+{% if not request.user.data_centre == grant.assigned_data_centre %}
+    No authorised actions
 {% endif %}
