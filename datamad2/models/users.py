@@ -34,19 +34,138 @@ class DataCentre(models.Model):
 class JIRAIssueType(models.Model):
     # Data Centre Specific JIRA Data Management Tracking JIRA issue details
     datacentre = models.ForeignKey(DataCentre, on_delete=models.CASCADE)
-    issuetype = models.IntegerField(help_text='JIRA Data Management issue type ID. e.g. 10602', blank=True, null=True, verbose_name='Issue Type Id')
-    start_date_field = models.CharField(max_length=100, blank=True, verbose_name='Start Date Field ID',
-                                        help_text='Format: customfield_{{number}}')
-    end_date_field = models.CharField(max_length=100, blank=True, verbose_name='End Date Field ID',
-                                      help_text='Format: customfield_{{number}}')
-    grant_ref_field = models.CharField(max_length=100, blank=True, verbose_name='Grant Ref Field ID',
-                                       help_text='Format: customfield_{{number}}')
-    pi_field = models.CharField(max_length=100, verbose_name='Principle Investigator Field ID', blank=True,
-                                help_text='Format: customfield_{{number}}')
-    research_org_field = models.CharField(max_length=100, verbose_name='Research Org Field ID', blank=True,
-                                          help_text='Format: customfield_{{number}}')
-    primary_datacentre_field = models.CharField(max_length=100, blank=True, verbose_name='Primary Datacentre Field ID',
-                                                help_text='Format: customfield_{{number}}')
+    issuetype = models.IntegerField(
+        help_text='JIRA Data Management issue type ID. e.g. 10602',
+        blank=True,
+        null=True,
+        verbose_name='Issue Type Id'
+    )
+    start_date_field = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name='Actual Start Date Field ID',
+        help_text='Format: customfield_{{number}}'
+    )
+    end_date_field = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name='Actual End Date Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    proposed_start_date_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Proposed Start Date Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    proposed_end_date_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Proposed End Date Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    grant_ref_field = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name='Grant Ref Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    pi_field = models.CharField(
+        max_length=100,
+        verbose_name='Principle Investigator Field ID',
+        blank=True,
+
+        help_text='Format: customfield_{{number}}'
+    )
+    research_org_field = models.CharField(
+        max_length=100,
+        verbose_name='Research Org Field ID',
+        blank=True,
+
+        help_text='Format: customfield_{{number}}'
+    )
+    primary_datacentre_field = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name='Primary Datacentre Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    amount_awarded_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Amount Awarded Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    grant_type_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Grant Type Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    lead_grant_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Lead Grant Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    parent_grant_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Parent Grant Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    child_grants_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Child Grants Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    email_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Email Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    work_number_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Work Number Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    alt_data_contact_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Alt Data Contact Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    alt_data_contact_email_field = models.CharField(
+        max_length=50,
+        blank=True,
+
+        verbose_name='Alt Data Contact Email Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
+    other_datacentre_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Other Datacentre Field ID',
+
+        help_text='Format: customfield_{{number}}'
+    )
 
     @property
     def jira_issue_fields(self):
