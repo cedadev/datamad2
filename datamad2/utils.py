@@ -10,9 +10,10 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from docxtpl import DocxTemplate
 from django.conf import settings
-from hashlib import md5
 import os
 from datetime import datetime
+import functools
+
 
 def removesuffix(text, suffix):
     """
@@ -40,3 +41,16 @@ def generate_document_from_template(template, context):
     doc.save(filepath)
 
     return filepath
+
+
+def rgetattr(obj, attr, *args):
+    """
+    Recursive getattr. Handles dotted attr strings
+    :param obj: Original object
+    :param attr: attribute to check for. Can be dotted for nested objects
+    :param args: see python getattr
+    :return: attr or default
+    """
+    def _getattr(obj, attr):
+        return getattr(obj, attr, *args)
+    return functools.reduce(_getattr, [obj] + attr.split('.'))

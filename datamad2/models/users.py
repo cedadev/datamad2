@@ -30,6 +30,10 @@ class DataCentre(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+    @property
+    def jiraissuetype(self):
+        return self.jiraissuetype_set.first()
+
 
 class JIRAIssueType(models.Model):
     # Data Centre Specific JIRA Data Management Tracking JIRA issue details

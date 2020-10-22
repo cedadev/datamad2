@@ -9,6 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, UpdateView, CreateView, DeleteView
+from django.utils.html import mark_safe
 
 # Datamad Model Imports
 from datamad2.models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate, \
@@ -32,7 +33,7 @@ from django.http import HttpResponse
 
 # Utility Imports
 from .create_issue import make_issue
-from datamad2.utils import generate_document_from_template
+from datamad2.utils import generate_document_from_template, rgetattr
 from jira_oauth.decorators import jira_access_token_required
 from .multiforms import MultiFormsView
 
@@ -294,7 +295,7 @@ def push_to_jira(request, pk):
     :return:
     """
     grant = get_object_or_404(Grant, pk=pk)
-    jira_required_fields = ['issuetype', 'jira_project']
+    jira_required_fields = [('jiraissuetype.issuetype','issue_type' ), ('jira_project','datacentre')]
 
     # Make sure the user has a data centre
     if not request.user.data_centre:
@@ -311,11 +312,11 @@ def push_to_jira(request, pk):
         return redirect('grant_detail', pk=pk)
 
     # Check for required fields in users datacentre
-    for field in jira_required_fields:
-        if not getattr(request.user.data_centre, field):
+    for field, view in jira_required_fields:
+        if not rgetattr(request.user.data_centre, field, None):
             messages.error(request,
-                           f'Not all the required fields: {jira_required_fields} have been populated to allow this operation. '
-                           f'Please update {reverse("datacentre", request.user.data_centre.pk)}')
+                           mark_safe(f'Not all the required fields have been populated. Populate <i>{field}</i> to allow this operation. '
+                           f'Please update field <a href="{reverse(view)}" target="_blank">Here</a>'))
             return redirect('grant_detail', pk=pk)
 
     # There is no jira URL against this grant
