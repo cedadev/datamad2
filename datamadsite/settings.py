@@ -149,4 +149,21 @@ REST_FRAMEWORK = {
     ]
 }
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack_elasticsearch.elasticsearch7.Elasticsearch7SearchEngine',
+        'URL': '',
+        'INDEX_NAME': '',
+        'TIMEOUT': 5,
+        'KWARGS': {
+            'headers': {
+                'x-api-key': ''
+            },
+            'retry_on_timeout': True,
+            'sniffer_timeout': 60,
+            'sniff_on_connection_fail': True,
+        }
+    }
+}
+
 from .settings_local import *
