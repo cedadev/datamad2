@@ -149,6 +149,8 @@ REST_FRAMEWORK = {
     ]
 }
 
+AUTH_USER_MODEL = 'datamad2.User'
+
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack_elasticsearch.elasticsearch7.Elasticsearch7SearchEngine',

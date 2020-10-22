@@ -13,11 +13,16 @@
             <a class="nav-link" href="{% url 'preferences' %}"><i class="fas fa-cog"></i>&nbsp;User Preferences</a>
             {% if user.is_admin %}
                 <a class="nav-link" href="{% url 'datacentre' %}"><i class="fas fa-database"></i>&nbsp;Datacentre</a>
-                <a class="nav-link ml-4" href="{% url 'user_list' %}"><i class="fas fa-users"></i>&nbsp;{{ user.data_centre.name }} Users</a>
-                <a class="nav-link ml-4" href="{% url 'issue_type' %}"><i class="fas fa-flag"></i>&nbsp;JIRA Issue Fields</a>
-                <a class="nav-link ml-4" href="{% url 'document_template_list' %}"><i class="fas fa-file-word"></i>&nbsp;Document Templates</a>
-                <a class="nav-link ml-4" href="{% url 'data_format_list' %}"><i class="fas fa-stamp"></i>&nbsp;Data Formats</a>
-                <a class="nav-link ml-4" href="{% url 'preservation_plan_list' %}"><i class="fas fa-lock"></i>&nbsp;Preservation Plans</a>
+                <a class="nav-link ml-4" href="{% url 'user_list' %}"><i
+                        class="fas fa-users"></i>&nbsp;{{ user.data_centre.name }} Users</a>
+                <a class="nav-link ml-4" href="{% url 'issue_type' %}"><i class="fas fa-flag"></i>&nbsp;JIRA Issue
+                    Fields</a>
+                <a class="nav-link ml-4" href="{% url 'document_template_list' %}"><i class="fas fa-file-word"></i>&nbsp;Document
+                    Templates</a>
+                <a class="nav-link ml-4" href="{% url 'data_format_list' %}"><i class="fas fa-stamp"></i>&nbsp;Data
+                    Formats</a>
+                <a class="nav-link ml-4" href="{% url 'preservation_plan_list' %}"><i class="fas fa-lock"></i>&nbsp;Preservation
+                    Plans</a>
             {% endif %}
         </nav>
     </div>
@@ -48,10 +53,13 @@
                 <th></th>
                 <td>
                     <a href="{% url 'logout' %}">
-                        <button class="btn btn-primary" id="claim"> Logout</button>
+                        <button class="btn btn-primary" id="claim"><i class="fas fa-sign-out-alt"></i> Logout</button>
                     </a>
                     <a href="{% url 'password_reset' %}">
-                        <button class="btn btn-primary" id="claim"> Change Password</button>
+                        <button class="btn btn-primary" id="claim"><i class="fas fa-key"></i> Change Password</button>
+                    </a>
+                    <a href="{% url 'user_update' request.user.pk %}">
+                        <button class="btn btn-primary" id="claim"><i class="fas fa-user-edit"></i> Update User</button>
                     </a>
                 </td>
             </tr>
