@@ -53,6 +53,7 @@ class DigitalDataProductForm(DataProductBaseFormMixin, forms.ModelForm):
             'embargo_date',
             'doi',
             'preservation_plan',
+            'data_format',
             'additional_comments',
         ] + DataProductMetaBase.fields
 
@@ -64,7 +65,7 @@ class ModelSourceDataProductForm(DataProductBaseFormMixin, forms.ModelForm):
             'name',
             'contact',
             'description',
-            'sample_destination',
+            'data_location',
             'additional_comments'
         ] + DataProductMetaBase.fields
 
@@ -79,8 +80,7 @@ class PhysicalDataProductForm(DataProductBaseFormMixin, forms.ModelForm):
             'name',
             'contact',
             'data_format',
-            'issues',
-            'delivery_date',
+            'sample_destination',
             'additional_comments'
         ] + DataProductMetaBase.fields
 
