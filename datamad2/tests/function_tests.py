@@ -8,7 +8,21 @@ __copyright__ = 'Copyright 2018 United Kingdom Research and Innovation'
 __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
+# Test imports
 from .base import DatamadTestCase
+
+# Django imports
+from django.conf import settings
+
+# Datamad imports
+from datamad2.utils import generate_document_from_template
+
+# Python imports
+import shutil
+
+
+def remove_generated_documents():
+    shutil.rmtree(f'{settings.MEDIA_ROOT}/generated_documents')
 
 
 class TestJIRAPush(DatamadTestCase):
@@ -35,3 +49,38 @@ class TestJIRAPush(DatamadTestCase):
             'description': 'Really long abstract',
             'issuetype': {'id': str(self.USER.data_centre.jiraissuetype.issuetype)},
         })
+
+
+class TestDocumentGeneration(DatamadTestCase):
+
+    def test_data_product_access(self):
+        data_product_types = [
+            'digital',
+            'model_source',
+            'physical',
+            'hardcopy',
+            'third_party'
+        ]
+
+        for product in data_product_types:
+            data_products = getattr(self.GRANT, f'{product }_data_products')
+            self.assertEqual(1, data_products.count())
+
+    def test_generate_document(self):
+
+        # Add task to remove generated documents
+        self.addCleanup(remove_generated_documents)
+
+        template = self.DOCUMENT_TEMPLATE
+        context = {
+            'grant': self.GRANT,
+            'table_test': {
+                'col_labels': ['col1', 'col2'],
+                'table_contents': [
+                    {'col1': 'row1col1', 'col2': 'row1col2'},
+                    {'col1': 'row2col1', 'col2': 'row2col2'}
+                ]
+            }
+        }
+
+        doc = generate_document_from_template(template, context)

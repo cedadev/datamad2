@@ -64,6 +64,27 @@ class Grant(models.Model):
     def importedgrant(self):
         return self.importedgrant_set.first()
 
+    @property
+    def digital_data_products(self):
+        return self.dataproduct_set.filter(data_product_type='digital')
+
+    @property
+    def model_source_data_products(self):
+        return self.dataproduct_set.filter(data_product_type='model_source')
+
+    @property
+    def physical_data_products(self):
+        return self.dataproduct_set.filter(data_product_type='physical')
+
+    @property
+    def hardcopy_data_products(self):
+        return self.dataproduct_set.filter(data_product_type='hardcopy')
+
+    @property
+    def third_party_data_products(self):
+        return self.dataproduct_set.filter(data_product_type='third_party')
+
+
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:
             self.claimed = False
