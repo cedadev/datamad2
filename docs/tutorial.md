@@ -44,6 +44,23 @@ Remaining terms will be `AND`ed together.
 
 ## {% include linked_header.html title="Grant Documents" %}
 
+Grant documents are linked to grants and can be found on the grant detail page. You access the grant details by clicking on
+the grant reference from the home page.
+![Grant Example](/assets/images/tutorial/grant_table.png){:.border.w-100}
+
+The documents can be found on the right of the detail page underneat the quicklinks and grant actions.
+
+![Grant Actions](/assets/images/tutorial/grant_actions.png){:.border}
+
+Grant documents can be uploaded by clicking the "Add Document" button.
+There are strict criteria for the naming convention. This is so that the documents get 
+assigned the correct type (e.g. DMP or supporting document) and are assigned to the correct grant.
+
+![Document Upload](/assets/images/tutorial/document_upload.png){:.border.w-100}
+
+Adding tags to the uploaded document allows you to add extra context which will be displayed
+alongside the filename in the grant detail page.
+
 ## {% include linked_header.html title="User Preferences" %}
 
 User preferences can be accessed from the user dropdown menu in the top right.
