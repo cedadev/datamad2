@@ -12,3 +12,4 @@ media
 .jekyll-cache
 _site
 vendor
+static

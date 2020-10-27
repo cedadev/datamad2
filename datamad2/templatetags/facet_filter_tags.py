@@ -28,7 +28,7 @@ def available_facets(request):
 
     fields = [removesuffix(field, '_exact') for field in igx.field_map if field.endswith('_exact')]
     preferences = request.user.preferences
-    facet_preferences = preferences.get('prefered_facets',[])
+    facet_preferences = preferences.get('preferred_facets',[])
     avail_facets = []
     for field in fields:
         if field not in facet_preferences:
@@ -46,11 +46,13 @@ def selected_facets(context):
     for facet in selected_facets:
         f, label = facet.split(':')
         title = f.replace('_', ' ').title()
-        converted_facets[title]=label
+        converted_facets[title] = label
 
     if converted_facets:
         template = get_template('datamad2/includes/selected_facets.html')
         return template.render({'converted_facets': converted_facets})
+    
+    return ''
 
 
 @register.simple_tag

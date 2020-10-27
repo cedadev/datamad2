@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'orgtheme_datamad',
     'fwtheme_django_ceda_serv',
     'fwtheme_django',
     'jira_oauth',
@@ -43,6 +44,8 @@ INSTALLED_APPS = [
     'datamad2_api',
     'haystack',
     'django_tables2',
+    'bootstrap_datepicker_plus',
+    'jfu',
     'django_unused_media',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -144,6 +147,25 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAdminUser',
     ]
+}
+
+AUTH_USER_MODEL = 'datamad2.User'
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack_elasticsearch.elasticsearch7.Elasticsearch7SearchEngine',
+        'URL': '',
+        'INDEX_NAME': '',
+        'TIMEOUT': 5,
+        'KWARGS': {
+            'headers': {
+                'x-api-key': ''
+            },
+            'retry_on_timeout': True,
+            'sniffer_timeout': 60,
+            'sniff_on_connection_fail': True,
+        }
+    }
 }
 
 from .settings_local import *

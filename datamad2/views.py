@@ -1,81 +1,173 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType
-from .forms import UpdateClaim, GrantInfoForm, DocumentForm, MultipleDocumentUploadForm, FacetPreferencesForm, DatacentreForm, DatacentreIssueTypeForm
-from django.http import HttpResponse
-from .create_issue import make_issue
-from django.urls import reverse, reverse_lazy
-from haystack.generic_views import FacetedSearchView
-from datamad2.forms import DatamadFacetedSearchForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
-from django.core.exceptions import ValidationError
-import re
-from django.core.exceptions import ObjectDoesNotExist
-from datamad2.tables import GrantTable
-from jira_oauth.decorators import jira_access_token_required
+# Django Imports
 from django.conf import settings
-from django.views.generic.edit import FormView, UpdateView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib import messages
+from django.core.exceptions import ValidationError, ImproperlyConfigured, ObjectDoesNotExist
+from django.http import FileResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormView, UpdateView, CreateView, DeleteView
+from django.utils.html import mark_safe
+
+# Datamad Model Imports
+from datamad2.models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate, \
+    DataProduct
+from datamad2.models.data_management_plans import DataFormat, PreservationPlan
+
+# Datamad Form Imports
+import datamad2.forms as datamad_forms
+
+# Datamad Table Imports
+from datamad2.tables import GrantTable, DigitalDataProductTable, ModelSourceDataProductTable, PhysicalDataProductTable, \
+    HardcopyDataProductTable, ThirdPartyDataProductTable, DataFormatTable, PreservationPlanTable, DocumentTemplateTable, UserTable
+from django_tables2.views import SingleTableView
+
+# Haystack Imports
+from haystack.generic_views import FacetedSearchView
+
+# Jquery file uploader imports
+from jfu.http import upload_receive, UploadResponse, JFUResponse
+from django.http import HttpResponse
+
+# Utility Imports
+from .create_issue import make_issue
+from datamad2.utils import generate_document_from_template, rgetattr
+from jira_oauth.decorators import jira_access_token_required
+from .multiforms import MultiFormsView
+
+# Python Imports
+import re
+import os
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
+
+DATAPRODUCT_FORM_CLASS_MAP = {
+    'digital': datamad_forms.DigitalDataProductForm,
+    'model_source': datamad_forms.ModelSourceDataProductForm,
+    'physical': datamad_forms.PhysicalDataProductForm,
+    'hardcopy': datamad_forms.HardcopyDataProductForm,
+    'third_party': datamad_forms.ThirdPartyDataProductForm
+}
+
+DATAPRODUCT_TABLE_CLASS_MAP = {
+    'digital': DigitalDataProductTable,
+    'model_source': ModelSourceDataProductTable,
+    'physical': PhysicalDataProductTable,
+    'hardcopy': HardcopyDataProductTable,
+    'third_party': ThirdPartyDataProductTable
+}
 
 
 class FormatError(Exception):
     pass
 
 
-class FileFieldView(LoginRequiredMixin, FormView):
-    form_class = MultipleDocumentUploadForm
-    template_name = 'datamad2/multiple_document_upload.html'  # Replace with your template.
-    success_url = 'actions'  # Replace with your URL or reverse().
+class UpdateOrCreateMixin:
+    def get_object(self, queryset=None):
+        """
+        Overwrite the get_object method so this view behaves as an update or create view.
+        If the object doesn't exist, it will render a blank form so you can create one.
+        """
 
-    def post(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+        # Use a custom queryset if provided; this is required for subclasses
+        # like DateDetailView
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        # Next, try looking up by primary key.
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        slug = self.kwargs.get(self.slug_url_kwarg)
+        if pk is not None:
+            queryset = queryset.filter(pk=pk)
+
+        # Next, try looking up by slug.
+        if slug is not None and (pk is None or self.query_pk_and_slug):
+            slug_field = self.get_slug_field()
+            queryset = queryset.filter(**{slug_field: slug})
+
+        try:
+            # Get the single item from the filtered queryset
+            return queryset.get()
+
+        except queryset.model.DoesNotExist:
+            return None
+
+
+class DatacentreAdminTestMixin(UserPassesTestMixin):
+    """
+    Checks if the user is an admin
+    """
+
+    def test_func(self):
+        return self.request.user.is_admin
+
+
+class ObjectDeleteView(LoginRequiredMixin, DeleteView):
+    """
+    Class based view to provide a delete via a GET call
+    """
+    template_name = 'datamad2/confirm_delete.html'
 
 
 @login_required
 def multiple_document_upload(request):
     if request.method == 'POST':
-        form = MultipleDocumentUploadForm(request.POST, request.FILES)
-        files = request.FILES.getlist('upload')
-        if form.is_valid():
-            for f in files:
-                name = str(f)
 
-                try:
-                    m = DOCUMENT_NAMING_PATTERN.match(name)
-                    if not m:
-                        raise FormatError(f"File name {name} is not formatted correctly")
+        file = upload_receive(request)
 
-                    grant_ref = m.group('grant_ref').replace('_', '/')
+        name = str(file)
 
-                    file_type = m.group('doc_type').lower()
-                    if file_type != 'dmp':
-                        file_type = 'support'
+        try:
+            m = DOCUMENT_NAMING_PATTERN.match(name)
+            if not m:
+                raise FormatError(f"File name does not match convention. e.g NE_G0123X_1_DMP.docx")
 
-                    document = Document(upload=f)
+            grant_ref = m.group('grant_ref').replace('_', '/')
 
-                    try:
-                        document.grant = Grant.objects.get(grant_ref=grant_ref)
-                    except ObjectDoesNotExist:
-                        raise FormatError(f"Grant {grant_ref} does not exist")
-                    document.type = file_type
-                    document.save()
+            file_type = m.group('doc_type').lower()
+            if file_type != 'dmp':
+                file_type = 'support'
 
-                except ValidationError:
-                    messages.error(request, f'The file {name} has already been uploaded')
-                except FormatError as exc:
-                    messages.error(request, f"{exc}")
-            messages.success(request, 'Upload complete')
+            document = Document(upload=file)
+
+            document.grant = Grant.objects.get(grant_ref=grant_ref)
+            document.type = file_type
+            document.save()
+        except ValidationError:
+            response = HttpResponse(status=400)
+            response.reason_phrase = 'File already uploaded'
+
+        except FormatError as exc:
+            response = HttpResponse(status=400)
+            response.reason_phrase = f'{exc}'
+
+        except ObjectDoesNotExist:
+            response = HttpResponse(status=404)
+            response.reason_phrase = f'Grant ref: {grant_ref} not found'
+
+        else:
+
+            file_dict = {
+                'name': file.name,
+                'size': file.size,
+
+                'url': document.upload.url,
+
+                'deleteUrl': reverse('delete_file', kwargs={'pk': document.pk}),
+                'deleteType': 'POST',
+            }
+            response = UploadResponse(request, file_dict)
+
+        return response
     else:
-        form = MultipleDocumentUploadForm()
-    return render(request, 'datamad2/multiple_document_upload.html', {'form': form})
+        form = datamad_forms.MultipleDocumentUploadForm()
+    return render(request, 'datamad2/multiple_document_upload.html', {
+        'form': form,
+        'JQ_OPEN': '{%',
+        'JQ_CLOSE': '%}'
+    })
 
 
 @login_required
@@ -101,6 +193,97 @@ def grant_detail(request, pk):
     })
 
 
+class DataProductView(LoginRequiredMixin, TemplateView):
+    template_name = 'datamad2/dataproduct_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        grant = get_object_or_404(Grant, pk=kwargs['pk'])
+        context['grant'] = grant
+        context['data_products'] = {
+            product: table(grant.dataproduct_set.filter(data_product_type=product))
+            for product, table in DATAPRODUCT_TABLE_CLASS_MAP.items()
+        }
+        return context
+
+
+class DataProductUpdateCreateView(LoginRequiredMixin, UpdateView):
+    template_name = 'datamad2/dataproduct_form_view.html'
+    model = DataProduct
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['grant_id'] = get_object_or_404(Grant, pk=self.kwargs['pk']).pk
+        initial['data_product_type'] = self.kwargs['data_product_type']
+        return initial
+
+    def get_success_url(self):
+        return reverse('dataproduct_view', kwargs={'pk': self.kwargs['pk']})
+
+    def get_form_class(self):
+        """Return the form class to use in this view."""
+        if self.fields is not None and self.form_class:
+            raise ImproperlyConfigured(
+                "Specifying both 'fields' and 'form_class' is not permitted."
+            )
+
+        form_class = DATAPRODUCT_FORM_CLASS_MAP.get(self.kwargs['data_product_type'])
+        return form_class
+
+    def get_object(self, **kwargs):
+        """
+        This modification means this view behaves as an update or create view.
+        If the object doesn't exist, it will create one.
+        """
+        try:
+            return self.model.objects.get(pk=self.kwargs['dp_pk'])
+        except (ObjectDoesNotExist, KeyError):
+            return None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['grant'] = get_object_or_404(Grant, pk=self.kwargs['pk'])
+        context['data_product_type'] = self.kwargs['data_product_type']
+        return context
+
+
+class DataProductDeleteView(ObjectDeleteView):
+    model = DataProduct
+    pk_url_kwarg = 'dp_pk'
+
+    def get_success_url(self):
+        return reverse('dataproduct_view', kwargs={'pk': self.kwargs['pk']})
+
+
+class DocumentGenerationSelectView(LoginRequiredMixin, FormView):
+    template_name = 'datamad2/generate_document_from_template.html'
+    form_class = datamad_forms.DocumentGenerationForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['imported_grant'] = get_object_or_404(Grant, pk=self.kwargs['pk']).importedgrant
+        return context
+
+    def form_valid(self, form):
+        template = form.cleaned_data['document_template']
+        grant = Grant.objects.get(pk=self.kwargs['pk'])
+        context = {
+            'grant': grant
+        }
+
+        doc = generate_document_from_template(template, context)
+
+        download_filename = f'{grant.grant_ref.replace("/", "_")}_{template.type.upper()}{os.path.splitext(template.template.name)[1]}'
+
+        return FileResponse(open(doc, 'rb'), as_attachment=True, filename=download_filename)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['datacentre'] = self.request.user.data_centre
+        return kwargs
+
+
 @login_required
 @jira_access_token_required
 def push_to_jira(request, pk):
@@ -112,7 +295,7 @@ def push_to_jira(request, pk):
     :return:
     """
     grant = get_object_or_404(Grant, pk=pk)
-    jira_required_fields = ['issuetype', 'jira_project']
+    jira_required_fields = [('jiraissuetype.issuetype','issue_type' ), ('jira_project','datacentre')]
 
     # Make sure the user has a data centre
     if not request.user.data_centre:
@@ -129,10 +312,11 @@ def push_to_jira(request, pk):
         return redirect('grant_detail', pk=pk)
 
     # Check for required fields in users datacentre
-    for field in jira_required_fields:
-        if not getattr(request.user.data_centre, field):
-            messages.error(request, f'Not all the required fields: {jira_required_fields} have been populated to allow this operation. '
-                                    f'Please update {reverse("datacentre", request.user.data_centre.pk)}')
+    for field, view in jira_required_fields:
+        if not rgetattr(request.user.data_centre, field, None):
+            messages.error(request,
+                           mark_safe(f'Not all the required fields have been populated. Populate <i>{field}</i> to allow this operation. '
+                           f'Please update field <a href="{reverse(view)}" target="_blank">Here</a>'))
             return redirect('grant_detail', pk=pk)
 
     # There is no jira URL against this grant
@@ -162,7 +346,7 @@ def grant_history_detail(request, pk, imported_pk):
 
 
 class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
-    form_class = DatamadFacetedSearchForm
+    form_class = datamad_forms.DatamadFacetedSearchForm
     facet_fields = [
         'assigned_datacentre',
         'labels',
@@ -187,7 +371,7 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     def get_queryset(self):
         options = {
             "size": settings.HAYSTACK_FACET_LIMIT,
-            "order":{"_key": "asc"}
+            "order": {"_key": "asc"}
         }
         qs = super().get_queryset()
         for field in self.facet_fields:
@@ -203,62 +387,83 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
         context['containerfluid'] = True
         return context
 
+    def get(self, request, *args, **kwargs):
+        user_preferred_sorting = request.user.preferences.get('preferred_sorting', None)
+        if not request.GET.get('sort_by') and user_preferred_sorting:
+            return HttpResponseRedirect(f'{reverse("grant_list")}?sort_by={user_preferred_sorting}')
 
-@login_required
-def claim(request, pk):
-    grant = get_object_or_404(Grant, pk=pk)
-    user = request.user
-    grant.assigned_data_centre = user.data_centre
-    grant.save()
-    return HttpResponse(status=200)
+        return super().get(request, *args, **kwargs)
 
 
-@login_required
-def unclaim(request, pk):
-    grant = get_object_or_404(Grant, pk=pk)
-    grant.assigned_data_centre = None
-    grant.save()
-    return HttpResponse(status=200)
+class ChangeClaimFormView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Grant
+    template_name = 'datamad2/change_claim.html'
+    form_class = datamad_forms.UpdateClaimForm
+    permission_denied_message = "Your data centre does not match the datacentre of the grant"
+
+    def test_func(self):
+        """
+        Test to make sure that the user either comes from a datacentre which
+        has responsibility for the grant or the grant has not been claimed.
+        Aims to prevent users from unclaiming or reassigning grants already
+        assigned to another datacentre
+
+        :return: bool
+        """
+        grant = get_object_or_404(Grant, pk=self.kwargs['pk'])
+        user_datacentre = self.request.user.data_centre
+        grant_datacentre = grant.assigned_data_centre
+        return grant_datacentre is None or grant_datacentre == user_datacentre
+
+    def get_success_url(self):
+        return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']})
 
 
-@login_required
-def change_claim(request, pk):
-    grant = get_object_or_404(Grant, pk=pk)
-    if request.method == 'POST':
-        form = UpdateClaim(request.POST, instance=grant)
-        if form.is_valid():
-            form.save()
-        return redirect(reverse('grant_detail', kwargs={'pk': pk}))
-    else:
-        form = UpdateClaim(instance=grant)
-    return render(request, 'datamad2/change_claim.html', {'change_claim': change_claim, 'form': form})
-
-
-class MyAccountPreferencesView(LoginRequiredMixin, FormView):
+class MyAccountPreferencesView(LoginRequiredMixin, MultiFormsView):
     template_name = 'datamad2/user_account/account_preferences.html'
-    form_class = FacetPreferencesForm
+    form_classes = {'facets': datamad_forms.FacetPreferencesForm,
+                    'sort_by': datamad_forms.SortByPreferencesForm}
     success_url = reverse_lazy('preferences')
 
-    def get_initial(self):
+    def post(self, *args, **kwargs):
+        return super().post(*args, **kwargs)
+
+    def get_facets_initial(self):
         initial = {}
-        prefered_facets = self.request.user.preferences.get('prefered_facets',[])
-        for facet in prefered_facets:
+        preferred_facets = self.request.user.preferences.get('preferred_facets', [])
+        for facet in preferred_facets:
             initial[facet] = True
         return initial
 
-    def form_valid(self, form):
+    def get_sort_by_initial(self):
+        initial = {}
+        sorting = self.request.user.preferences.get('preferred_sorting', None)
+        initial['sort_by'] = sorting
+        return initial
+
+    def facets_form_valid(self, form):
         preferences = [field for field, value in form.cleaned_data.items() if value]
         user = User.objects.get(pk=self.request.user.pk)
-        user.prefered_facets = ','.join(preferences)
+        user.preferred_facets = ','.join(preferences)
         user.save()
 
-        return super().form_valid(form)
+    def sort_by_form_valid(self, form):
+        preference = [value for field, value in form.cleaned_data.items() if value]
+        user = User.objects.get(pk=self.request.user.pk)
+        if preference:
+            user.preferred_sorting = preference[0]
+        else:
+            user.preferred_sorting = None
+        user.save()
 
 
-class MyAccountDatacentreView(LoginRequiredMixin, UpdateView):
+class MyAccountDatacentreView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'datamad2/user_account/account_datacentre.html'
     model = DataCentre
-    form_class = DatacentreForm
+    form_class = datamad_forms.DatacentreForm
+
+    def test_func(self):
+        return self.request.user.is_admin
 
     def get_success_url(self):
         return reverse('datacentre')
@@ -273,10 +478,10 @@ class MyAccountDatacentreView(LoginRequiredMixin, UpdateView):
         return get_object_or_404(self.model, pk=self.request.user.data_centre.pk)
 
 
-class MyAccountDatacentreIssueTypeView(LoginRequiredMixin, UpdateView):
+class MyAccountDatacentreIssueTypeView(LoginRequiredMixin, DatacentreAdminTestMixin, UpdateView):
     template_name = 'datamad2/user_account/account_datacentre_issuetype.html'
     model = JIRAIssueType
-    form_class = DatacentreIssueTypeForm
+    form_class = datamad_forms.DatacentreIssueTypeForm
 
     def get_success_url(self):
         return reverse('issue_type')
@@ -306,19 +511,99 @@ class MyAccountDetailsView(LoginRequiredMixin, TemplateView):
     template_name = 'datamad2/user_account/my_account.html'
 
 
-@login_required
-def grantinfo_edit(request, pk):
-    grant = get_object_or_404(Grant, pk=pk)
+class MyAccountUsersView(LoginRequiredMixin, DatacentreAdminTestMixin, SingleTableView):
+    template_name = 'datamad2/user_account/datacentre_users.html'
+    model = User
+    table_class = UserTable
 
-    if request.method == "POST":
-        form = GrantInfoForm(request.POST, instance=grant)
-        if form.is_valid():
-            grantinfo = form.save(commit=False)
-            grantinfo.save()
-            return redirect(reverse('grant_detail', kwargs={'pk': pk}) + "#editable-info")
-    else:
-        form = GrantInfoForm(instance=grant)
-    return render(request, 'datamad2/grantinfo_edit.html', {'form': form, 'grant': grant})
+    def get_queryset(self):
+        """
+        Filter user list just to show users from the admins datacentre
+        :return:
+        """
+        return User.objects.filter(data_centre=self.request.user.data_centre)
+
+
+class MyAccountNewUserView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateView):
+    template_name = 'datamad2/user_account/datacentre_new_users.html'
+    model = User
+    form_class = datamad_forms.UserForm
+
+    def get_success_url(self):
+        messages.success(self.request, 'User added successfully')
+        return reverse('user_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'data_centre': self.request.user.data_centre
+            })
+        return initial
+
+
+class MyAccountRemoveUserView(DatacentreAdminTestMixin, ObjectDeleteView):
+    model = User
+
+    def get_success_url(self):
+        messages.success(self.request, 'User deleted successfully')
+        return reverse('user_list')
+
+
+class MyAccountEditUserView(LoginRequiredMixin, DatacentreAdminTestMixin, UpdateView):
+    template_name = 'datamad2/user_account/datacentre_edit_user.html'
+    model = User
+    form_class = datamad_forms.UserEditForm
+
+    def get_success_url(self):
+        messages.success(self.request, 'User updated successfully')
+        return reverse('user_list')
+
+
+class DocumentTemplateListView(LoginRequiredMixin, DatacentreAdminTestMixin, SingleTableView):
+    model = DocumentTemplate
+    template_name = 'datamad2/user_account/datacentre_document_template_list.html'
+    table_class = DocumentTemplateTable
+
+
+class DocumentTemplateCreateView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateView):
+    model = DocumentTemplate
+    template_name = 'datamad2/user_account/datacentre_document_template_form.html'
+    form_class = datamad_forms.DocumentTemplateForm
+
+    def get_success_url(self):
+        return reverse('document_template_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'datacentre': self.request.user.data_centre
+            })
+        return initial
+
+
+class DocumentTemplateUpdateView(LoginRequiredMixin, DatacentreAdminTestMixin, UpdateView):
+    model = DocumentTemplate
+    template_name = 'datamad2/user_account/datacentre_document_template_form.html'
+    form_class = datamad_forms.DocumentTemplateForm
+
+    def get_success_url(self):
+        return reverse('document_template_list')
+
+
+class DocumentTemplateDeleteView(ObjectDeleteView):
+    model = DocumentTemplate
+    success_url = reverse_lazy('document_template_list')
+
+
+class GrantInfoEditView(LoginRequiredMixin, UpdateView):
+    model = Grant
+    form_class = datamad_forms.GrantInfoForm
+    template_name = 'datamad2/grantinfo_edit.html'
+
+    def get_success_url(self):
+        return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']}) + '#editable-info'
 
 
 @login_required
@@ -326,7 +611,7 @@ def document_upload(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
 
     if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
+        form = datamad_forms.DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             name = str(request.FILES.get('upload'))
             try:
@@ -365,12 +650,85 @@ def document_upload(request, pk):
             except (FormatError, PermissionError) as exc:
                 messages.error(request, f"{exc}")
     else:
-        form = DocumentForm(instance=grant)
+        form = datamad_forms.DocumentForm(instance=grant)
 
     return render(request, 'datamad2/document_upload.html', {'form': form, 'grant': grant})
 
-
+@login_required()
 def delete_file(request, pk):
+    if request.POST:
+        success = True
+        try:
+            instance = Document.objects.get(pk=pk)
+            instance.delete_file()
+        except Document.DoesNotExist:
+            success = False
+
+        return JFUResponse(request, success)
+
     document = Document.objects.get(pk=pk)
     document.delete_file()
     return redirect(reverse('grant_detail', kwargs={'pk': document.grant.pk}))
+
+
+class DataFormatListView(LoginRequiredMixin, SingleTableView):
+    model = DataFormat
+    template_name = 'datamad2/user_account/data_format_list.html'
+    table_class = DataFormatTable
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs.filter(datacentre=self.request.user.data_centre)
+        return qs
+
+
+class DataFormatUpdateCreateView(LoginRequiredMixin, UpdateOrCreateMixin, UpdateView):
+    model = DataFormat
+    template_name = 'datamad2/user_account/data_format_form.html'
+    form_class = datamad_forms.DataFormatForm
+    success_url = reverse_lazy('data_format_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'datacentre': self.request.user.data_centre
+            })
+        return initial
+
+
+class DataFormatDeleteView(ObjectDeleteView):
+    model = DataFormat
+    success_url = reverse_lazy('data_format_list')
+
+
+class PreservationPlanListView(LoginRequiredMixin, SingleTableView):
+    model = PreservationPlan
+    template_name = 'datamad2/user_account/preservation_plan_list.html'
+    table_class = PreservationPlanTable
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs.filter(datacentre=self.request.user.data_centre)
+
+        return qs
+
+
+class PreservationPlanUpdateCreateView(LoginRequiredMixin, UpdateOrCreateMixin, UpdateView):
+    model = PreservationPlan
+    template_name = 'datamad2/user_account/preservation_plan_form.html'
+    form_class = datamad_forms.PreservationPlanForm
+    success_url = reverse_lazy('preservation_plan_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'datacentre': self.request.user.data_centre
+            })
+        return initial
+
+
+class PreservationPlanDeleteView(ObjectDeleteView):
+    model = PreservationPlan
+    success_url = reverse_lazy('preservation_plan_list')

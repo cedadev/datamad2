@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 {% available_facets request as remaining_facets %}
 
+
 {% crispy form %}
 <div class="mb-2">
     <a class="btn btn-danger" href="{% url 'grant_list' %}">Clear All Filters</a>
@@ -12,8 +13,8 @@
 </div>
 <div class="card border-0" id="id_filter_by">
     <dl>
-        {% if user.preferences.prefered_facets %}
-            {% for field in user.preferences.prefered_facets %}
+        {% if user.preferences.preferred_facets %}
+            {% for field in user.preferences.preferred_facets %}
                 <div>
                     {% include 'datamad2/includes/facet.html' %}
                 </div>
@@ -32,7 +33,7 @@
                     {% include 'datamad2/includes/facet.html' %}
                 </div>
             {% endfor %}
-            <a href="{% url 'my_account' %}">Select Prefered Filters</a>
+            <a href="{% url 'preferences' %}">Select Preferred Filters</a>
         {% endif %}
     </dl>
 </div>

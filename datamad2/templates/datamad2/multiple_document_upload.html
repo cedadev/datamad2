@@ -1,27 +1,30 @@
 {% extends 'datamad2/base.html' %}
-{% load crispy_forms_tags %}
+{% load crispy_forms_tags i18n static jfutags %}
+
+{% block stylesheets_extra %}
+    {{ block.super }}
+    {% include 'datamad2/includes/jfu_stylesheets.html' %}
+{% endblock %}
+
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
     <li class="breadcrumb-item active">Upload Multiple Documents</li>
 {% endblock breadcrumb_items %}
 
 {% block content_panel %}
-    {% include 'datamad2/includes/notifications.html' %}
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="card card-shaded">
-            <div class="card-body">
-                <h4><label> Upload Multiple Documents </label></h4>
-                <p>{{ form | crispy }}</p>
-                <p>
-                    <button type="submit" class="save btn btn-primary" id="claim">Upload</button>
-                </p>
-            </div>
+    <div class="card card-shaded">
+        <div class="card-body">
+            <h4><label> Upload Multiple Documents </label></h4>
+            {% jfu 'datamad2/includes/jfu_upload_form.html' 'multi_document_upload' %}
         </div>
-    </form>
+    </div>
     <div class="d-flex justify-content-center">
         {% include 'datamad2/includes/document_naming_convention.html' %}
     </div>
 
-
 {% endblock %}
+
+{% block tail_js_extra %}
+    {{ block.super }}
+    {% include 'datamad2/includes/jfu_scripts.html' %}
+{% endblock tail_js_extra %}

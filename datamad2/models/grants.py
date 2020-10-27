@@ -35,7 +35,7 @@ class Grant(models.Model):
     # Hide Record	Sharepoint
     hide_record = models.BooleanField(null=True, blank=True)
     # DateContact with PI	Sharepoint	Date or Null
-    date_contacted_pi = models.DateField(null=True, blank=True)
+    date_contacted_pi = models.DateField(null=True, blank=True, verbose_name='Date contacted PI')
     # Will Grant Produce Data	Sharepoint	Y/N
     will_grant_produce_data = models.BooleanField(null=True, blank=True)
     # Datasets Delivered as per DMP?	Sharepoint	Yes, No or Null
@@ -63,6 +63,27 @@ class Grant(models.Model):
     @property
     def importedgrant(self):
         return self.importedgrant_set.first()
+
+    @property
+    def digital_data_products(self):
+        return self.dataproduct_set.filter(data_product_type='digital')
+
+    @property
+    def model_source_data_products(self):
+        return self.dataproduct_set.filter(data_product_type='model_source')
+
+    @property
+    def physical_data_products(self):
+        return self.dataproduct_set.filter(data_product_type='physical')
+
+    @property
+    def hardcopy_data_products(self):
+        return self.dataproduct_set.filter(data_product_type='hardcopy')
+
+    @property
+    def third_party_data_products(self):
+        return self.dataproduct_set.filter(data_product_type='third_party')
+
 
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:

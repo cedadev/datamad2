@@ -59,3 +59,13 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
         )
 
         return list(labels)
+
+    def prepare_facility(self, obj):
+        if not obj.importedgrant:
+            return None
+
+        facility = obj.importedgrant.facility
+
+        if facility:
+            return facility
+

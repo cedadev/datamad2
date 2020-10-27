@@ -9,8 +9,6 @@ LOGIN_REDIRECT_URL = '/'
 # Redirect to login page after logging out
 LOGOUT_REDIRECT_URL = '/accounts/login'
 
-AUTH_USER_MODEL = 'datamad2.User'
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MEDIA_URL = '/media/'
@@ -19,16 +17,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MESSAGE_LEVEL = message_constants.DEBUG
 
 HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack_elasticsearch.elasticsearch7.Elasticsearch7SearchEngine',
-        'URL': '',
-        'INDEX_NAME': '',
-        'KWARGS': {
-            'headers': {
-                'x-api-key': ''
-            }
-        }
-    }
+ 'default': {
+     'ENGINE': 'haystack_elasticsearch.elasticsearch7.Elasticsearch7SearchEngine',
+     'URL': '',
+     'INDEX_NAME': '',
+     'TIMEOUT': 5,
+     'KWARGS': {
+         'headers': {
+             'x-api-key': ''
+         },
+         'retry_on_timeout': True,
+         'sniffer_timeout': 60,
+         'sniff_on_connection_fail': True,
+     }
+ }
 }
 
 HAYSTACK_FACET_LIMIT = 100
