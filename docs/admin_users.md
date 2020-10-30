@@ -42,7 +42,7 @@ link to set their own password.
 
 The connection to JIRA requires 3 things:
 
-1. A data management JIRA Project (This will be )
+1. A data management JIRA Project (This will be in the URL of your JIRA project home. e.g. CEDA is `/projects/CEDA/summary` so the JIRA project is `CEDA` )
 2. An issue type ID (This is the id of the issueType model you are using in your project)
 3. Mapping between DataMAD and the custom fields in JIRA 
 
