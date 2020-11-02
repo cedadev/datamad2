@@ -334,14 +334,17 @@ class Command(BaseCommand):
         # Load file
         df = pd.read_csv(options['input_file'], header=0, skipinitialspace=True)
 
+        # Transform columns
         df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '')\
             .str.replace(')', '').str.replace('?', '').str.replace('/', '_').str.replace('\'', '')\
             .str.replace('-', '')
 
+        # Get or create the datacentre objects
         dcs = ["BODC", "CEDA", "EIDC", "NGDC", "PDC", "ADS"]
         for dc in dcs:
             DataCentre.objects.get_or_create(name=dc)
 
+        # Loop all items in table and create grants
         for row in tqdm(df.itertuples(), desc='Adding grant info'):
             g_data = {}
 
@@ -355,16 +358,16 @@ class Command(BaseCommand):
                         except Exception as exc:
                             value = None
 
+                    # Convert the date to a datetime
                     if model_field in date_fields:
-                        # Convert the date
                         try:
                             value = parse(value)
                             value = value.strftime('%Y-%m-%d')
                         except Exception as exc:
                             value = None
 
+                    # Create booleans from yes/no values
                     if model_field in boolean_fields:
-                        # Turn into boolean
                         if value == 'Yes':
                             value = True
                         elif value == 'No':
@@ -382,16 +385,21 @@ class Command(BaseCommand):
             g = Grant.objects.filter(grant_ref=grant_ref)
             g.update(**g_data)
 
-
         # Add grant to imported grant
         for row in tqdm(df.itertuples(), desc='Linking grant and imported grant'):
-            grant_ref = row[1]
-            proposed_start_date = row[26]
-            #modified_date = row[77]
-            proposed_start_date = parse(proposed_start_date, dayfirst=True).date()
-            #actual_start_date = actual_start_date.strftime("%Y-%m-%d")
-            #print(type(actual_start_date))
 
+            # Get the column indices with the required fields
+            grant_ref_index = df.columns.get_loc('grant_reference')
+            proposed_start_date_index = df.columns.get_loc('proposed_start_date')
+
+            # Need to add 1 as in the row, the first element is the index
+            grant_ref = row[grant_ref_index+1]
+            proposed_start_date = row[proposed_start_date_index+1]
+
+            # Extract the date as a datetime
+            proposed_start_date = parse(proposed_start_date, dayfirst=True).date()
+
+            # Look to see if grant exists
             try:
                 g = Grant.objects.get(grant_ref=grant_ref)
 
@@ -399,6 +407,7 @@ class Command(BaseCommand):
                 print(f'Grant with grant ref {grant_ref} does not exist.')
                 continue
 
+            # Get the most recent imported grant. Imported grants have default order newest to oldest.
             igrant = ImportedGrant.objects.filter(grant_ref=grant_ref).first()
 
             if g and igrant:
