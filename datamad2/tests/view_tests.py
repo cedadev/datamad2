@@ -68,3 +68,15 @@ class TestFacetedSearchPage(AnonymousUserGetViewTestMixin, DatamadViewTestCase):
         self.client.force_login(self.USER)
         response = self.client.get(self.VIEW_URL)
         self.assertEqual(f'{reverse("grant_list")}?sort_by={self.USER.preferred_sorting}', response.url)
+
+    def test_filters_with_preferred_sorting(self):
+        """
+        Check that if the user has a preferred sorting, the other filters are correctly applied.
+        :return:
+        """
+
+        self.client.force_login(self.USER)
+
+        response = self.client.get(f'{self.VIEW_URL}?selected_facets=assigned_datacentre:Unassigned')
+
+        self.assertEqual(f'/?selected_facets=assigned_datacentre%3AUnassigned&sort_by={self.USER.preferred_sorting}', response.url)
