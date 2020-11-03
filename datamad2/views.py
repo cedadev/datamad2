@@ -390,7 +390,12 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     def get(self, request, *args, **kwargs):
         user_preferred_sorting = request.user.preferences.get('preferred_sorting', None)
         if not request.GET.get('sort_by') and user_preferred_sorting:
-            return HttpResponseRedirect(f'{reverse("grant_list")}?sort_by={user_preferred_sorting}')
+
+            # Copy the querydict to make a mutable version and generate querystring
+            # from this.
+            query_dict = request.GET.copy()
+            query_dict.update({'sort_by': user_preferred_sorting})
+            return HttpResponseRedirect(f'{reverse("grant_list")}?{query_dict.urlencode()}')
 
         return super().get(request, *args, **kwargs)
 
