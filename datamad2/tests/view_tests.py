@@ -68,3 +68,8 @@ class TestFacetedSearchPage(AnonymousUserGetViewTestMixin, DatamadViewTestCase):
         self.client.force_login(self.USER)
         response = self.client.get(self.VIEW_URL)
         self.assertEqual(f'{reverse("grant_list")}?sort_by={self.USER.preferred_sorting}', response.url)
+
+    def test_csrf_cookie(self):
+        self.client.force_login(self.USER)
+        response = self.client.get(f'{self.VIEW_URL}?sort_by={self.USER.preferred_sorting}')
+        self.assertIn('csrfmiddlewaretoken', str(response.content))
