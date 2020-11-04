@@ -36,6 +36,7 @@ from .create_issue import make_issue
 from datamad2.utils import generate_document_from_template, rgetattr
 from jira_oauth.decorators import jira_access_token_required
 from .multiforms import MultiFormsView
+from jira.exceptions import JIRAError
 
 # Python Imports
 import re
@@ -321,13 +322,18 @@ def push_to_jira(request, pk):
 
     # There is no jira URL against this grant
     if not grant.jira_ticket:
-        issue = make_issue(request, grant.importedgrant)
-        link = issue.permalink()
+        try:
+            issue = make_issue(request, grant.importedgrant)
+            link = issue.permalink()
 
-        # Save the ticket link to the correct grant
-        if link:
-            grant.jira_ticket = link
-            grant.save()
+            # Save the ticket link to the correct grant
+            if link:
+                grant.jira_ticket = link
+                grant.save()
+
+        except JIRAError as e:
+            messages.error(request,
+                           f'There was an error when trying to create the JIRA issue. {e.text}')
 
     return redirect('grant_detail', pk=pk)
 
