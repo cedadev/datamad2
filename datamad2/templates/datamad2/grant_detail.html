@@ -8,7 +8,6 @@
 
 
 {% block content %}
-    {% csrf_token %}
     {% if imported_grant.grant.updated_imported_grant == True %}
         <div class="alert alert-secondary mt-3 w-100 text-center" role="alert">
             Some details of this grant have been changed since the original proposal. Click <a
