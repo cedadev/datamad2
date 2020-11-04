@@ -9,7 +9,7 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 import django_tables2 as tables
-from .models import Grant, DataProduct, User
+from .models import Grant, DataProduct, User, Subtask
 from .models.data_management_plans import PreservationPlan, DataFormat, DocumentTemplate
 from django_tables2.utils import A
 
@@ -284,4 +284,35 @@ class UserTable(tables.Table):
             'first_name',
             'last_name',
             'email',
+        ]
+
+
+class SubtaskTable(tables.Table):
+
+    actions = tables.TemplateColumn(
+        template_name='datamad2/fields/subtask_action_field.html',
+        attrs={
+            'td': {},
+            'th': {}
+        }
+    )
+
+    class Meta:
+        model = Subtask
+        orderable = False
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        empty_text = "No subtasks to display"
+        attrs = {
+            'td': {
+                'class': 'text-center'
+            },
+            'th': {
+                'class': 'text-center'
+            }
+        }
+        sequence = ("...", "actions")
+        fields = [
+            'name',
+            'schedule_time',
+            'ref_time',
         ]

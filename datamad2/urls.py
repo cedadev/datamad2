@@ -32,6 +32,10 @@ urlpatterns = [
     path('account/datacentre/preservation_plans/new', (views.PreservationPlanUpdateCreateView.as_view()), name='preservation_plan_create'),
     path('account/datacentre/preservation_plans/<int:pk>', (views.PreservationPlanUpdateCreateView.as_view()), name='preservation_plan_update'),
     path('account/datacentre/preservation_plans/<int:pk>/delete', (views.PreservationPlanDeleteView.as_view()), name='preservation_plan_delete'),
+    path('account/datacentre/subtasks', (views.SubtaskListView.as_view()),name='subtask_list'),
+    path('account/datacentre/subtasks/new', (views.SubtaskUpdateCreateView.as_view()),name='subtask_create'),
+    path('account/datacentre/subtasks/<int:pk>', (views.SubtaskUpdateCreateView.as_view()),name='subtask_update'),
+    path('account/datacentre/subtasks/<int:pk>/delete', (views.SubtaskDeleteView.as_view()),name='subtask_delete'),
 
     # Grant URLs
     path('grant/<int:pk>/', views.grant_detail, name='grant_detail'),
