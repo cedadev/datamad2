@@ -9,7 +9,7 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from django import forms
-from datamad2.models import DataCentre, User, JIRAIssueType, DocumentTemplate
+from datamad2.models import DataCentre, User, JIRAIssueType, DocumentTemplate, Subtask
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib.auth.forms import UserCreationForm
@@ -68,3 +68,12 @@ class DocumentGenerationForm(forms.Form):
 
         self.fields['document_template'].queryset = DocumentTemplate.objects.filter(datacentre=datacentre)
 
+
+class SubtaskForm(CrispySubmitMixin, forms.ModelForm):
+    class Meta:
+        model= Subtask
+        fields = '__all__'
+
+        widgets = {
+            'data_centre': forms.HiddenInput
+        }

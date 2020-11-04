@@ -13,7 +13,7 @@ from django.utils.html import mark_safe
 
 # Datamad Model Imports
 from datamad2.models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate, \
-    DataProduct
+    DataProduct, Subtask
 from datamad2.models.data_management_plans import DataFormat, PreservationPlan
 
 # Datamad Form Imports
@@ -21,7 +21,8 @@ import datamad2.forms as datamad_forms
 
 # Datamad Table Imports
 from datamad2.tables import GrantTable, DigitalDataProductTable, ModelSourceDataProductTable, PhysicalDataProductTable, \
-    HardcopyDataProductTable, ThirdPartyDataProductTable, DataFormatTable, PreservationPlanTable, DocumentTemplateTable, UserTable
+    HardcopyDataProductTable, ThirdPartyDataProductTable, DataFormatTable, PreservationPlanTable, DocumentTemplateTable, UserTable, \
+    SubtaskTable
 from django_tables2.views import SingleTableView
 
 # Haystack Imports
@@ -737,3 +738,35 @@ class PreservationPlanUpdateCreateView(LoginRequiredMixin, UpdateOrCreateMixin, 
 class PreservationPlanDeleteView(ObjectDeleteView):
     model = PreservationPlan
     success_url = reverse_lazy('preservation_plan_list')
+
+
+class SubtaskListView(LoginRequiredMixin, SingleTableView):
+    model = Subtask
+    template_name = 'datamad2/user_account/subtask_list.html'
+    table_class = SubtaskTable
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs.filter(data_centre=self.request.user.data_centre)
+
+        return qs
+
+
+class SubtaskUpdateCreateView(LoginRequiredMixin, UpdateOrCreateMixin, UpdateView):
+    model = Subtask
+    template_name = 'datamad2/user_account/subtask_form.html'
+    form_class = datamad_forms.SubtaskForm
+    success_url = reverse_lazy('subtask_list')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if not self.object:
+            initial.update({
+                'data_centre': self.request.user.data_centre
+            })
+        return initial
+
+
+class SubtaskDeleteView(ObjectDeleteView):
+    model = Subtask
+    success_url = reverse_lazy('subtask_list')
