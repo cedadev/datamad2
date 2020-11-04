@@ -69,17 +69,6 @@ class TestFacetedSearchPage(AnonymousUserGetViewTestMixin, DatamadViewTestCase):
         response = self.client.get(self.VIEW_URL)
         self.assertEqual(f'{reverse("grant_list")}?sort_by={self.USER.preferred_sorting}', response.url)
 
-
-    def test_csrf_cookie(self):
-        """
-        Check that the CSRF token is embedded in the main grant page to allow the AJAX
-        claim_grant process to work https://github.com/cedadev/datamad2/issues/300
-        """
-                        
-        self.client.force_login(self.USER)
-        response = self.client.get(f'{self.VIEW_URL}?sort_by={self.USER.preferred_sorting}')
-        self.assertIn('csrfmiddlewaretoken', str(response.content))
-
     def test_filters_with_preferred_sorting(self):
         """
         Check that if the user has a preferred sorting, the other filters are correctly applied.
