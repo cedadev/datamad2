@@ -18,6 +18,15 @@ from datamad2 import models
 # Python imports
 import os
 
+ISSUE_TYPE_FIELD_MAPPING = {
+    'start_date_field': 'customfield_13567', 'end_date_field': 'customfield_13568',
+    'grant_ref_field': 'customfield_13569', 'pi_field': 'customfield_11453',
+    'research_org_field': 'customfield_13573', 'primary_datacentre_field': 'customfield_11663',
+    'amount_awarded_field': 'customfield_13578', 'grant_type_field': 'customfield_13585',
+    'lead_grant_field': 'customfield_13586', 'parent_grant_field': 'customfield_13587',
+    'child_grants_field': 'customfield_13588', 'email_field': 'customfield_13572',
+    'other_datacentre_field': 'customfield_11664'}
+
 
 @override_settings(MEDIA_ROOT=os.path.join(
     os.path.dirname(__file__),
@@ -43,7 +52,8 @@ class DatamadTestCase(TestCase):
 
         cls.ISSUETYPE = models.JIRAIssueType.objects.create(
             datacentre=cls.DATACENTRE,
-            issuetype=10602
+            issuetype=10602,
+            **ISSUE_TYPE_FIELD_MAPPING
         )
 
         # Create a test user and associate datacentre

@@ -16,6 +16,7 @@ from django.conf import settings
 
 # Datamad imports
 from datamad2.utils import generate_document_from_template
+from datamad2.create_issue import map_datamad_to_jira
 
 # Python imports
 import shutil
@@ -50,6 +51,19 @@ class TestJIRAPush(DatamadTestCase):
             'issuetype': {'id': str(self.USER.data_centre.jiraissuetype.issuetype)},
         })
 
+    def test_jira_issue_field_mapping_evaluation(self):
+        self.client.force_login(self.USER)
+        request = self.client.request().wsgi_request
+
+        issue_dict = map_datamad_to_jira(request, self.IMPORTED_GRANT)
+        self.assertDictEqual(
+            {'customfield_13567': '2020-10-23', 'customfield_13568': '2020-10-23', 'customfield_13569': 'NE/00001/1',
+             'customfield_11453': 'A Professor of some sort', 'customfield_13573': 'A Uni',
+             'customfield_11663': {'value': 'CEDA'}, 'customfield_13578': 100000,
+             'customfield_13585': 'Science Delivery (RP)', 'customfield_13586': True, 'customfield_13588': '',
+             'customfield_13572': 'test@email.com'}
+            , issue_dict)
+
 
 class TestDocumentGeneration(DatamadTestCase):
 
@@ -63,11 +77,10 @@ class TestDocumentGeneration(DatamadTestCase):
         ]
 
         for product in data_product_types:
-            data_products = getattr(self.GRANT, f'{product }_data_products')
+            data_products = getattr(self.GRANT, f'{product}_data_products')
             self.assertEqual(1, data_products.count())
 
     def test_generate_document(self):
-
         # Add task to remove generated documents
         self.addCleanup(remove_generated_documents)
 

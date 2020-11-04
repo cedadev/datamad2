@@ -2,8 +2,9 @@ from jira import JIRA
 from django.conf import settings
 from django.urls import reverse
 import datetime
-from jira.exceptions import JIRAError
-from django.contrib import messages
+import logging
+
+logger = logging.getLogger(__name__)
 
 FIELD_MAPPING = {
     'start_date_field': 'str(imported_grant.actual_start_date)',
@@ -16,7 +17,7 @@ FIELD_MAPPING = {
     'grant_type_field': 'imported_grant.grant_type',
     'lead_grant_field': 'imported_grant.lead_grant',
     'parent_grant_field': 'imported_grant.parent_grant.grant_ref',
-    'child_grants_field': '", ".join([child.grant_ref for child in imported_grant.grant.child_grant.get_queryset])',
+    'child_grants_field': '", ".join([child.grant_ref for child in imported_grant.grant.child_grant.get_queryset()])',
     'email_field': 'imported_grant.email',
     'work_number_field': 'imported_grant.work_number',
     'alt_data_contact_field': 'imported_grant.grant.alt_data_contact',
@@ -39,6 +40,33 @@ def get_jira_client(request):
     return JIRA(settings.JIRA_SERVER, oauth=oauth_dict)
 
 
+def map_datamad_to_jira(request, imported_grant):
+    """
+    Map datamad fields to JIRA issue fields
+
+    :param request: WSGI request
+    :param imported_grant: Imported grant object for use with the evaluation function
+    :return: issue_dict for merging
+    """
+
+    issue_dict = {}
+
+    for field, value in request.user.data_centre.jiraissuetype.jira_issue_fields.items():
+        mapped_datamad_field = FIELD_MAPPING.get(field)
+        if mapped_datamad_field:
+            if field == 'primary_datacentre_field':
+                issue_dict[value] = {'value': eval(mapped_datamad_field)}
+            else:
+
+                # Catch situations where the evaluation string has a none somewhere on it's nested path
+                try:
+                    issue_dict[value] = eval(mapped_datamad_field)
+                except AttributeError as e:
+                    logger.debug(f'Could not evaluate {mapped_datamad_field}: {e}')
+
+    return issue_dict
+
+
 def make_issue(request, imported_grant):
     """
     Convert a grant into a JIRA ticket
@@ -54,13 +82,7 @@ def make_issue(request, imported_grant):
         'issuetype': {'id': str(request.user.data_centre.jiraissuetype.issuetype)},
     }
 
-    for field, value in request.user.data_centre.jiraissuetype.jira_issue_fields.items():
-        mapped_datamad_field = FIELD_MAPPING.get(field)
-        if mapped_datamad_field:
-            if field == 'primary_datacentre_field':
-                issue_dict[value] = {'value': eval(mapped_datamad_field)}
-            else:
-                issue_dict[value] = eval(mapped_datamad_field)
+    issue_dict.update(map_datamad_to_jira(request, imported_grant))
 
     # Check if issue already exists
     grant_ref = imported_grant.grant_ref.replace('/', '\\u002f')
@@ -107,4 +129,3 @@ def create_subtask(subtask, request, new_issue, imported_grant):
                     'duedate': str(ref_time + datetime.timedelta(weeks=subtask.schedule_time))}
 
     subtask = jira.create_issue(fields=subtask_dict)
-    # jira.assign_issue(subtask, request.user.email)

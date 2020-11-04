@@ -168,4 +168,6 @@ HAYSTACK_CONNECTIONS = {
     }
 }
 
+HAYSTACK_FACET_LIMIT = 100
+
 from .settings_local import *
