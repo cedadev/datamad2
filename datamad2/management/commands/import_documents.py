@@ -59,6 +59,7 @@ class Command(BaseCommand):
                 # Upload file
                 with open(file.absolute(), 'rb') as reader:
                     doc_file = File(reader)
+                    doc_file.name = file.name
                     document = Document(upload=doc_file)
 
                     document.grant = Grant.objects.get(grant_ref=grant_ref)
