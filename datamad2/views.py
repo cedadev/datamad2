@@ -42,6 +42,9 @@ from jira.exceptions import JIRAError
 # Python Imports
 import re
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 DOCUMENT_NAMING_PATTERN = re.compile("^(?P<grant_ref>\w*_\w*_\d*)_(?P<doc_type>\w*)(?P<extension>\.\w*)$")
 
@@ -335,6 +338,7 @@ def push_to_jira(request, pk):
         except JIRAError as e:
             messages.error(request,
                            f'There was an error when trying to create the JIRA issue. {e.text}')
+            logger.error(e, exc_info=True)
 
     return redirect('grant_detail', pk=pk)
 
