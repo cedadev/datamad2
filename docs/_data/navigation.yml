@@ -34,3 +34,8 @@ navigation:
         url: contributing.html#reporting-issues
       - name: Docs Contributions
         url: contributing.html#docs-contributions
+  - name: FAQ
+    url: faq.html
+    sublinks:
+      - name: JIRA Convert Issues
+        url: faq.html#jira-convert-issues
