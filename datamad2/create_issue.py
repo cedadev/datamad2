@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 FIELD_MAPPING = {
     'start_date_field': 'str(imported_grant.actual_start_date)',
     'end_date_field': 'str(imported_grant.actual_end_date)',
+    'proposed_start_date': 'str(imported_grant.proposed_start_date)',
+    'proposed_end_date': 'str(imported_grant.proposed_end_date)',
     'grant_ref_field': 'imported_grant.grant_ref',
     'pi_field': 'imported_grant.grant_holder',
     'research_org_field': 'imported_grant.research_org',
