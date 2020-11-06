@@ -81,3 +81,57 @@ class TestFacetedSearchPage(AnonymousUserGetViewTestMixin, DatamadViewTestCase):
 
         self.assertEqual(f'/?selected_facets=assigned_datacentre%3AUnassigned&sort_by={self.USER.preferred_sorting}', response.url)
 
+
+class TestUserEditPermissions(AnonymousUserGetViewTestMixin, DatamadViewTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.VIEW_URL = reverse('user_update', kwargs={
+            'pk': cls.ADMINUSER.pk
+        })
+
+    def test_non_admin_user_edit(self):
+        """
+        A non-admin user should not be able to request to edit
+        another users information
+        """
+
+        # Login as non admin user
+        self.client.force_login(self.USER)
+
+        response = self.client.get(self.VIEW_URL)
+        self.assertEqual(403, response.status_code)
+
+    def test_non_admin_edit_self(self):
+        """
+        A non admin user should be able to edit themselves
+        """
+
+        # Login as non admin user
+        self.client.force_login(self.USER)
+
+        # Change the view URL to match the logged in user
+        self.VIEW_URL = reverse('user_update', kwargs={
+            'pk': self.USER.pk
+        })
+
+        response = self.client.get(self.VIEW_URL)
+        self.assertEqual(200, response.status_code)
+
+    def test_admin_user(self):
+        """
+        An admin user should be able to edit another user
+        """
+
+        # Login as admin user
+        self.client.force_login(self.ADMINUSER)
+
+        # Change the view URL to match another user
+        self.VIEW_URL = reverse('user_update', kwargs={
+            'pk': self.USER.pk
+        })
+
+        response = self.client.get(self.VIEW_URL)
+        self.assertEqual(200, response.status_code)
+

@@ -1,2 +1,6 @@
+{% if request.user.is_admin %}
 <p><a title='Edit User' data-toggle='tooltip' href="{% url 'user_update' pk=record.pk %}"><i class="fas fa-user-edit"></i>&nbsp;Edit User</a></p>
 <p><a title='Remove User' data-toggle='tooltip' href="{% url 'user_delete' pk=record.pk %}"><i class="fas fa-user-times"></i>&nbsp;Remove User</a></p>
+{% elif request.user == record %}
+    <p><a title='Edit User' data-toggle='tooltip' href="{% url 'user_update' pk=record.pk %}"><i class="fas fa-user-edit"></i>&nbsp;Edit User</a></p>
+{% endif %}
