@@ -527,7 +527,7 @@ class MyAccountDetailsView(LoginRequiredMixin, TemplateView):
     template_name = 'datamad2/user_account/my_account.html'
 
 
-class MyAccountUsersView(LoginRequiredMixin, DatacentreAdminTestMixin, SingleTableView):
+class MyAccountUsersView(LoginRequiredMixin, SingleTableView):
     template_name = 'datamad2/user_account/datacentre_users.html'
     model = User
     table_class = UserTable
@@ -566,10 +566,13 @@ class MyAccountRemoveUserView(DatacentreAdminTestMixin, ObjectDeleteView):
         return reverse('user_list')
 
 
-class MyAccountEditUserView(LoginRequiredMixin, DatacentreAdminTestMixin, UpdateView):
+class MyAccountEditUserView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'datamad2/user_account/datacentre_edit_user.html'
     model = User
     form_class = datamad_forms.UserEditForm
+
+    def test_func(self):
+        return self.request.user.is_admin or self.request.user.pk == self.kwargs['pk']
 
     def get_success_url(self):
         messages.success(self.request, 'User updated successfully')
