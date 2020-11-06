@@ -13,6 +13,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ( 'first_name', 'last_name', 'email','data_centre', 'is_admin')
     search_fields = ('email',)
     ordering = ('email',)
+    list_filter = ('data_centre','is_admin')
     fieldsets = (
         (None, {'fields': ('email', 'first_name', 'last_name', 'password', 'data_centre')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_admin', 'is_superuser', 'groups','user_permissions')}),
