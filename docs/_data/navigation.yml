@@ -37,5 +37,7 @@ navigation:
   - name: FAQ
     url: faq.html
     sublinks:
+      - name: General
+        url: faq.html#general
       - name: JIRA Convert Issues
         url: faq.html#jira-convert-issues

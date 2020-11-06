@@ -5,6 +5,15 @@ title: DataMAD Documentation
 
 # FAQ
 
+### {% include linked_header.html title="General" %}
+#### {% include linked_header.html title="**Why are there so many unassigned Grants?**" %}
+
+Due to historical reasons the grant information is stored in two places. The NERC grant database and SharePoint.
+SharePoint has a limit on the number of rows and so old grants are periodically removed in order to make way for new grants.
+When moving to DataMAD2, the database is populated from the NERC database with all grants and the additional information, including
+the assigned Data Centre is brought in from SharePoint. As some of the SharePoint grants have been removed, the total number of grants,
+is greater than the number of rows in SharePoint so some grants will not get the additional information.
+
 
 ### {% include linked_header.html title="JIRA Convert Issues" %}
 
