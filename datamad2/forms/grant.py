@@ -21,6 +21,11 @@ class UpdateClaimForm(forms.ModelForm):
         fields = ('assigned_data_centre',)
 
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+    format = '%d-%m-%Y'
+
+
 class GrantInfoForm(forms.ModelForm):
 
     class Meta:
@@ -36,7 +41,7 @@ class GrantInfoForm(forms.ModelForm):
             'sanctions_recommended',
             'dmp_agreed'
         )
-        widgets = {'date_contacted_pi': DatePickerInput(options={'format':'DD/MM/YYYY'})}
+        widgets = {'date_contacted_pi': DateInput}
 
 
 
