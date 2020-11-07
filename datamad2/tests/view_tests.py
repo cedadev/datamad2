@@ -9,7 +9,7 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 # Django imports
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 # Test imports
 from .base import DatamadTestCase
@@ -57,7 +57,7 @@ class TestFacetedSearchPage(AnonymousUserGetViewTestMixin, DatamadViewTestCase):
     Tests relating to the faceted search home page
     """
 
-    VIEW_URL = '/'
+    VIEW_URL = reverse_lazy('grant_list')
 
     def test_preferred_sorting(self):
         """
@@ -135,3 +135,15 @@ class TestUserEditPermissions(AnonymousUserGetViewTestMixin, DatamadViewTestCase
         response = self.client.get(self.VIEW_URL)
         self.assertEqual(200, response.status_code)
 
+
+class TestUserList(DatamadViewTestCase):
+
+    VIEW_URL = reverse_lazy('user_list')
+
+    def test_non_admin_user_permissions(self):
+
+        # Login as non-admin user
+        self.client.force_login(self.USER)
+
+        response = self.client.get(self.VIEW_URL)
+        self.assertEqual(200, response.status_code)
