@@ -89,10 +89,14 @@ def make_issue(request, imported_grant):
     # Check if issue already exists
     grant_ref = imported_grant.grant_ref.replace('/', '\\u002f')
     results = jira.search_issues(f'summary~{grant_ref}')
+    reporter = request.user.data_centre.jiraissuetype.reporter
 
     # Create a new one if none found or return first hit (there should only be one)
     if not results:
         new_issue = jira.create_issue(fields=issue_dict)
+
+        if reporter:
+            new_issue.update(reporter={'name': str(reporter)})
 
         # Generate back-reference to datamad
         datamad_permalink = request.build_absolute_uri(reverse('grant_detail', kwargs={'pk': imported_grant.grant.pk}))
@@ -106,7 +110,7 @@ def make_issue(request, imported_grant):
         # create subtasks
         subtasks = request.user.data_centre.subtask_set.all()
         for task in subtasks:
-            create_subtask(task, request, new_issue, imported_grant)
+            create_subtask(task, request, new_issue, imported_grant, reporter)
 
     else:
         new_issue = results[0]
@@ -114,7 +118,7 @@ def make_issue(request, imported_grant):
     return new_issue
 
 
-def create_subtask(subtask, request, new_issue, imported_grant):
+def create_subtask(subtask, request, new_issue, imported_grant, reporter):
     jira = get_jira_client(request)
 
     if subtask.ref_time == 'end_date':
@@ -131,3 +135,6 @@ def create_subtask(subtask, request, new_issue, imported_grant):
                     'duedate': str(ref_time + datetime.timedelta(weeks=subtask.schedule_time))}
 
     subtask = jira.create_issue(fields=subtask_dict)
+
+    if reporter:
+        subtask.update(reporter={'name': str(reporter)})
