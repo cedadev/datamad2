@@ -164,7 +164,8 @@ class TestUpdateOrCreateMixin(DatamadViewTestCase):
         request = factory.get(self.VIEW_URL)
 
         # Get the view and try the method
-        view = setup_view(DataFormatUpdateCreateView(), request)
+        view = DataFormatUpdateCreateView()
+        view.setup(request)
         object = view.get_object()
 
         self.assertIsNone(object)
