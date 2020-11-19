@@ -59,8 +59,8 @@ class TestJIRAPush(DatamadTestCase):
         self.assertDictEqual(
             {'customfield_13567': '2020-10-23', 'customfield_13568': '2020-10-23', 'customfield_13569': 'NE/00001/1',
              'customfield_11453': 'A Professor of some sort', 'customfield_13573': 'A Uni',
-             'customfield_11663': {'value': 'CEDA'}, 'customfield_13578': 100000,
-             'customfield_13585': 'Science Delivery (RP)', 'customfield_13586': True, 'customfield_13588': '',
+             'customfield_11663': {'value': 'CEDA'}, 'customfield_13578': '100000',
+             'customfield_13585': 'Science Delivery (RP)', 'customfield_13586': 'True', 'customfield_13588': '',
              'customfield_13572': 'test@email.com'}
             , issue_dict)
 
