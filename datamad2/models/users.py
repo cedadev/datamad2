@@ -15,16 +15,8 @@ from django.utils import timezone
 
 
 class DataCentre(models.Model):
-    CHOICES = (
-        ('BODC', 'BODC'),
-        ('CEDA', 'CEDA'),
-        ('EIDC', 'EIDC'),
-        ('NGDC', 'NGDC'),
-        ('PDC', 'PDC'),
-        ('ADS', 'ADS')
-    )
 
-    name = models.CharField(max_length=100, null=True, unique=True, choices=CHOICES, verbose_name='Datacentre Name')
+    name = models.CharField(max_length=100, null=True, unique=True, verbose_name='Datacentre Name')
     jira_project = models.CharField(max_length=100, blank=True, verbose_name='Data Management JIRA Project')
 
     def __str__(self):
