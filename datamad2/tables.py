@@ -25,7 +25,7 @@ class GrantTable(tables.Table):
     )
 
     date_added = tables.DateTimeColumn(
-        accessor='creation_date',
+        accessor='date_added',
         format='d M Y'
     )
 
