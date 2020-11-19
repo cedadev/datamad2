@@ -22,6 +22,10 @@ class Grant(models.Model):
 
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
+    # creation_date = models.DateTimeField(auto_now_add=True)
+    date_added = models.DateTimeField(editable=False, default=timezone.now)
+    # Date last updated/ checked for updates
+    updated_date = models.DateTimeField(editable=False, default=timezone.now)
     # alt data contact email
     alt_data_contact = models.CharField(max_length=256, null=True, blank=True)
     # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
@@ -84,7 +88,6 @@ class Grant(models.Model):
     def third_party_data_products(self):
         return self.dataproduct_set.filter(data_product_type='third_party')
 
-
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:
             self.claimed = False
@@ -107,14 +110,12 @@ class ImportedGrant(models.Model):
     grant_ref = models.CharField(max_length=50, default='', blank=True)
     # grant to imported grant relationship
     grant = models.ForeignKey(to=Grant, on_delete=models.PROTECT, null=True, blank=True)
-    # date imported grant was created
-    # creation_date = models.DateTimeField(auto_now_add=True)
-    creation_date = models.DateTimeField(editable=False)
-    #Date modified
-    #modified_date = models.DateTimeField(editable=False)
     # Grant Status	Siebel	Active/Closed			GRANT_STATUS
     grant_status = models.CharField(max_length=50, default="Active",
                                     choices=(("Active", "Active"), ("Closed", "Closed")))
+    # date imported grant was created
+    # creation_date = models.DateTimeField(auto_now_add=True)
+    creation_date = models.DateTimeField(editable=False)
     # AmountAwarded	Siebel	Amount in pounds stirling			AMOUNT
     amount_awarded = models.FloatField(null=True, blank=True)
     # Call	Siebel	E.g. Standard Grant DEC06			CALL
@@ -204,8 +205,6 @@ class ImportedGrant(models.Model):
     # Objectives	Siebel		Truncated
     objectives = models.TextField(default='', blank=True)
 
-
-
     # ordered by newest imported grant first
 
     # def compare(self, obj):
@@ -235,6 +234,7 @@ class ImportedGrant(models.Model):
 
     def get_diff_fields(self):
         model_fields = [field.name for field in self._meta.get_fields() if field.name != 'id']
+        model_fields.remove('creation_date')
         #imported_grants = self.grant.importedgrant_set.all()
         date = self.creation_date
         passed = self.grant.importedgrant_set.filter(creation_date__lt=date).order_by('creation_date')
@@ -267,18 +267,19 @@ class ImportedGrant(models.Model):
     def save(self, *args, **kwargs):
         # On save, update timestamps
         exists = Grant.objects.filter(grant_ref=self.grant_ref).exists()
-        if not self.creation_date:
-            self.creation_date = timezone.now()
-        #self.modified_date = timezone.now()
+        self.creation_date = timezone.now()
 
         if exists:
             existing_grant = Grant.objects.get(grant_ref=self.grant_ref)
             self.grant = existing_grant
             existing_grant.updated_imported_grant = True
+            existing_grant.updated_date = timezone.now()
             existing_grant.save()
         else:
-            new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False, updated_imported_grant=False)
+            new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False, updated_imported_grant=False,
+                                             creation_date=timezone.now())
             self.grant = new_grant
+
         return super(ImportedGrant, self).save(*args, **kwargs)
 
     def __str__(self):

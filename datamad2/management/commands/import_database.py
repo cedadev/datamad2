@@ -112,6 +112,7 @@ class Command(BaseCommand):
             ig = ImportedGrant(**data)
 
             model_fields = [model_field for source_field, model_field in mapping.items()]
+            model_fields.remove('creation_date')
             grant_ref = row.GRANTREFERENCE
 
             try:
