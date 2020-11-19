@@ -11,6 +11,7 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from django import forms
 from datamad2.models import Grant
+from bootstrap_datepicker_plus import DatePickerInput
 
 
 class UpdateClaimForm(forms.ModelForm):
@@ -20,11 +21,9 @@ class UpdateClaimForm(forms.ModelForm):
         fields = ('assigned_data_centre',)
 
 
-class DateInput(forms.DateInput):
-    input_type = 'date'
-
-
 class GrantInfoForm(forms.ModelForm):
+
+    date_contacted_pi = forms.DateField(input_formats=['%d/%m/%Y'], label='Date contacted PI', widget=DatePickerInput(format='%d/%m/%Y'), required=False)
 
     class Meta:
         model = Grant
@@ -39,7 +38,6 @@ class GrantInfoForm(forms.ModelForm):
             'sanctions_recommended',
             'dmp_agreed'
         )
-        widgets = {'date_contacted_pi': DateInput()}
 
 
 

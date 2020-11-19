@@ -24,6 +24,9 @@
                     Formats</a>
                 <a class="nav-link ml-4" href="{% url 'preservation_plan_list' %}"><i class="fas fa-lock"></i>&nbsp;Preservation
                     Plans</a>
+            {% else %}
+                <a class="nav-link" href="{% url 'user_list' %}"><i
+                        class="fas fa-users"></i>&nbsp;{{ user.data_centre.name }} Users</a>
             {% endif %}
         </nav>
     </div>

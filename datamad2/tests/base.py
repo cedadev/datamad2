@@ -66,6 +66,17 @@ class DatamadTestCase(TestCase):
             preferred_sorting='date_added'
         )
 
+        cls.ADMINUSER = models.User.objects.create(
+            first_name='Test',
+            last_name='User',
+            email='admintest.user@testing.com',
+            data_centre=cls.DATACENTRE,
+            password='testingpassword',
+            preferred_sorting='date_added',
+            is_admin=True
+
+        )
+
         # Create a grant
         cls.GRANT = models.Grant.objects.create(
             grant_ref='NE/00001/1',

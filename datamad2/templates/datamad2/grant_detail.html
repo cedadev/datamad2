@@ -226,7 +226,7 @@
                     </tr>
                     <tr>
                         <th>Date contacted PI</th>
-                        <td>{{ imported_grant.grant.date_contacted_PI |default_if_none:"N/A" }} </td>
+                        <td>{{ imported_grant.grant.date_contacted_pi|date:"d M Y"|default_if_none:"N/A" }} </td>
                     </tr>
                     <tr>
                     <tr>
