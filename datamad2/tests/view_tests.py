@@ -157,6 +157,11 @@ class TestUpdateOrCreateMixin(DatamadViewTestCase):
     VIEW_URL = reverse_lazy('data_format_create')
 
     def test_create_new_data_format(self):
+        """
+        Check that when trying the create URL no object is
+        returned
+        """
+
         self.VIEW_URL = reverse_lazy('data_format_create')
 
         # Setup the request
@@ -171,6 +176,11 @@ class TestUpdateOrCreateMixin(DatamadViewTestCase):
         self.assertIsNone(object)
 
     def test_update_existing_data_format(self):
+        """
+        Check that when trying the update URL only one
+        object is returned
+        """
+
         self.VIEW_URL = reverse_lazy('data_format_update', kwargs={'pk':1})
 
         # Setup the request
