@@ -203,10 +203,10 @@
                         <tr>
                             {% if 'parent_grant' in things %}
                                 <th class="text-danger">Parent Grant</th>
-                                <td class="text-danger"> {{ imported_grant.parent_grant|default_if_none:"N/A" }} </td>
+                                <td class="text-danger"> {{ imported_grant.grant.parent_grant|default_if_none:"N/A" }} </td>
                             {% else %}
                                 <th>Parent Grant</th>
-                                <td> {{ imported_grant.parent_grant|default_if_none:"N/A" }} </td>
+                                <td> {{ imported_grant.grant.parent_grant|default_if_none:"N/A" }} </td>
                             {% endif %}
                         </tr>
 

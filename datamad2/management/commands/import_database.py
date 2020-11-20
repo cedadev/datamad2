@@ -142,9 +142,9 @@ class Command(BaseCommand):
                 print(f'Parent Grant {parent_grant} does not exist.')
                 pg = None
 
-            # Get the most recent imported grant
-            igrant = Grant.objects.filter(grant_ref=row_grant).first().importedgrant
+            # Get grant to add parent grant to
+            grant = Grant.objects.filter(grant_ref=row_grant).first()
 
-            if pg and igrant:
-                igrant.parent_grant = pg
-                igrant.save()
+            if pg and grant:
+                grant.parent_grant = pg
+                grant.save()

@@ -113,9 +113,9 @@
                     </tr>
                     <tr>
                         <th>Parent Grant</th>
-                        {% if imported_grant.parent_grant %}
+                        {% if imported_grant.grant.parent_grant %}
                             <td>
-                                <a href="{% url 'grant_detail' pk=imported_grant.parent_grant.pk %}">{{ imported_grant.parent_grant }} </a>
+                                <a href="{% url 'grant_detail' pk=imported_grant.grant.parent_grant.pk %}">{{ imported_grant.grant.parent_grant }} </a>
                             </td>
                         {% else %}
                             <td> None</td>

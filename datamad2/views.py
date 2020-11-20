@@ -187,12 +187,12 @@ def grant_detail(request, pk):
     grant = get_object_or_404(Grant, pk=pk)
     imported_grant = grant.importedgrant
 
-    docs = imported_grant.grant.document_set.filter(type='support')
-    dmp_docs = imported_grant.grant.document_set.filter(type='dmp')
+    docs = grant.document_set.filter(type='support')
+    dmp_docs = grant.document_set.filter(type='dmp')
 
-    if imported_grant.parent_grant:
-        parent_docs = imported_grant.parent_grant.document_set.filter(type='support')
-        parent_dmps = imported_grant.parent_grant.document_set.filter(type='dmp')
+    if grant.parent_grant:
+        parent_docs = grant.parent_grant.document_set.filter(type='support')
+        parent_dmps = grant.parent_grant.document_set.filter(type='dmp')
 
     else:
         parent_docs = Document.objects.none()
