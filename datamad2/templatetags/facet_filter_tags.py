@@ -9,6 +9,7 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from datamad2.search_indexes import ImportedGrantIndex
+from datamad2.forms.preferences import facet_fields
 from django import template
 from datamad2.utils import removesuffix
 from django.template.loader import get_template
@@ -26,7 +27,7 @@ def available_facets(request):
     """
     igx = ImportedGrantIndex()
 
-    fields = [removesuffix(field, '_exact') for field in igx.field_map if field.endswith('_exact')]
+    fields = facet_fields
     preferences = request.user.preferences
     facet_preferences = preferences.get('preferred_facets',[])
     avail_facets = []
