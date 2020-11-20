@@ -6,6 +6,8 @@ Merge a csv file into datamad
 from django.core.management.base import BaseCommand, CommandError
 from datamad2.models import ImportedGrant, Grant, DataCentre
 
+from .utils.load_sharepoint_csv import load_sharepoint_csv
+
 import pandas as pd
 import math
 from dateutil.parser import parse
@@ -332,12 +334,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # Load file
-        df = pd.read_csv(options['input_file'], header=0, skipinitialspace=True)
-
-        # Transform columns
-        df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '')\
-            .str.replace(')', '').str.replace('?', '').str.replace('/', '_').str.replace('\'', '')\
-            .str.replace('-', '')
+        df = load_sharepoint_csv(options['input_file'])
 
         # Get or create the datacentre objects
         dcs = ["BODC", "CEDA", "EIDC", "NGDC", "PDC", "ADS"]
