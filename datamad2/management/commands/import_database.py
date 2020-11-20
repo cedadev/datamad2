@@ -143,7 +143,7 @@ class Command(BaseCommand):
                 pg = None
 
             # Get grant to add parent grant to
-            grant = Grant.objects.filter(grant_ref=row_grant)
+            grant = Grant.objects.filter(grant_ref=row_grant).first()
 
             if pg and grant:
                 grant.parent_grant = pg
