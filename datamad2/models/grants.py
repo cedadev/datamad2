@@ -32,6 +32,9 @@ class Grant(models.Model):
     assigned_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='assigned_data_centre', blank=True)
     # Other DC's Expecting Datasets	Sharepoint	E.g. PDC
     other_data_centre = models.ForeignKey('DataCentre', null=True, on_delete=models.SET_NULL, related_name='other_data_centre', blank=True)
+    # Parent Grant	Siebel	Cross reference record to a lead grant record if the grant is covered by an
+    # overarching DMP			PARENT_GRANT
+    parent_grant = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='child_grant')
     # Hide Record	Sharepoint
     hide_record = models.BooleanField(null=True, blank=True)
     # DateContact with PI	Sharepoint	Date or Null
@@ -84,7 +87,6 @@ class Grant(models.Model):
     def third_party_data_products(self):
         return self.dataproduct_set.filter(data_product_type='third_party')
 
-
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:
             self.claimed = False
@@ -130,9 +132,6 @@ class ImportedGrant(models.Model):
     scheme = models.CharField(max_length=1024, default='', blank=True)
     # Lead Grant (Yes / No)	Siebel	Y/N			LEAD_GRANT
     lead_grant = models.BooleanField(null=True, blank=True)
-    # Parent Grant	Siebel	Cross reference record to a lead grant record if the grant is covered by an
-    # overarching DMP			PARENT_GRANT
-    parent_grant = models.ForeignKey(Grant, on_delete=models.PROTECT, null=True, blank=True, related_name='child_grant')
     # Grant Holder	Siebel	Principal investigator (title, first name, surname)			GRANT_HOLDER
     grant_holder = models.CharField(max_length=256, default='', blank=True)
     # Department	Siebel	e.g. School of Geography, Earth and Environmental Sciences			DEPARTMENT

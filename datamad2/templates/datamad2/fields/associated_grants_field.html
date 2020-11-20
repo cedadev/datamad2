@@ -1,4 +1,4 @@
-{% if record.importedgrant.parent_grant %}
+{% if record.parent_grant %}
     <a href="{% url 'grant_detail' pk=record.importedgrant.parent_grant.pk %}">{{ record.importedgrant.parent_grant.grant_ref }} </a>
 {% endif %}
 {% for child in record.child_grant.get_queryset %}
