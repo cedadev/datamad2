@@ -93,6 +93,13 @@ class UpdateOrCreateMixin:
             queryset = queryset.filter(**{slug_field: slug})
 
         try:
+            # Check if there are any query parameters
+            # If there are no filters and there is only 1 item in the queryset
+            # this mixin will default to return and object even if you are
+            # trying to create a new one
+            if not slug and not pk:
+                return None
+
             # Get the single item from the filtered queryset
             return queryset.get()
 

@@ -10,6 +10,10 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 # Django imports
 from django.urls import reverse, reverse_lazy
+from django.test import RequestFactory
+
+# Datamad Imports
+from datamad2.views import DataFormatUpdateCreateView
 
 # Test imports
 from .base import DatamadTestCase
@@ -147,3 +151,50 @@ class TestUserList(DatamadViewTestCase):
 
         response = self.client.get(self.VIEW_URL)
         self.assertEqual(200, response.status_code)
+
+
+class TestUpdateOrCreateMixin(DatamadViewTestCase):
+    VIEW_URL = reverse_lazy('data_format_create')
+
+    def test_create_new_data_format(self):
+        """
+        Check that when trying the create URL no object is
+        returned
+        """
+
+        self.VIEW_URL = reverse_lazy('data_format_create')
+
+        # Setup the request
+        factory = RequestFactory()
+        request = factory.get(self.VIEW_URL)
+
+        # Get the view and try the method
+        view = DataFormatUpdateCreateView()
+        view.setup(request)
+        object = view.get_object()
+
+        self.assertIsNone(object)
+
+    def test_update_existing_data_format(self):
+        """
+        Check that when trying the update URL only one
+        object is returned
+        """
+
+        self.VIEW_URL = reverse_lazy('data_format_update', kwargs={'pk':1})
+
+        # Setup the request
+        factory = RequestFactory()
+        request = factory.get(self.VIEW_URL)
+        request.user = self.ADMINUSER
+
+        # Get the view and try the method
+        view = DataFormatUpdateCreateView()
+        view.setup(request, pk=1)
+        object = view.get_object()
+
+        self.assertEqual(object.pk, self.DATA_FORMAT.pk)
+
+
+
+
