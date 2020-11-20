@@ -49,10 +49,10 @@
 
                         <tr>
                             {% if 'creation_date' in things %}
-                                <th class="text-danger">Date Updated</th>
+                                <th class="text-danger">Last Updated</th>
                                 <td class="text-danger"> {{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                             {% else %}
-                                <th>Date Created</th>
+                                <th>Last Updated</th>
                                 <td> {{ imported_grant.creation_date|default_if_none:"N/A"|date:"d M Y" }} </td>
                             {% endif %}
                         </tr>

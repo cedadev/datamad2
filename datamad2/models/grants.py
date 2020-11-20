@@ -22,6 +22,7 @@ class Grant(models.Model):
 
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
+    date_added = models.DateTimeField(auto_now_add=True, null=True)
     # alt data contact email
     alt_data_contact = models.CharField(max_length=256, null=True, blank=True)
     # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
@@ -84,6 +85,9 @@ class Grant(models.Model):
     def third_party_data_products(self):
         return self.dataproduct_set.filter(data_product_type='third_party')
 
+    @property
+    def updated_date(self):
+        return self.importedgrant.creation_date
 
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:
@@ -107,14 +111,12 @@ class ImportedGrant(models.Model):
     grant_ref = models.CharField(max_length=50, default='', blank=True)
     # grant to imported grant relationship
     grant = models.ForeignKey(to=Grant, on_delete=models.PROTECT, null=True, blank=True)
-    # date imported grant was created
-    # creation_date = models.DateTimeField(auto_now_add=True)
-    creation_date = models.DateTimeField(editable=False)
-    #Date modified
-    #modified_date = models.DateTimeField(editable=False)
     # Grant Status	Siebel	Active/Closed			GRANT_STATUS
     grant_status = models.CharField(max_length=50, default="Active",
                                     choices=(("Active", "Active"), ("Closed", "Closed")))
+    # date imported grant was created
+    # creation_date = models.DateTimeField(auto_now_add=True)
+    creation_date = models.DateTimeField(editable=False)
     # AmountAwarded	Siebel	Amount in pounds stirling			AMOUNT
     amount_awarded = models.FloatField(null=True, blank=True)
     # Call	Siebel	E.g. Standard Grant DEC06			CALL
@@ -204,8 +206,6 @@ class ImportedGrant(models.Model):
     # Objectives	Siebel		Truncated
     objectives = models.TextField(default='', blank=True)
 
-
-
     # ordered by newest imported grant first
 
     # def compare(self, obj):
@@ -267,9 +267,7 @@ class ImportedGrant(models.Model):
     def save(self, *args, **kwargs):
         # On save, update timestamps
         exists = Grant.objects.filter(grant_ref=self.grant_ref).exists()
-        if not self.creation_date:
-            self.creation_date = timezone.now()
-        #self.modified_date = timezone.now()
+        self.creation_date = timezone.now()
 
         if exists:
             existing_grant = Grant.objects.get(grant_ref=self.grant_ref)
@@ -279,6 +277,7 @@ class ImportedGrant(models.Model):
         else:
             new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False, updated_imported_grant=False)
             self.grant = new_grant
+
         return super(ImportedGrant, self).save(*args, **kwargs)
 
     def __str__(self):
