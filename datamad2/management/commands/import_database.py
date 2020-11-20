@@ -16,7 +16,6 @@ import math
 from dateutil.parser import parse
 from tqdm import tqdm
 from django.core.exceptions import ObjectDoesNotExist
-from decimal import Decimal
 import io
 import requests
 from requests.auth import HTTPBasicAuth
@@ -103,16 +102,13 @@ class Command(BaseCommand):
                     # Convert the date
                     value = parse(value, default=None).date()
 
-                elif source_field in ('AMOUNT'):
-                    value = Decimal(value).quantize(Decimal('1.00'))
-
                 # Add to the data dict
                 data[model_field] = value
 
             ig = ImportedGrant(**data)
 
+            # Generate list of fields to check. These fields come from grant import
             model_fields = [model_field for source_field, model_field in mapping.items()]
-            model_fields.remove('creation_date')
             grant_ref = row.GRANTREFERENCE
 
             try:
@@ -146,8 +142,8 @@ class Command(BaseCommand):
                 print(f'Parent Grant {parent_grant} does not exist.')
                 pg = None
 
-            # Get most recent imported grant. Should be the one just imported
-            igrant = ImportedGrant.objects.filter(grant_ref=row_grant).first()
+            # Get the most recent imported grant
+            igrant = Grant.objects.filter(grant_ref=row_grant).first().importedgrant
 
             if pg and igrant:
                 igrant.parent_grant = pg

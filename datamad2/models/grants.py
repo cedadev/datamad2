@@ -276,7 +276,7 @@ class ImportedGrant(models.Model):
             existing_grant.save()
         else:
             new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False, updated_imported_grant=False,
-                                             creation_date=timezone.now())
+                                             date_added=timezone.now())
             self.grant = new_grant
 
         return super(ImportedGrant, self).save(*args, **kwargs)
