@@ -93,6 +93,13 @@ class UpdateOrCreateMixin:
             queryset = queryset.filter(**{slug_field: slug})
 
         try:
+            # Check if there are any query parameters
+            # If there are no filters and there is only 1 item in the queryset
+            # this mixin will default to return and object even if you are
+            # trying to create a new one
+            if not slug and not pk:
+                return None
+
             # Get the single item from the filtered queryset
             return queryset.get()
 
@@ -358,22 +365,7 @@ def grant_history_detail(request, pk, imported_pk):
 
 class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     form_class = datamad_forms.DatamadFacetedSearchForm
-    facet_fields = [
-        'assigned_datacentre',
-        'labels',
-        'other_datacentre',
-        'secondary_classification',
-        'grant_status',
-        'grant_type',
-        'scheme',
-        'call',
-        'facility',
-        'lead',
-        'ncas',
-        'nceo',
-        'dmp_agreed'
-
-    ]
+    facet_fields = datamad_forms.preferences.facet_fields
     template_name = 'datamad2/grant_list.html'
 
     def get_table(self, context):

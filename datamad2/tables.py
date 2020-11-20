@@ -25,7 +25,7 @@ class GrantTable(tables.Table):
     )
 
     date_added = tables.DateTimeColumn(
-        accessor='importedgrant__creation_date',
+        accessor='date_added',
         format='d M Y'
     )
 
@@ -103,6 +103,9 @@ class DigitalDataProductTable(DataProductTableMixin, tables.Table):
 
     delivery_date = tables.DateColumn(format='d/m/Y')
     embargo_date = tables.DateColumn(format='d/m/Y')
+    data_volume = tables.TemplateColumn(
+        template_name='datamad2/fields/data_product_volume_field.html'
+    )
 
 
     class Meta(DataProductMeta):
@@ -161,6 +164,11 @@ class HardcopyDataProductTable(DataProductTableMixin):
 
 
 class ThirdPartyDataProductTable(DataProductTableMixin):
+
+    data_volume = tables.TemplateColumn(
+        template_name='datamad2/fields/data_product_volume_field.html'
+    )
+
     class Meta(DataProductMeta):
         fields = [
             'name',

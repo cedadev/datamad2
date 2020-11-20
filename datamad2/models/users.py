@@ -203,7 +203,7 @@ class JIRAIssueType(models.Model):
         blank=True,
         verbose_name='Amount Awarded Field ID',
 
-        help_text='Format: customfield_{{number}} | Returned DataType: Float'
+        help_text='Format: customfield_{{number}} | Returned DataType: String'
     )
     grant_type_field = models.CharField(
         max_length=50,
@@ -217,7 +217,7 @@ class JIRAIssueType(models.Model):
         blank=True,
         verbose_name='Lead Grant Field ID',
 
-        help_text='Format: customfield_{{number}} | Returned DataType: Boolean'
+        help_text='Format: customfield_{{number}} | Returned DataType: String'
     )
     parent_grant_field = models.CharField(
         max_length=50,

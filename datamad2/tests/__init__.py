@@ -12,3 +12,4 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 from .form_tests import *
 from .view_tests import *
 from .function_tests import *
+from .management_command_tests import *

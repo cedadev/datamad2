@@ -16,7 +16,6 @@ import math
 from dateutil.parser import parse
 from tqdm import tqdm
 from django.core.exceptions import ObjectDoesNotExist
-from decimal import Decimal
 import io
 import requests
 from requests.auth import HTTPBasicAuth
@@ -103,14 +102,12 @@ class Command(BaseCommand):
                     # Convert the date
                     value = parse(value, default=None).date()
 
-                elif source_field in ('AMOUNT'):
-                    value = Decimal(value).quantize(Decimal('1.00'))
-
                 # Add to the data dict
                 data[model_field] = value
 
             ig = ImportedGrant(**data)
 
+            # Generate list of fields to check. These fields come from grant import
             model_fields = [model_field for source_field, model_field in mapping.items()]
             grant_ref = row.GRANTREFERENCE
 
