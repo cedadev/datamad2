@@ -15,6 +15,22 @@ from datamad2.search_indexes import ImportedGrantIndex
 from datamad2.utils import removesuffix
 from .search import DatamadFacetedSearchForm
 
+facet_fields = [
+        'assigned_datacentre',
+        'labels',
+        'other_datacentre',
+        'secondary_classification',
+        'grant_status',
+        'grant_type',
+        'scheme',
+        'call',
+        'facility',
+        'lead',
+        'ncas',
+        'nceo',
+        'dmp_agreed'
+    ]
+
 
 class FacetPreferencesForm(forms.Form):
 
@@ -24,7 +40,12 @@ class FacetPreferencesForm(forms.Form):
         self.helper.form_tag = False
 
         igx = ImportedGrantIndex()
-        preference_fields = [removesuffix(field, '_exact') for field in igx.field_map if field.endswith('_exact')]
+        # preference_fields = [removesuffix(field, '_exact') for field in igx.field_map if field.endswith('_exact')]
+        # print(preference_fields)
+        # for f in ['grant_ref', 'grant_holder', 'grant_title']:
+        #     preference_fields.remove(f)
+
+        preference_fields = facet_fields
 
         for field in preference_fields:
             self.fields[field] = forms.BooleanField(required=False)
