@@ -22,10 +22,7 @@ class Grant(models.Model):
 
     # Grant Reference	Siebel	Unique identifier for the grant			GRANTREFERENCE
     grant_ref = models.CharField(max_length=50, default='', blank=True)
-    # creation_date = models.DateTimeField(auto_now_add=True)
-    date_added = models.DateTimeField(editable=False, default=timezone.now)
-    # Date last updated/ checked for updates
-    updated_date = models.DateTimeField(editable=False, default=timezone.now)
+    date_added = models.DateTimeField(auto_now_add=True, null=True)
     # alt data contact email
     alt_data_contact = models.CharField(max_length=256, null=True, blank=True)
     # Alt Data Contact Email	Sharepoint	PI may not always be the contact for data related issues (although responsible for ensuring delivery of the data)
@@ -87,6 +84,10 @@ class Grant(models.Model):
     @property
     def third_party_data_products(self):
         return self.dataproduct_set.filter(data_product_type='third_party')
+
+    @property
+    def updated_date(self):
+        return self.importedgrant.creation_date
 
     def save(self, *args, **kwargs):
         if self.assigned_data_centre is None:
@@ -272,11 +273,9 @@ class ImportedGrant(models.Model):
             existing_grant = Grant.objects.get(grant_ref=self.grant_ref)
             self.grant = existing_grant
             existing_grant.updated_imported_grant = True
-            existing_grant.updated_date = timezone.now()
             existing_grant.save()
         else:
-            new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False, updated_imported_grant=False,
-                                             date_added=timezone.now())
+            new_grant = Grant.objects.create(grant_ref=self.grant_ref, claimed=False, updated_imported_grant=False)
             self.grant = new_grant
 
         return super(ImportedGrant, self).save(*args, **kwargs)
