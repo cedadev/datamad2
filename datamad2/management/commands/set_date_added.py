@@ -36,7 +36,7 @@ class Command(BaseCommand):
         df = load_sharepoint_csv(options['input_file'])
 
         for row in tqdm(df.itertuples(), desc='Updating creation dates'):
-            created_date = row.__getattribute__('created')
+            created_date = row.created
 
             try:
                 created_date = parse(created_date)
@@ -44,7 +44,7 @@ class Command(BaseCommand):
             except Exception:
                 created_date = None
 
-            grant_ref = row.__getattribute__('grant_reference')
+            grant_ref = row.grant_reference
 
             try:
                 g = Grant.objects.get(grant_ref=grant_ref)
