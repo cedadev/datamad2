@@ -12,7 +12,7 @@ from datamad2.models.grants import Grant
 from haystack import indexes
 
 
-class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
+class GrantIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     grant_ref = indexes.CharField(model_attr='grant_ref', faceted=True)
     assigned_datacentre = indexes.CharField(model_attr='assigned_data_centre', null=True, faceted=True, default='Unassigned')

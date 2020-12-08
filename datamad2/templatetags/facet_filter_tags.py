@@ -8,7 +8,7 @@ __copyright__ = 'Copyright 2018 United Kingdom Research and Innovation'
 __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
-from datamad2.search_indexes import ImportedGrantIndex
+from datamad2.search_indexes import GrantIndex
 from datamad2.forms.preferences import facet_fields
 from django import template
 from datamad2.utils import removesuffix
@@ -25,7 +25,7 @@ def available_facets(request):
     :param request:
     :return:
     """
-    igx = ImportedGrantIndex()
+    igx = GrantIndex()
 
     fields = facet_fields
     preferences = request.user.preferences
