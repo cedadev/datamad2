@@ -1,0 +1,1 @@
+default_app_config = 'datamad2.apps.Datamad2Config'

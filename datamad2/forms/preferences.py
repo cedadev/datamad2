@@ -11,7 +11,7 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from datamad2.search_indexes import ImportedGrantIndex
+from datamad2.search_indexes import GrantIndex
 from datamad2.utils import removesuffix
 from .search import DatamadFacetedSearchForm
 
@@ -40,7 +40,7 @@ class FacetPreferencesForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_tag = False
 
-        igx = ImportedGrantIndex()
+        igx = GrantIndex()
         # preference_fields = [removesuffix(field, '_exact') for field in igx.field_map if field.endswith('_exact')]
         # print(preference_fields)
         # for f in ['grant_ref', 'grant_holder', 'grant_title']:
