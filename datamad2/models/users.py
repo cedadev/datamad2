@@ -270,6 +270,21 @@ class JIRAIssueType(models.Model):
         help_text='Format: customfield_{{number}} | Returned DataType: String'
     )
 
+    call_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Call Field ID',
+        help_text='Format: customfield_{{number}} | Returned DataType: String'
+    )
+
+    scheme_field = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Scheme Field ID',
+        help_text='Format: customfield_{{number}} | Returned DataType: String'
+    )
+
+
     @property
     def jira_issue_fields(self):
         issue_fields = {k: v for k, v in self.__dict__.items() if k.endswith('field') and v}

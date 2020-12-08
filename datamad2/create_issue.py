@@ -24,7 +24,10 @@ FIELD_MAPPING = {
     'work_number_field': 'imported_grant.work_number',
     'alt_data_contact_field': 'imported_grant.grant.alt_data_contact',
     'alt_data_contact_email_field': 'imported_grant.grant.alt_data_contact_email',
-    'other_datacentre_field': 'imported_grant.grant.other_data_centre.name'
+    'other_datacentre_field': 'imported_grant.grant.other_data_centre.name',
+    'call_datacentre_field': 'imported_grant.scheme',
+    'scheme_datacentre_field': 'imported_grant.call'
+
 }
 
 
