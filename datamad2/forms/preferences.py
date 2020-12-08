@@ -28,7 +28,8 @@ facet_fields = [
         'lead',
         'ncas',
         'nceo',
-        'dmp_agreed'
+        'dmp_agreed',
+        'documents_attached'
     ]
 
 

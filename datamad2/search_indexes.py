@@ -33,6 +33,7 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
     dmp_agreed = indexes.CharField(model_attr='dmp_agreed', null=True, faceted=True)
     grant_title = indexes.CharField(model_attr='importedgrant__title', faceted=True)
     grant_holder = indexes.CharField(model_attr='importedgrant__grant_holder', faceted=True)
+    documents_attached = indexes.CharField(faceted=True)
 
     def get_model(self):
         return Grant
@@ -69,3 +70,5 @@ class ImportedGrantIndex(indexes.SearchIndex, indexes.Indexable):
         if facility:
             return facility
 
+    def prepare_documents_attached(self, obj):
+        return str(bool(obj.document_set.count()))
