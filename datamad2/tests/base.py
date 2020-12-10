@@ -95,7 +95,6 @@ class DatamadTestCase(TestCase):
             claimed=True,
             updated_imported_grant=False,
             science_area='great science',
-            jira_ticket='',
             dmp_agreed=False,
 
         )
