@@ -227,3 +227,9 @@ class DatamadTestCase(TestCase):
             issues='None',
             additional_comments='None'
         )
+
+        models.JIRATicket.objects.create(
+            url='https://google.co.uk',
+            datacentre=cls.DATACENTRE,
+            grant=cls.GRANT
+        )

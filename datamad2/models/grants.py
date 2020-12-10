@@ -63,8 +63,6 @@ class Grant(models.Model):
 
     science_area = models.CharField(max_length=256, null=True, blank=True)
 
-    jira_ticket = models.URLField(null=True, blank=True)
-
     dmp_agreed = models.BooleanField(default=False)
     dmp_agreed_date = MonitorField(monitor='dmp_agreed', when=[True])
 

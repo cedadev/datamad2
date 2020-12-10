@@ -196,5 +196,23 @@ class TestUpdateOrCreateMixin(DatamadViewTestCase):
         self.assertEqual(object.pk, self.DATA_FORMAT.pk)
 
 
+class TestJIRATicketDeleteView(DatamadViewTestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.VIEW_URL = reverse('jiraticket_delete', kwargs={'pk': cls.GRANT.pk, 'jt_pk': cls.GRANT.jiraticket_set.first().pk})
 
+    def test_non_admin_user(self):
+        # Login as non-admin user
+        self.client.force_login(self.USER)
+
+        response = self.client.get(self.VIEW_URL)
+        self.assertEqual(403, response.status_code)
+
+    def test_delete_jira_ticket(self):
+        # Login as non-admin user
+        self.client.force_login(self.ADMINUSER)
+
+        response = self.client.get(self.VIEW_URL)
+        self.assertEqual(200, response.status_code)
