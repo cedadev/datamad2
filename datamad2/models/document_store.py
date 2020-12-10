@@ -1,6 +1,6 @@
 # encoding: utf-8
 """
-
+Django models relating to the document store. File uploads attached to grant objects.
 """
 __author__ = 'Richard Smith'
 __date__ = '22 Apr 2020'
@@ -20,6 +20,12 @@ DOCUMENT_TYPES = (
     ("dmp", "DMP")
 )
 
+def file_name(instance, filename):
+    h = instance.checksum
+    grant_ref = (instance.grant.grant_ref).replace('/', '_')
+    basename, ext = os.path.splitext(filename)
+    return os.path.join('documents', grant_ref, f'{h}{ext}')
+
 
 class MediaFileSystemStorage(FileSystemStorage):
     def get_available_name(self, name, max_length=None):
@@ -30,13 +36,6 @@ class MediaFileSystemStorage(FileSystemStorage):
             raise ValidationError('File already uploaded')
 
         return super(MediaFileSystemStorage, self)._save(name, content)
-
-
-def file_name(instance, filename):
-    h = instance.checksum
-    grant_ref = (instance.grant.grant_ref).replace('/', '_')
-    basename, ext = os.path.splitext(filename)
-    return os.path.join('documents', grant_ref, f'{h}{ext}')
 
 
 class Document(models.Model):

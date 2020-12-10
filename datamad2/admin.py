@@ -4,10 +4,64 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models.grants import ImportedGrant, Grant
-from .models.users import User, DataCentre, Subtask, JIRAIssueType
+from .models.users import User, DataCentre
+from .models.jira import Subtask, JIRAIssueType, JIRATicket
 from .models.document_store import Document
 from .models.data_management_plans import *
 
+
+################################################################################
+#                                                                              #
+#                                 Inlines                                      #
+#                                                                              #
+################################################################################
+class DocumentInline(admin.TabularInline):
+    model = Document
+    extra = 0
+
+
+class SubtaskInline(admin.TabularInline):
+    model = Subtask
+    extra = 0
+
+
+class JIRAIssueTypeInline(admin.TabularInline):
+    model = JIRAIssueType
+    extra = 0
+
+    def has_add_permission(self, request, obj=None):
+        permission = super().has_add_permission(request, obj)
+
+        if obj:
+            if obj.jiraissuetype_set.count() > 0:
+                permission = False
+
+        return permission
+
+
+class JIRATicketInline(admin.TabularInline):
+    model = JIRATicket
+    extra = 0
+
+
+class DocumentTemplateInline(admin.TabularInline):
+    model = DocumentTemplate
+    extra = 0
+
+
+class DataFormatInline(admin.TabularInline):
+    model = DataFormat
+
+
+class PreservationPlanInline(admin.TabularInline):
+    model = PreservationPlan
+
+
+################################################################################
+#                                                                              #
+#                               Admin Classes                                  #
+#                                                                              #
+################################################################################
 
 class UserAdmin(BaseUserAdmin):
     list_display = ( 'first_name', 'last_name', 'email','data_centre', 'is_admin')
@@ -26,8 +80,6 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
 
-admin.site.register(User, UserAdmin)
-
 
 class ImportedGrantAdmin(admin.ModelAdmin):
     search_fields = ['grant_ref', 'title']
@@ -42,16 +94,12 @@ class ImportedGrantAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-admin.site.register(ImportedGrant, ImportedGrantAdmin)
-
-class DocumentInline(admin.TabularInline):
-    model = Document
-    extra = 0
 
 class GrantAdmin(admin.ModelAdmin):
     readonly_fields = ['updated_imported_grant', 'science_area']
     search_fields = ['grant_ref', 'importedgrant__title']
     inlines = [
+        JIRATicketInline,
         DocumentInline
     ]
 
@@ -61,13 +109,9 @@ class GrantAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-admin.site.register(Grant, GrantAdmin)
-
 
 class DataProductAdmin(admin.ModelAdmin):
     pass
-
-admin.site.register(DataProduct, DataProductAdmin)
 
 
 class DocumentAdmin(admin.ModelAdmin):
@@ -75,42 +119,6 @@ class DocumentAdmin(admin.ModelAdmin):
 
     search_fields = ['title', 'grant__grant_ref']
     autocomplete_fields = ['grant']
-
-admin.site.register(Document, DocumentAdmin)
-
-
-
-
-class SubtaskInline(admin.TabularInline):
-    model = Subtask
-    extra = 0
-
-
-class JIRAIssueTypeInline(admin.TabularInline):
-    model = JIRAIssueType
-    extra = 0
-    
-    def has_add_permission(self, request, obj=None):
-        permission = super().has_add_permission(request, obj)
-
-        if obj:
-            if obj.jiraissuetype_set.count() > 0:
-                permission = False
-
-        return permission
-
-
-class DocumentTemplateInline(admin.TabularInline):
-    model = DocumentTemplate
-    extra = 0
-
-
-class DataFormatInline(admin.TabularInline):
-    model = DataFormat
-
-
-class PreservationPlanInline(admin.TabularInline):
-    model = PreservationPlan
 
 
 class DataCentreAdmin(admin.ModelAdmin):
@@ -122,4 +130,11 @@ class DataCentreAdmin(admin.ModelAdmin):
         PreservationPlanInline,
     ]
 
+
+# Register the Admin classes
+admin.site.register(User, UserAdmin)
+admin.site.register(ImportedGrant, ImportedGrantAdmin)
+admin.site.register(Grant, GrantAdmin)
+admin.site.register(DataProduct, DataProductAdmin)
+admin.site.register(Document, DocumentAdmin)
 admin.site.register(DataCentre, DataCentreAdmin)

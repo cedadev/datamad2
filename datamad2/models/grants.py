@@ -1,6 +1,10 @@
 # encoding: utf-8
 """
+Django models relating to the NERC Grants
 
+The Grant object holds customisable metadata edited by the DataMAD application,
+the ImportedGrant object holds metadata which comes in from the NERC Siebel csv
+import. This data is not edited by the DataMAD application.
 """
 __author__ = 'Richard Smith'
 __date__ = '22 Apr 2020'
