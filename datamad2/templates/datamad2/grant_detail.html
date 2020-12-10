@@ -290,20 +290,50 @@
             <div class="list-group">
                 <a class="list-group-item claim-btn {% if imported_grant.grant.claimed %}claimed{% endif %}"
                    href="#"
-                   data-id="{{ imported_grant.grant.pk }}" data-dc="{{ request.user.data_centre.id }}">{{ imported_grant.grant.claimed | claim_status | title }}</a>
-                    <a class="list-group-item" href="{% url 'change_claim' pk=imported_grant.grant.pk %}">Reassign</a>
-                    {% if imported_grant.grant.jira_ticket %}
-                        <a class="list-group-item" href="{{ imported_grant.grant.jira_ticket }}" target="_blank">View
-                            JIRA
-                            Ticket</a>
-                    {% else %}
-                        <a class="list-group-item" href="{% url 'jira_convert' imported_grant.grant.pk %}">Convert to
-                            JIRA
-                            Ticket</a>
-                    {% endif %}
-                    <a class="list-group-item"
-                       href="{% url 'grant_generate_document_select' imported_grant.grant.pk %}">Generate Document from
-                        Template</a>
+                   data-id="{{ imported_grant.grant.pk }}"
+                   data-dc="{{ request.user.data_centre.id }}">{{ imported_grant.grant.claimed | claim_status | title }}</a>
+                <a class="list-group-item" href="{% url 'change_claim' pk=imported_grant.grant.pk %}">Reassign</a>
+                {% if imported_grant.grant.jira_ticket %}
+                    <a class="list-group-item" href="{{ imported_grant.grant.jira_ticket }}" target="_blank">View
+                        JIRA
+                        Ticket</a>
+                {% else %}
+                    <a class="list-group-item" href="{% url 'jira_convert' imported_grant.grant.pk %}">Convert to
+                        JIRA
+                        Ticket</a>
+                {% endif %}
+                <a class="list-group-item"
+                   href="{% url 'grant_generate_document_select' imported_grant.grant.pk %}">Generate Document from
+                    Template</a>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h4 class="card-title">JIRA Ticket Links</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    {% for ticket in imported_grant.grant.jiraticket_set.all %}
+                        <tr>
+                            <td>
+                                <a href="{{ ticket.url }}"><i
+                                        class="fas fa-flag"></i> {{ ticket.datacentre }}</a>
+                            </td>
+                            {% if user.is_admin and user.data_centre == ticket.datacentre %}
+                            <td class="text-right">
+                                <a title='Remove JIRA Link' data-toggle='tooltip'
+                                   href="{% url 'jiraticket_delete' pk=imported_grant.grant.pk jt_pk=ticket.pk %}">
+                                    &nbsp;<i class="fa fa-unlink text-danger"></i>
+                                </a>
+                            </td>
+                            {% endif %}
+                        </tr>
+
+                    {% endfor %}
+                </table>
+                <a class="btn btn-primary w-100" title='Create JIRA ticket for your datacentre' data-toggle='tooltip'
+                   href="{% url 'jira_convert' pk=imported_grant.grant.pk %}">
+                    <i class="fas fa-plus"></i> Create JIRA Ticket</a>
             </div>
         </div>
         <div class="card mt-3">

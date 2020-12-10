@@ -49,6 +49,7 @@ urlpatterns = [
     path('grant/<int:pk>/dataproducts/<str:data_product_type>/new', views.DataProductUpdateCreateView.as_view(), name='dataproduct_new'),
     path('grant/<int:pk>/dataproducts/<str:data_product_type>/<int:dp_pk>', views.DataProductUpdateCreateView.as_view(), name='dataproduct_update'),
     path('grant/<int:pk>/dataproducts/<int:dp_pk>/delete', views.DataProductDeleteView.as_view(), name='dataproduct_delete'),
+    path('grant/<int:pk>/jiratickets/<int:jt_pk>/delete', views.JIRATicketDeleteView.as_view(), name='jiraticket_delete'),
 
     # Document URLs
     path('document/upload/<int:pk>', views.document_upload, name='document_upload'),

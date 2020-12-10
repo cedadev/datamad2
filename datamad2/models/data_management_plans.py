@@ -1,6 +1,6 @@
 # encoding: utf-8
 """
-
+Django models relating to the Document templating feature.html
 """
 __author__ = 'Richard Smith'
 __date__ = '24 Sep 2020'

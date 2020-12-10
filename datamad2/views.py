@@ -13,7 +13,7 @@ from django.utils.html import mark_safe
 
 # Datamad Model Imports
 from datamad2.models import ImportedGrant, Grant, Document, User, DataCentre, JIRAIssueType, DocumentTemplate, \
-    DataProduct, Subtask
+    DataProduct, Subtask, JIRATicket
 from datamad2.models.data_management_plans import DataFormat, PreservationPlan
 
 # Datamad Form Imports
@@ -316,19 +316,31 @@ def push_to_jira(request, pk):
                        f'have a Datacentre before you can perform this action')
         return redirect('grant_detail', pk=pk)
 
-    # Make sure the users datacentre matches the grants primary datacentre
-    if not request.user.data_centre == grant.assigned_data_centre:
-        messages.error(request,
-                       f'The assigned datacentre for this grant does not match your datacentre. '
-                       f'You cannot create JIRA issues from this grant if yours is not the assigned datacentre.')
-        return redirect('grant_detail', pk=pk)
+    # Make sure the user's datacentre doesn't already have a JIRA ticket created
+    try:
+        user_jira_ticket = grant.jiraticket_set.get(datacentre=request.user.data_centre)
+    except ObjectDoesNotExist:
+        pass
+    else:
+        if user_jira_ticket:
+            messages.warning(request,
+                             mark_safe(
+                                 'Your datacentre already has a JIRA ticket associated. '
+                                 f'<a href="{user_jira_ticket.url}" target="_blank">{user_jira_ticket.datacentre}</a> '
+                                 'If the ticket has been removed from JIRA, '
+                                 'ask an admin remove the link in DataMAD and try again.'
+                             ))
+            return redirect('grant_detail', pk=pk)
 
     # Check for required fields in users datacentre
     for field, view in jira_required_fields:
         if not rgetattr(request.user.data_centre, field, None):
             messages.error(request,
-                           mark_safe(f'Not all the required fields have been populated. Populate <i>{field}</i> to allow this operation. '
-                           f'Please update field <a href="{reverse(view)}" target="_blank">Here</a>'))
+                           mark_safe(
+                                f'Not all the required fields have been populated. '
+                                f'Populate <i>{field}</i> to allow this operation. '
+                                f'Please update field <a href="{reverse(view)}" target="_blank">Here</a>'
+                           ))
             return redirect('grant_detail', pk=pk)
 
     # There is no jira URL against this grant
@@ -772,6 +784,14 @@ class SubtaskUpdateCreateView(LoginRequiredMixin, UpdateOrCreateMixin, UpdateVie
         return initial
 
 
-class SubtaskDeleteView(ObjectDeleteView):
+class SubtaskDeleteView(DatacentreAdminTestMixin, ObjectDeleteView):
     model = Subtask
     success_url = reverse_lazy('subtask_list')
+
+
+class JIRATicketDeleteView(DatacentreAdminTestMixin, ObjectDeleteView):
+    model = JIRATicket
+    pk_url_kwarg = 'jt_pk'
+
+    def get_success_url(self):
+        return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']})

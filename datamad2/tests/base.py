@@ -95,7 +95,6 @@ class DatamadTestCase(TestCase):
             claimed=True,
             updated_imported_grant=False,
             science_area='great science',
-            jira_ticket='',
             dmp_agreed=False,
 
         )
@@ -226,4 +225,10 @@ class DatamadTestCase(TestCase):
             responsibility='VIP',
             issues='None',
             additional_comments='None'
+        )
+
+        models.JIRATicket.objects.create(
+            url='https://google.co.uk',
+            datacentre=cls.DATACENTRE,
+            grant=cls.GRANT
         )
