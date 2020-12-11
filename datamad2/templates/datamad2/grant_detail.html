@@ -293,15 +293,6 @@
                    data-id="{{ imported_grant.grant.pk }}"
                    data-dc="{{ request.user.data_centre.id }}">{{ imported_grant.grant.claimed | claim_status | title }}</a>
                 <a class="list-group-item" href="{% url 'change_claim' pk=imported_grant.grant.pk %}">Reassign</a>
-                {% if imported_grant.grant.jira_ticket %}
-                    <a class="list-group-item" href="{{ imported_grant.grant.jira_ticket }}" target="_blank">View
-                        JIRA
-                        Ticket</a>
-                {% else %}
-                    <a class="list-group-item" href="{% url 'jira_convert' imported_grant.grant.pk %}">Convert to
-                        JIRA
-                        Ticket</a>
-                {% endif %}
                 <a class="list-group-item"
                    href="{% url 'grant_generate_document_select' imported_grant.grant.pk %}">Generate Document from
                     Template</a>
