@@ -81,21 +81,23 @@ def push_to_jira(request, pk):
                            ))
             return redirect('grant_detail', pk=pk)
 
-    # There is no jira URL against this grant
-    if not grant.jira_ticket:
-        try:
-            issue = make_issue(request, grant.importedgrant)
-            link = issue.permalink()
+    try:
+        issue = make_issue(request, grant.importedgrant)
+        link = issue.permalink()
 
-            # Save the ticket link to the correct grant
-            if link:
-                grant.jira_ticket = link
-                grant.save()
+        # Save the ticket link to the correct grant
+        if link:
+            jira_ticket = JIRATicket(
+                grant=grant,
+                url=link,
+                datacentre=request.user.data_centre
+            )
+            jira_ticket.save()
 
-        except JIRAError as e:
-            messages.error(request,
-                           f'There was an error when trying to create the JIRA issue. {e.text}')
-            logger.error(e, exc_info=True)
+    except JIRAError as e:
+        messages.error(request,
+                       f'There was an error when trying to create the JIRA issue. {e.text}')
+        logger.error(e, exc_info=True)
 
     return redirect('grant_detail', pk=pk)
 
