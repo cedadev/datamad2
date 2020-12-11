@@ -4,7 +4,7 @@
             <td>
                 {% if doc %}
                     <a href="{{ doc.upload.url }}"
-                       download="{{ doc.download_title }}"> {{ doc.title }} </a>
+                       download="{{ doc.download_title }}"><i class="fas fa-file"></i> {{ doc.title }} </a>
                     {% if user.is_admin %}
                         <a title='Delete' data-toggle='tooltip'
                            href="{% url 'delete_file' pk=doc.pk %}">

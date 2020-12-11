@@ -278,8 +278,8 @@
                 <h4 class="card-title">Quick Links</h4>
             </div>
             <div class="list-group">
-                <a class="list-group-item" href="#editable-info">Editable Grant Info</a>
-                <a class="list-group-item" href="{% url 'dataproduct_view' imported_grant.grant.pk %}">Data Products
+                <a class="list-group-item" href="#editable-info"><i class="fas fa-edit"></i> Editable Grant Info</a>
+                <a class="list-group-item" href="{% url 'dataproduct_view' imported_grant.grant.pk %}"><i class="fas fa-table"></i> Data Products
                     <span class="badge badge-secondary">{{ imported_grant.grant.dataproduct_set.count }}</span></a>
             </div>
         </div>
@@ -291,11 +291,10 @@
                 <a class="list-group-item claim-btn {% if imported_grant.grant.claimed %}claimed{% endif %}"
                    href="#"
                    data-id="{{ imported_grant.grant.pk }}"
-                   data-dc="{{ request.user.data_centre.id }}">{{ imported_grant.grant.claimed | claim_status | title }}</a>
-                <a class="list-group-item" href="{% url 'change_claim' pk=imported_grant.grant.pk %}">Reassign</a>
+                   data-dc="{{ request.user.data_centre.id }}"><i class="fas fa-flag"></i> {{ imported_grant.grant.claimed | claim_status | title }}</a>
+                <a class="list-group-item" href="{% url 'change_claim' pk=imported_grant.grant.pk %}" title="Reassign primary data centre"><i class="fas fa-exchange-alt"></i> Reassign</a>
                 <a class="list-group-item"
-                   href="{% url 'grant_generate_document_select' imported_grant.grant.pk %}">Generate Document from
-                    Template</a>
+                   href="{% url 'grant_generate_document_select' imported_grant.grant.pk %}" title="Generate a document from a template"> <i class="fas fa-cogs"></i> Generate Document</a>
             </div>
         </div>
         <div class="card mt-3">
@@ -307,8 +306,7 @@
                     {% for ticket in imported_grant.grant.jiraticket_set.all %}
                         <tr>
                             <td>
-                                <a href="{{ ticket.url }}" target="_blank"><i
-                                        class="fas fa-flag"></i> {{ ticket.datacentre }}</a>
+                                <a href="{{ ticket.url }}" target="_blank"><i class="fas fa-tasks"></i> {{ ticket.datacentre }}</a>
                             </td>
                             {% if user.is_admin and user.data_centre == ticket.datacentre %}
                             <td class="text-right">
