@@ -307,7 +307,7 @@
                     {% for ticket in imported_grant.grant.jiraticket_set.all %}
                         <tr>
                             <td>
-                                <a href="{{ ticket.url }}"><i
+                                <a href="{{ ticket.url }}" target="_blank"><i
                                         class="fas fa-flag"></i> {{ ticket.datacentre }}</a>
                             </td>
                             {% if user.is_admin and user.data_centre == ticket.datacentre %}

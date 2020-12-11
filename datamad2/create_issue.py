@@ -91,7 +91,15 @@ def make_issue(request, imported_grant):
 
     # Check if issue already exists
     grant_ref = imported_grant.grant_ref.replace('/', '\\u002f')
-    results = jira.search_issues(f'summary~{grant_ref}')
+
+    # Check the issuetype and limit the fields returned to save time and data transfer
+    results = jira.search_issues(
+        f'summary~{grant_ref} AND issuetype={request.user.data_centre.jiraissuetype.issuetype}',
+        fields=[
+            'issuetype',
+            'summary'
+        ]
+    )
     reporter = request.user.data_centre.jiraissuetype.reporter
 
     # Create a new one if none found or return first hit (there should only be one)
