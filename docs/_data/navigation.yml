@@ -23,8 +23,12 @@ navigation:
         url: admin_users.html#connecting-to-jira
       - name: Sub Tasks
         url: admin_users.html#sub-tasks
-      - name: DMP Templating
-        url: admin_users.html#dmp-templating
+      - name: Document Templates
+        url: admin_users.html#document-templates
+      - name: Data Formats
+        url: admin_users.html#data-formats
+      - name: Preservation Plans
+        url: admin_users.html#preservation-plans
       - name: Bulk Document Uploads
         url: admin_users.html#bulk-document-uploads
   - name: Contributing
