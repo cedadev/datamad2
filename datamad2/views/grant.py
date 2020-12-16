@@ -17,7 +17,7 @@ from datamad2.utils import generate_document_from_template
 
 # Django imports
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
@@ -25,6 +25,13 @@ from django.views.generic.edit import UpdateView
 from django.urls import reverse
 from django.views.generic.edit import FormView
 from django.http import FileResponse
+from django.contrib import messages
+
+# Utility imports
+from jinja2.exceptions import TemplateError as Jinja2TemplateError
+
+# Python imports
+import os
 
 
 @login_required
@@ -174,9 +181,17 @@ class DocumentGenerationSelectView(LoginRequiredMixin, FormView):
             'grant': grant
         }
 
-        doc = generate_document_from_template(template, context)
+        # Catch template issues and inform the user of the issue to provide them
+        # the chance to solve the issue without support. TemplateError is baseclass
+        # for all Jinja2 Template Render issues.
+        try:
+            doc = generate_document_from_template(template, context)
+        except Jinja2TemplateError as e:
+            messages.error(self.request, f'Error Rendering Document: "{e}"')
+            return redirect('grant_generate_document_select', pk=self.kwargs['pk'])
 
-        download_filename = f'{grant.grant_ref.replace("/", "_")}_{template.type.upper()}{os.path.splitext(template.template.name)[1]}'
+        download_filename = f'{grant.grant_ref.replace("/", "_")}_{template.type.upper()}' \
+                            f'{os.path.splitext(template.template.name)[1]}'
 
         return FileResponse(open(doc, 'rb'), as_attachment=True, filename=download_filename)
 
