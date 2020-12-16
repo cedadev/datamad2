@@ -54,7 +54,13 @@ If a match is found, it will not create a new issue but will get the link to the
 quick access.
 
 ### {% include linked_header.html title="Sub Tasks" %}
-...coming soon...
+
+These can be used to automatically set milestone tasks when a new grant is pushed to JIRA. 
+
+![Subtasks](/assets/images/admin_users/subtasks.png){:.border.w-100}
+
+The time is in months compared to the reference time. So the first one in the image above will be due 1 month after the grant
+actual start date. The last subtask in image above will be due 6 months before the actual end date.
 
 
 ### {% include linked_header.html title="Document Templates" %}
@@ -74,12 +80,23 @@ An example document can be found [here](/assets/files/document_template_test.doc
 This document also lists all the available fields which can be used in your template. This document is used as part of the 
 test suite for DataMAD so is regularly checked to make sure that it can generate successfully.
 
+Alternatively, [here](/assets/files/ceda_dmp_template.docx) is an example of a DMP template which uses this feature to generate an inital DMP from the content in DataMAD.
+
 If you wish to use the grant data product feature to generate an initial DMP document, then you might want to setup
 some data format and preservation plans. This can be done from the account menu as an admin user. More information about 
 data products can be found in the [tutorial](tutorial.html#data-products).
 
 ![Filter Panel](/assets/images/admin_users/datacentre_navigation.png){:.border}
- 
+
+### {% include linked_header.html title="Data Formats" %}
+
+These are used as part of the document templating when you create a data product. This means that you don't have to type the same thing over and over if you have lots of 
+common data formats.
+
+### {% include linked_header.html title="Preservation Plans" %}
+
+These are used as part of the document templating when you create a data product. This means that you can store the set of preservation plans agreed by the datacentre and saves
+copy pasting or having to find the text snippets when you are creating data products and DMPs.
 
 ### {% include linked_header.html title="Bulk Document Uploads" %}
 

@@ -36,7 +36,7 @@ basic query syntax.
 
 Full grant references can be searched to return exact grants.
 
-`-` Can be used to `NOT` a term. e.g. `ocean -atmosphere` would construct the search looking for `ocean AND NOT atmosphere`
+"`-`" Can be used to `NOT` a term. e.g. `ocean -atmosphere` would construct the search looking for `ocean AND NOT atmosphere`
 
 Remaining terms will be `AND`ed together.
 
@@ -48,9 +48,9 @@ Grant documents are linked to grants and can be found on the grant detail page. 
 the grant reference from the home page.
 ![Grant Example](/assets/images/tutorial/grant_table.png){:.border.w-100}
 
-The documents can be found on the right of the detail page underneat the quicklinks and grant actions.
+The documents can be found on the right of the detail page underneath the quick links and grant actions.
 
-![Grant Actions](/assets/images/tutorial/grant_actions.png){:.border}
+![Grant Actions](/assets/images/tutorial/grant_toolbar.png){:.border}
 
 Grant documents can be uploaded by clicking the "Add Document" button.
 There are strict criteria for the naming convention. This is so that the documents get 
@@ -88,4 +88,28 @@ You can set the default sort order in your preferences.
 
 ### {% include linked_header.html title="Data Products" %}
 
+Data products are used as part of [document templating](#document-templating). You can use this page to document and store different
+data products which are to be produced by the data producer.
+
+The possible data products are:
+
+- Digital
+- Model Source
+- Physical
+- Hardcopy
+- Third Party
+
+These can then be auto-templated into a document e.g. DMP 
+
+
 ### {% include linked_header.html title="Document Templating" %}
+
+Document templating can be used to generate documents from the DataMAD grant, using templates. This could be used
+to generate a Data Management Plan.
+
+The button is found in the toolbar on the right when looking at the grant detail page **Generate Document**.
+
+![Grant Actions](/assets/images/tutorial/grant_actions.png){:.border}
+
+Document templates come in the form of word documents with special template syntax. More information about writing templates, 
+the available variables you can use in your templates, as well as an [example dmp document template](/assets/files/ceda_dmp_template.docx), are found in the [admin](/admin_users#document-templates) pages 
