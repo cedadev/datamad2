@@ -8,7 +8,7 @@ __copyright__ = 'Copyright 2018 United Kingdom Research and Innovation'
 __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
-from .datacentre_forms import DatacentreForm, UserForm, DatacentreIssueTypeForm, DocumentTemplateForm, DocumentGenerationForm, UserEditForm, SubtaskForm
+from .datacentre_forms import DatacentreForm, NewUserForm, DatacentreIssueTypeForm, DocumentTemplateForm, DocumentGenerationForm, UserEditForm, SubtaskForm
 from .document import DocumentForm, MultipleDocumentUploadForm
 from .grant import GrantInfoForm, UpdateClaimForm
 from .preferences import FacetPreferencesForm, SortByPreferencesForm

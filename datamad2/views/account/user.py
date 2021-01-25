@@ -85,7 +85,7 @@ class MyAccountUsersView(LoginRequiredMixin, SingleTableView):
 class MyAccountNewUserView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateView):
     template_name = 'datamad2/user_account/datacentre_new_users.html'
     model = User
-    form_class = datamad_forms.UserForm
+    form_class = datamad_forms.NewUserForm
 
     def get_success_url(self):
         messages.success(self.request, 'User added successfully')
