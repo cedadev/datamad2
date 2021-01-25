@@ -12,9 +12,10 @@ from django import forms
 from datamad2.models import DataCentre, User, JIRAIssueType, DocumentTemplate, Subtask
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from django.contrib.auth.forms import UserCreationForm
 
 from datamad2.forms.mixins import CrispySubmitMixin
+
+import secrets
 
 
 class DatacentreForm(CrispySubmitMixin, forms.ModelForm):
@@ -24,12 +25,30 @@ class DatacentreForm(CrispySubmitMixin, forms.ModelForm):
         fields = '__all__'
 
 
-class UserForm(CrispySubmitMixin, UserCreationForm):
+class NewUserForm(CrispySubmitMixin, forms.ModelForm):
+    """
+    Generates a random first-time password on account
+    creation. The User then has to reset this to login
+    for the first time.
+    """
     email = forms.EmailField()
 
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'data_centre', 'is_admin')
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+
+        # Generate random secure password
+        password = secrets.token_urlsafe(16)
+
+        user.set_password(password)
+
+        if commit:
+            user.save()
+        return user
+
 
 
 class UserEditForm(CrispySubmitMixin, forms.ModelForm):
