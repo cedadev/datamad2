@@ -27,7 +27,7 @@ idna==2.9
 Jinja2==2.11.2
 jira==2.0.0
 git+https://github.com/dprog-philippe-docourt/django-jfu.git@2.2.4
-lxml==4.5.2
+lxml==4.6.2
 MarkupSafe==1.1.1
 node==0.9.24
 numpy==1.18.1
