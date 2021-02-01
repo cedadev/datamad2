@@ -14,7 +14,7 @@ from haystack import indexes
 
 class GrantIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    grant_ref = indexes.CharField(model_attr='grant_ref', faceted=True)
+    grant_ref = indexes.CharField(model_attr='grant_ref')
     assigned_datacentre = indexes.CharField(model_attr='assigned_data_centre', null=True, faceted=True, default='Unassigned')
     other_datacentre = indexes.CharField(model_attr='other_data_centre', null=True, faceted=True, default='Unassigned')
     labels = indexes.CharField(model_attr='importedgrant__labels', null=True, faceted=True, default='Unassigned')
@@ -31,9 +31,10 @@ class GrantIndex(indexes.SearchIndex, indexes.Indexable):
     date_added = indexes.DateTimeField(model_attr='date_added', null=True)
     actual_start_date = indexes.DateField(model_attr='importedgrant__actual_start_date', null=True)
     dmp_agreed = indexes.CharField(model_attr='dmp_agreed', null=True, faceted=True)
-    grant_title = indexes.CharField(model_attr='importedgrant__title', faceted=True)
-    grant_holder = indexes.CharField(model_attr='importedgrant__grant_holder', faceted=True)
+    grant_title = indexes.CharField(model_attr='importedgrant__title')
+    grant_holder = indexes.CharField(model_attr='importedgrant__grant_holder')
     documents_attached = indexes.CharField(faceted=True)
+    visible = indexes.CharField(faceted=True)
 
     def get_model(self):
         return Grant
@@ -72,3 +73,6 @@ class GrantIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_documents_attached(self, obj):
         return str(bool(obj.document_set.count()))
+
+    def prepare_visible(self, obj):
+        return str(obj.visible)

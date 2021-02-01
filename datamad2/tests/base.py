@@ -86,7 +86,7 @@ class DatamadTestCase(TestCase):
             assigned_data_centre=cls.DATACENTRE,
             parent_grant=None,
             other_data_centre=None,
-            hide_record=False,
+            hide_record=None,
             date_contacted_pi='2019-12-25',
             will_grant_produce_data=True,
             datasets_delivered=False,

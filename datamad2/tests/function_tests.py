@@ -17,9 +17,11 @@ from django.conf import settings
 # Datamad imports
 from datamad2.utils import generate_document_from_template
 from datamad2.create_issue import map_datamad_to_jira
+from datamad2.models.grants import UNFUNDED_GRANT_TYPES
 
 # Python imports
 import shutil
+import random
 
 
 def remove_generated_documents():
@@ -97,3 +99,58 @@ class TestDocumentGeneration(DatamadTestCase):
         }
 
         doc = generate_document_from_template(template, context)
+
+
+class TestVisibility(DatamadTestCase):
+
+    def test_default_visibility(self):
+        """
+        Where the record has not been explicitly set to hide
+        so the visibility is based on whether the grant
+        is funded or not
+        """
+        grant = self.GRANT
+
+        # Make sure the hide_record attibute is None
+        grant.hide_record = None
+        grant.save()
+
+        # Select a random unfunded type
+        selected_index = random.randrange(len(UNFUNDED_GRANT_TYPES))
+        selected_type = UNFUNDED_GRANT_TYPES[selected_index]
+        ig = grant.importedgrant
+        ig.grant_type = selected_type
+        ig.save()
+
+        self.assertFalse(grant.visible)
+
+        # Now try one which shouldn't be unfunded.
+        ig.grant_type = 'will not possibly be in the unfunded list'
+        ig.save()
+        self.assertTrue(grant.visible)
+
+    def test_explicit_hide_visibility(self):
+        """
+        The grant visibility has been explicitly set to hide
+        """
+        grant = self.GRANT
+
+        # Make sure the hide_record attibute is True
+        grant.hide_record = True
+        grant.save()
+
+        self.assertFalse(grant.visible)
+
+    def test_explicit_show_visibility(self):
+        """
+        The grant visibility has been explicitly set to show
+        :return:
+        """
+
+        grant = self.GRANT
+
+        # Make sure the hide_record attibute is None
+        grant.hide_record = False
+        grant.save()
+
+        self.assertTrue(grant.visible)

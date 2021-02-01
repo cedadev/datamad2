@@ -17,7 +17,8 @@ from django.utils import timezone
 import re
 from model_utils.fields import MonitorField
 
-science_area_pattern = re.compile('(?P<area>\w+):\s?(?P<percentage>\d{1,3})%', re.M)
+SCIENCE_AREA_PATTERN = re.compile('(?P<area>\w+):\s?(?P<percentage>\d{1,3})%', re.M)
+UNFUNDED_GRANT_TYPES = ['Strategy & Partnerships (KE)','Public Engagement Grants','NERC Strategic Capital Grants']
 
 
 class Grant(models.Model):
@@ -68,26 +69,73 @@ class Grant(models.Model):
 
     @property
     def importedgrant(self):
+        """
+        Return the most recent imported grant version for this grant
+        :return:
+        """
         return self.importedgrant_set.first()
 
     @property
+    def funded_grant(self):
+        """
+        Determines whether a grant falls under the funded grants as defined by NERC
+        datacentres
+        :return: bool
+        """
+        return self.importedgrant.grant_type not in UNFUNDED_GRANT_TYPES
+
+    @property
+    def visible(self):
+        """
+        Allows grants to be hidden. By default, only funded grants are visible
+        but this can be overridden in special circumstances.
+        :return: bool
+        """
+
+        # Default to use funding status for visibility
+        if self.hide_record is None:
+            return self.funded_grant
+
+        return not self.hide_record
+
+    @property
     def digital_data_products(self):
+        """
+        Return a set of digtial data products
+        :return:
+        """
         return self.dataproduct_set.filter(data_product_type='digital')
 
     @property
     def model_source_data_products(self):
+        """
+        Return a set of model source data products
+        :return:
+        """
         return self.dataproduct_set.filter(data_product_type='model_source')
 
     @property
     def physical_data_products(self):
+        """
+        Return a set of pysical data products
+        :return:
+        """
         return self.dataproduct_set.filter(data_product_type='physical')
 
     @property
     def hardcopy_data_products(self):
+        """
+        Return a set of hardcopy data products
+        :return:
+        """
         return self.dataproduct_set.filter(data_product_type='hardcopy')
 
     @property
     def third_party_data_products(self):
+        """
+        Return a set of third party data products
+        :return:
+        """
         return self.dataproduct_set.filter(data_product_type='third_party')
 
     @property
@@ -251,7 +299,7 @@ class ImportedGrant(models.Model):
     def science_areas(self):
         science_areas = {}
         if self.science_area:
-            for match in science_area_pattern.finditer(self.science_area):
+            for match in SCIENCE_AREA_PATTERN.finditer(self.science_area):
                 science_areas[match.group('area')] = int(match.group('percentage'))
 
             science_areas = sorted(science_areas.items(), key=lambda x: x[1], reverse=True)

@@ -29,7 +29,7 @@ facet_fields = [
         'ncas',
         'nceo',
         'dmp_agreed',
-        'documents_attached'
+        'documents_attached',
     ]
 
 

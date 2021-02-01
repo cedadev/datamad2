@@ -18,6 +18,7 @@ from datamad2.utils import generate_document_from_template
 # Django imports
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
+from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
@@ -61,6 +62,27 @@ def grant_detail(request, pk):
         'supporting_docs': docs | parent_docs,
         'dmp_docs': dmp_docs | parent_dmps,
     })
+
+
+@login_required
+def grant_visibility(request, pk, action):
+    """
+
+    :param request:
+    :param pk:
+    :param action:
+    :return:
+    """
+
+    grant = get_object_or_404(Grant, pk=pk)
+    if action == 'show':
+        grant.hide_record = False
+    elif action == 'hide':
+        grant.hide_record = True
+
+    grant.save()
+
+    return HttpResponse(status=200)
 
 
 @login_required

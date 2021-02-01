@@ -15,6 +15,12 @@ from django_tables2.utils import A
 
 
 class GrantTable(tables.Table):
+    visibility = tables.TemplateColumn(
+        accessor='visible',
+        template_name='datamad2/fields/visibility_field.html',
+        verbose_name=''
+    )
+
     grant_ref = tables.LinkColumn(
         viewname='grant_detail',
         args=[A('pk')],
@@ -60,6 +66,7 @@ class GrantTable(tables.Table):
             'importedgrant__grant_holder',
         )
         sequence = (
+            'visibility',
             'grant_ref',
             'grant_title',
             'importedgrant__grant_holder',
