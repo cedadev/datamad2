@@ -1,5 +1,5 @@
 {% if value %}
-    <i class="far fa-eye"></i>
+    <a href="{% url 'grant_visibility' record.pk "hide"  %}" class="visibility"><i class="far fa-eye" title="Click to hide grant by default"></i></a>
 {% else %}
-    <i class="far fa-eye-slash"></i>
+    <a href="{% url 'grant_visibility' record.pk "show"  %}" class="visibility"><i class="far fa-eye-slash" title="Click to show grant by default"></i>
 {% endif %}

@@ -21,8 +21,6 @@ from django.urls import reverse
 # Utility imports
 from haystack.generic_views import FacetedSearchView
 
-DEFAULT_FACETS = {'visible': 'True'}
-
 
 class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     """
@@ -57,32 +55,11 @@ class FacetedGrantListView(LoginRequiredMixin, FacetedSearchView):
     def get(self, request, *args, **kwargs):
         user_preferred_sorting = request.user.preferences.get('preferred_sorting', None)
 
-        defaults_set = False
         query_dict = request.GET.copy()
 
         # Add the users default sorting, if not already set
         if not request.GET.get('sort_by') and user_preferred_sorting:
             query_dict.update({'sort_by': user_preferred_sorting})
-            defaults_set = True
-
-        # Add the default filters, if not explicitly set.
-        selected_facets = query_dict.getlist('selected_facets')
-
-        selected_facet_set = {facet.split(':')[0] for facet in selected_facets}
-        default_facet_set = set(DEFAULT_FACETS.keys())
-
-        missing_defaults = default_facet_set - selected_facet_set
-
-        if missing_defaults:
-
-            added_defaults = [f'{key}:{DEFAULT_FACETS[key]}' for key in missing_defaults]
-
-
-            query_dict.setlist('selected_facets', selected_facets + added_defaults)
-
-            defaults_set = True
-
-        if defaults_set:
             return HttpResponseRedirect(f'{reverse("grant_list")}?{query_dict.urlencode()}')
 
         return super().get(request, *args, **kwargs)

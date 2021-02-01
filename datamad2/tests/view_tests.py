@@ -216,3 +216,38 @@ class TestJIRATicketDeleteView(DatamadViewTestCase):
 
         response = self.client.get(self.VIEW_URL)
         self.assertEqual(200, response.status_code)
+
+
+class TestVisibilityToggle(AnonymousUserGetViewTestMixin, DatamadViewTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.VIEW_URL = reverse('grant_visibility',
+                               kwargs={'pk': cls.GRANT.pk, 'action': 'show'})
+
+    def test_set_to_show(self):
+        self.client.force_login(self.USER)
+
+        self.VIEW_URL = reverse('grant_visibility',
+                               kwargs={'pk': self.GRANT.pk, 'action': 'show'})
+
+        response = self.client.get(self.VIEW_URL)
+        self.assertEqual(200, response.status_code)
+
+        self.GRANT.refresh_from_db()
+        self.assertTrue(self.GRANT.visible)
+
+    def test_set_to_hide(self):
+        self.client.force_login(self.USER)
+
+
+        self.VIEW_URL = reverse('grant_visibility',
+                               kwargs={'pk': self.GRANT.pk, 'action': 'hide'})
+
+        response = self.client.get(self.VIEW_URL)
+        self.assertEqual(200, response.status_code)
+
+        self.GRANT.refresh_from_db()
+        self.assertFalse(self.GRANT.visible)
+

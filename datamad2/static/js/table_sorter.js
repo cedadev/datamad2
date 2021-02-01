@@ -25,11 +25,20 @@ $('#search_form').submit(function(event){
     let urlParams = new URLSearchParams(window.location.search)
 
     // Add the form values to the current URL
+
+    // clean the url from the show_hidden param
+    // to allow it to be set from the form as
+    // jQuery.serialize() does not serialise
+    // radio or checkbox inputs unless they are checked
+    urlParams.delete('show_hidden')
+
     for (const param of formParams.entries()) {
+        // Clean the url of fields contained in the form
+        urlParams.delete(param[0])
+
+        // If the form contains a value, set the url field
         if (param[1] !== "") {
             urlParams.set(...param)
-        } else {
-            urlParams.delete(param[0])
         }
     }
 

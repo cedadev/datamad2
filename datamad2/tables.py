@@ -17,7 +17,8 @@ from django_tables2.utils import A
 class GrantTable(tables.Table):
     visibility = tables.TemplateColumn(
         accessor='visible',
-        template_name='datamad2/fields/visibility_field.html'
+        template_name='datamad2/fields/visibility_field.html',
+        verbose_name=''
     )
 
     grant_ref = tables.LinkColumn(

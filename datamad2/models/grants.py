@@ -96,7 +96,7 @@ class Grant(models.Model):
         if self.hide_record is None:
             return self.funded_grant
 
-        return self.hide_record
+        return not self.hide_record
 
     @property
     def digital_data_products(self):

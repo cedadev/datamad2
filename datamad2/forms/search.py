@@ -29,6 +29,9 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
     sort_by = forms.ChoiceField(choices=CHOICES, required=False,
                                 widget=forms.Select(attrs={"onchange":"trigger_submit(this)"}))
 
+    show_hidden = forms.BooleanField(label='Show Hidden Grants', required=False,
+                                     widget=forms.CheckboxInput(attrs={"onchange":"trigger_submit(this)"}))
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -53,5 +56,8 @@ class DatamadFacetedSearchForm(FacetedSearchForm):
         if self.cleaned_data['sort_by']:
             order = self.cleaned_data['sort_by']
             sqs = sqs.order_by(order)
+
+        if not self.cleaned_data['show_hidden']:
+            sqs = sqs.filter(visible=True)
 
         return sqs

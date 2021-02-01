@@ -30,7 +30,6 @@ facet_fields = [
         'nceo',
         'dmp_agreed',
         'documents_attached',
-        'visible'
     ]
 
 
