@@ -68,8 +68,14 @@ class GrantIndex(indexes.SearchIndex, indexes.Indexable):
 
         facility = obj.importedgrant.facility
 
-        if facility:
-            return facility
+        # Facilities can be \n separated but want to index them
+        # individually
+        facilities = []
+        for f in facility.split('\n'):
+            facilities.append(f.strip())
+
+        if facilities:
+            return facilities
 
     def prepare_documents_attached(self, obj):
         return str(bool(obj.document_set.count()))
