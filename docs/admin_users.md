@@ -26,7 +26,7 @@ by the name of your datacentre.
 
 Each user is listed with their email address and admin status. There is also the option to edit or remove the users.
 
-#### Adding a new user
+#### {% include linked_header.html title="Adding a new user" %}
 
 New users accounts are given a randomly generated password. New users should follow the
 forgotten password link when they sign in for the first time to set a password.

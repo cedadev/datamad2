@@ -40,7 +40,23 @@ Full grant references can be searched to return exact grants.
 
 Remaining terms will be `AND`ed together.
 
+#### {% include linked_header.html title="Hidden Grants" %}
 
+By default all unfunded grants are hidden from the search results. Unfunded grants
+are defined as any grant which has a grant type from any of the following:
+
+- Strategy & Partnerships (KE)
+- Public Engagement Grants
+- NERC Strategic Capital Grants
+
+This default behaviour can be manually overridden by toggling the <i class="far fa-eye text-success"></i>/<i class="far fa-eye-slash text-success"></i>
+icon. 
+
+You can view hidden grants by ticking the box above the "Clear All Filters" button.
+
+![Search Form](/assets/images/tutorial/search_form.png){:.border}
+
+They will then show up in the results as normal.
 
 ### {% include linked_header.html title="Grant Documents" %}
 

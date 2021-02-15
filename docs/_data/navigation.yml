@@ -18,7 +18,7 @@ navigation:
     url: admin_users.html
     sublinks:
       - name: User Management
-        url: admin_users.html#adding-new-users
+        url: admin_users.html#user-management
       - name: Connecting to JIRA
         url: admin_users.html#connecting-to-jira
       - name: Sub Tasks
