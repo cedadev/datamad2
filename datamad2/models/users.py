@@ -12,6 +12,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
+from django.core.mail import send_mail
 
 
 class DataCentre(models.Model):
@@ -108,3 +109,14 @@ class User(AbstractBaseUser, PermissionsMixin):
             'preferred_facets': preferred_facets,
             'preferred_sorting': preferred_sorting
         }
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        """Send an email to this user."""
+        send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def get_full_name(self):
+        """
+        Return the first_name plus the last_name, with a space in between.
+        """
+        full_name = '%s %s' % (self.first_name, self.last_name)
+        return full_name.strip()

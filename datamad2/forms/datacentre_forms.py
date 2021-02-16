@@ -40,10 +40,7 @@ class NewUserForm(CrispySubmitMixin, forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
 
-        # Generate random secure password
-        password = secrets.token_urlsafe(16)
-
-        user.set_password(password)
+        user.set_unusable_password()
 
         if commit:
             user.save()
