@@ -47,7 +47,6 @@ class NewUserForm(CrispySubmitMixin, forms.ModelForm):
         return user
 
 
-
 class UserEditForm(CrispySubmitMixin, forms.ModelForm):
     email = forms.EmailField()
 

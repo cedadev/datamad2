@@ -1,7 +1,9 @@
-    Dear {{ user.get_full_name }},
+Dear {{ user.get_full_name }},
 
-    {{ admin.get_full_name }} has invited you to join <a href="http://{{ domain }}">DataMAD2</a> for managing
-    NERC grants. An account with this email has been created for you, use
-    the following link to set a password which will allow you to login.
+{{ admin.get_full_name }} has invited you to join DataMAD2 for managing
+NERC grants. An account with this email has been created for you, use
+the following link to set a password which will allow you to login.
 
-    http://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+http://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+DataMAD User Guide: https://cedadev.github.io/datamad2/
