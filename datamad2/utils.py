@@ -13,6 +13,7 @@ from django.conf import settings
 import os
 from datetime import datetime
 import functools
+from dateutil.parser import parse
 
 
 def removesuffix(text, suffix):
@@ -54,3 +55,43 @@ def rgetattr(obj, attr, *args):
     def _getattr(obj, attr):
         return getattr(obj, attr, *args)
     return functools.reduce(_getattr, [obj] + attr.split('.'))
+
+def is_date(string, fuzzy=False):
+    """
+    Return whether the string can be interpreted as a date.
+
+    :param string: str, string to check for date
+    :param fuzzy: bool, ignore unknown tokens in string if True
+    """
+    try:
+        parse(string, fuzzy=fuzzy)
+        return True
+
+    except ValueError:
+        return False
+
+
+def call_strip_date(call: str) -> str:
+    """
+    Remove the date string from the call string
+    e.g. 'AFI NOV07' --> 'AFI'
+
+    :param call: call string
+    :return: stripped string
+    """
+
+    # Split on whitespace
+    tokens = call.split()
+
+    # Date is invariably at the end
+    last_token = tokens[-1]
+
+    try:
+        parse(last_token)
+    except ValueError:
+        pass
+    else:
+        # Remove the date string and any remaining whitespace
+        call = call.replace(last_token, '').strip()
+
+    return call
