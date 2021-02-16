@@ -22,6 +22,12 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic import TemplateView
 from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.http import HttpResponseRedirect
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 
 # Utility imports
 from django_tables2.views import SingleTableView
@@ -98,6 +104,26 @@ class MyAccountNewUserView(LoginRequiredMixin, DatacentreAdminTestMixin, CreateV
                 'data_centre': self.request.user.data_centre
             })
         return initial
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        # Send welcome email
+        current_site = get_current_site(self.request)
+        subject = 'Welcome to DataMAD2'
+        message = render_to_string('emails/new_user_email.html',
+                                   {
+                                       'user': self.object,
+                                       'admin': self.request.user,
+                                       'domain': current_site.domain,
+                                       'uid': urlsafe_base64_encode(force_bytes(self.object.pk)),
+                                       'token': PasswordResetTokenGenerator().make_token(self.object)
+                                   })
+
+        self.object.email_user(subject, message)
+
+        return HttpResponseRedirect(self.get_success_url())
+
 
 
 class MyAccountEditUserView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

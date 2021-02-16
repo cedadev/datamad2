@@ -28,8 +28,10 @@ Each user is listed with their email address and admin status. There is also the
 
 #### {% include linked_header.html title="Adding a new user" %}
 
-New users accounts are given a randomly generated password. New users should follow the
-forgotten password link when they sign in for the first time to set a password.
+New user accounts are not activated until the user sets a password. New users should
+be sent an email welcoming them to the service and providing a one-time link where they
+can set a password and login. If this does not come through, following the forgotten
+password link on the login form will do the same.
 
 1. Click the ![Add User Button](/assets/images/admin_users/add_user_button.png){:.border} button
 2. Fill in the form
