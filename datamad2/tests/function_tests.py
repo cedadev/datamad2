@@ -15,13 +15,14 @@ from .base import DatamadTestCase
 from django.conf import settings
 
 # Datamad imports
-from datamad2.utils import generate_document_from_template
+from datamad2.utils import generate_document_from_template, call_strip_date
 from datamad2.create_issue import map_datamad_to_jira
 from datamad2.models.grants import UNFUNDED_GRANT_TYPES
 
 # Python imports
 import shutil
 import random
+from unittest import TestCase
 
 
 def remove_generated_documents():
@@ -154,3 +155,25 @@ class TestVisibility(DatamadTestCase):
         grant.save()
 
         self.assertTrue(grant.visible)
+
+
+class TestStripCall(TestCase):
+
+    def test_strip_call_date(self):
+        test_strings = [
+            ('18GCRFHubsFull','18GCRFHubsFull'),
+            ('AFI NOV07','AFI'),
+            ('Advanced Fellow NOV09','Advanced Fellow'),
+            ('Brazil Biomes (Newton) SEP15','Brazil Biomes (Newton)'),
+            ('Digital Environment (Champ)','Digital Environment (Champ)'),
+            ('Follow on Fund SEP16','Follow on Fund'),
+            ('IRF OCT16','IRF'),
+            ('Standard Grant - NI DEC12','Standard Grant - NI'),
+            ('Waste DEC12','Waste'),
+        ]
+
+        for test,expected in test_strings:
+
+            result = call_strip_date(test)
+            self.assertEqual(result, expected)
+
