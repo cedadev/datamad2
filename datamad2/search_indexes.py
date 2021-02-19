@@ -10,6 +10,7 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from datamad2.models.grants import Grant
 from haystack import indexes
+from datamad2.utils import call_strip_date
 
 
 class GrantIndex(indexes.SearchIndex, indexes.Indexable):
@@ -76,6 +77,14 @@ class GrantIndex(indexes.SearchIndex, indexes.Indexable):
 
         if facilities:
             return facilities
+
+    def prepare_call(self, obj):
+        if not obj.importedgrant:
+            return None
+
+        call = obj.importedgrant.call
+
+        return call_strip_date(call)
 
     def prepare_documents_attached(self, obj):
         return str(bool(obj.document_set.count()))
