@@ -15,7 +15,7 @@ from datamad2.utils import call_strip_date
 
 class GrantIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    grant_ref = indexes.CharField(model_attr='grant_ref')
+    grant_ref = indexes.CharField(model_attr='grant_ref', faceted=True)
     assigned_datacentre = indexes.CharField(model_attr='assigned_data_centre', null=True, faceted=True, default='Unassigned')
     other_datacentre = indexes.CharField(model_attr='other_data_centre', null=True, faceted=True, default='Unassigned')
     labels = indexes.CharField(model_attr='importedgrant__labels', null=True, faceted=True, default='Unassigned')
@@ -32,8 +32,8 @@ class GrantIndex(indexes.SearchIndex, indexes.Indexable):
     date_added = indexes.DateTimeField(model_attr='date_added', null=True)
     actual_start_date = indexes.DateField(model_attr='importedgrant__actual_start_date', null=True)
     dmp_agreed = indexes.CharField(model_attr='dmp_agreed', null=True, faceted=True)
-    grant_title = indexes.CharField(model_attr='importedgrant__title')
-    grant_holder = indexes.CharField(model_attr='importedgrant__grant_holder')
+    grant_title = indexes.CharField(model_attr='importedgrant__title', faceted=True)
+    grant_holder = indexes.CharField(model_attr='importedgrant__grant_holder', faceted=True)
     documents_attached = indexes.CharField(faceted=True)
     visible = indexes.CharField(faceted=True)
 
