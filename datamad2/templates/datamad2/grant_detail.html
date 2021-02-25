@@ -1,5 +1,5 @@
 {% extends 'datamad2/base.html' %}
-{% load static see_more claim_status %}
+{% load static see_more claim_status humanize %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
@@ -85,7 +85,7 @@
                     </tr>
                     <tr>
                         <th>Amount Awarded</th>
-                        <td> £ {{ imported_grant.amount_awarded|default_if_none:"N/A" }} </td>
+                        <td> £ {{ imported_grant.amount_awarded|default_if_none:"N/A"| intcomma }} </td>
                     </tr>
                     <tr>
                         <th>Grant Type</th>
