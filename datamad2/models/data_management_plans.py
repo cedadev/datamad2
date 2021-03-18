@@ -98,7 +98,7 @@ class DataProduct(models.Model):
     modified = models.DateTimeField(auto_now=True)
     data_product_type = models.CharField(choices=CHOICES, max_length=50)
 
-    name = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True)
     contact = models.CharField(max_length=100, blank=True, null=True)
     data_format = models.ForeignKey(DataFormat, on_delete=models.PROTECT, blank=True, null=True)
     preservation_plan = models.ForeignKey(PreservationPlan, on_delete=models.PROTECT, blank=True, null=True)
