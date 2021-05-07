@@ -1,0 +1,37 @@
+{% extends 'datamad2/base.html' %}
+{% load crispy_forms_tags static %}
+
+{% block content %}
+    <div class="col">
+        <div class="row mb-4">
+            <div class="col">
+                <a id="select-all", href="#">Select all</a> | <a id="deselect-all" href="#">Deselect all</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% crispy form %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+    function toggle_checkboxes(select){
+
+        $(':checkbox').each(function(index, element){
+            $(this).prop("checked", select)
+        })
+    }
+
+    $('#deselect-all').click(function(){
+        toggle_checkboxes(false)
+    })
+
+    $('#select-all').click(function(){
+        toggle_checkboxes(true)
+    })
+
+    </script>
+
+{% endblock %}

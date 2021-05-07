@@ -10,8 +10,13 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 
 from django import forms
-from datamad2.models import Grant
+from datamad2.models import Grant, ImportedGrant
 from bootstrap_datepicker_plus import DatePickerInput
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div, ButtonHolder, HTML
+
+import math
 
 
 class UpdateClaimForm(forms.ModelForm):
@@ -38,6 +43,53 @@ class GrantInfoForm(forms.ModelForm):
             'sanctions_recommended',
             'dmp_agreed'
         )
+
+
+class GrantFieldsExportForm(forms.Form):
+
+    COLUMN_COUNT = 5
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.helper = FormHelper()
+
+        grant_excluded_fields = ['ID']
+
+        # Get the grant fields
+        for field in Grant._meta.concrete_fields:
+            if field.verbose_name not in grant_excluded_fields:
+                self.fields[field.name] = forms.BooleanField(label=field.verbose_name.title(), required=False)
+
+        igrant_excluded_fields = ['ID','grant', 'grant ref']
+
+        # Get the imported grant fields
+        for field in ImportedGrant._meta.concrete_fields:
+            if field.verbose_name not in igrant_excluded_fields:
+                self.fields[f'importedgrant.{field.name}'] = forms.BooleanField(label=field.verbose_name.title(), required=False)
+
+        column_length = math.ceil(len(self.fields)/self.COLUMN_COUNT)
+
+        columns = []
+
+        for i in range(self.COLUMN_COUNT):
+            field_names = list(self.fields.keys())
+            columns.append(
+                Div(*field_names[i*column_length:(i+1)*column_length], css_class='col')
+            )
+
+        self.helper.layout = Layout(
+            Div(*columns, css_class='row'),
+            ButtonHolder(
+                HTML(f'<button id="id-submit" type="submit" class="btn btn-primary">Export</button>')
+            )
+        )
+
+
+
+
+
+
 
 
 
