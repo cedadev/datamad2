@@ -307,12 +307,14 @@ class SearchResultsExportView(LoginRequiredMixin, FormView):
                     line = f'{",".join(row)}\n'
                     stream.write(line)
 
+                filename = f'datamad_search_results_{datetime.now().strftime("%Y-%m-%dT%H_%M")}.csv'
                 response = HttpResponse(stream.getvalue())
                 response['Content-Type'] = 'text/plain'
-                response['Content-Disposition'] = f'attachment; filename="datamad_search_results_{datetime.now().isoformat()}.csv"'
+                response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
             return response
 
+        # Add error message if search form validation fails
         error_string = ''
         for field, errors in search_form.errors.items():
             error_string += f'{field}\n'
