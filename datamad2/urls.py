@@ -6,6 +6,9 @@ urlpatterns = [
     # Home
     path('', views.FacetedGrantListView.as_view(), name='grant_list'),
 
+    # Search result export
+    path('export', views.SearchResultsExportView.as_view(), name='results_export'),
+
     # Django account management
     path('accounts/', include('django.contrib.auth.urls',)),
 

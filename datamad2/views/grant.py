@@ -13,7 +13,7 @@ from datamad2.models import Grant, Document, DataProduct, ImportedGrant
 from .base import DATAPRODUCT_TABLE_CLASS_MAP, DATAPRODUCT_FORM_CLASS_MAP
 from .generic import ObjectDeleteView
 import datamad2.forms as datamad_forms
-from datamad2.utils import generate_document_from_template
+from datamad2.utils import generate_document_from_template, get_verbose_name
 
 # Django imports
 from django.contrib.auth.decorators import login_required
@@ -23,7 +23,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.views.generic.edit import UpdateView
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormView
 from django.http import FileResponse
 from django.contrib import messages
@@ -33,6 +33,9 @@ from jinja2.exceptions import TemplateError as Jinja2TemplateError
 
 # Python imports
 import os
+import operator
+from datetime import datetime
+import io
 
 
 @login_required
@@ -260,3 +263,62 @@ class GrantInfoEditView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']}) + '#editable-info'
+
+
+class SearchResultsExportView(LoginRequiredMixin, FormView):
+    """
+    Export
+    """
+    form_class = datamad_forms.GrantFieldsExportForm
+    template_name = 'datamad2/grant_export_form.html'
+    success_url = reverse_lazy('results_export')
+
+    def form_valid(self, form):
+
+        search_form = datamad_forms.DatamadFacetedSearchForm(
+            self.request.GET,
+            selected_facets=self.request.GET.getlist("selected_facets"),
+            load_all=True
+        )
+
+        selected_columns = [column for column, value in form.cleaned_data.items() if value]
+        verbose_columns = [get_verbose_name(Grant, c, sep='.') for c in selected_columns]
+
+        if search_form.is_valid():
+            qs = search_form.search()
+
+            with io.StringIO() as stream:
+
+                # Add provenance information
+                stream.write('Provenance:\n')
+                stream.write(f'Search URL, {self.request.build_absolute_uri()}\n')
+
+                # Add column headers
+                stream.write(f'{",".join(verbose_columns)}\n')
+
+                for item in qs:
+
+                    grant = item.object
+
+                    row = operator.attrgetter(*selected_columns)(grant)
+
+                    # Make sure all values are converted to strings
+                    row = [f'"{item}"' for item in row]
+                    line = f'{",".join(row)}\n'
+                    stream.write(line)
+
+                response = HttpResponse(stream.getvalue())
+                response['Content-Type'] = 'text/plain'
+                response['Content-Disposition'] = f'attachment; filename="datamad_search_results_{datetime.now().isoformat()}.csv"'
+
+            return response
+
+        error_string = ''
+        for field, errors in search_form.errors.items():
+            error_string += f'{field}\n'
+            for error in errors:
+                error_string += f'\t{error}\n'
+
+        messages.error(self.request, f'An error occurred with the search parameters:\n{error_string}')
+
+        return self.render_to_response(self.get_context_data(form=form))
