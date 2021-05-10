@@ -19,6 +19,7 @@
 {% block content %}
     <div class="col">
         {% selected_facets %}
+        {% include 'datamad2/includes/csv_download.html' %}
         {% render_table table %}
         {% include 'datamad2/includes/pagination.html' %}
     </div>
