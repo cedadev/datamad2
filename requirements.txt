@@ -16,7 +16,7 @@ django-model-utils==4.0.0
 django-sizefield==1.0.0
 django-tables2==2.3.1
 django-unused-media==0.2.0
-djangorestframework==3.10.3
+djangorestframework==3.11.2
 docopt==0.6.2
 docxtpl==0.10.0
 elasticsearch==7.6.0
