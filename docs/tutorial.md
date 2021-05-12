@@ -58,6 +58,28 @@ You can view hidden grants by ticking the box above the "Clear All Filters" butt
 
 They will then show up in the results as normal.
 
+### {% include linked_header.html title="Export Search Results" %}
+
+If you want to see all the fields available on a grant at once or need to do some other manipulation in excel or similar, then 
+you might want to export your search results. To do this:
+1. Make a search. You can use the filters on the left as well as the search box
+
+2. Click the "Export Results" button above the search result list. (Top-right)
+
+    ![Export Results Button](/assets/images/tutorial/export_results_button.png){:.border.w-75}
+
+3. Select the fields you wish to export. You can select all if you want.
+
+    ![Export Field Selection Form](/assets/images/tutorial/export_field_select_form.png){:.border.w-75}
+
+4. Click export
+
+    ![Export Field Selection Form Submit](/assets/images/tutorial/export_field_select_form_export_button.png){:.border.w-75}
+
+
+This will download a csv file which can be opened with excel or other software. 
+
+
 ### {% include linked_header.html title="Grant Documents" %}
 
 Grant documents are linked to grants and can be found on the grant detail page. You access the grant details by clicking on

@@ -6,6 +6,8 @@ navigation:
     sublinks:
       - name: Finding Grants
         url: tutorial.html#finding-grants
+      - name: Export Search Results
+        url: tutorial.html#export-search-results
       - name: Grant Documents
         url: tutorial.html#grant-documents
       - name: User Preferences
