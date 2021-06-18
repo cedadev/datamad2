@@ -16,9 +16,12 @@ from django.db import models
 from django.utils import timezone
 import re
 from model_utils.fields import MonitorField
+import logging
 
 SCIENCE_AREA_PATTERN = re.compile('(?P<area>\w+):\s?(?P<percentage>\d{1,3})%', re.M)
 UNFUNDED_GRANT_TYPES = ['Strategy & Partnerships (KE)','Public Engagement Grants','NERC Strategic Capital Grants']
+
+LOGGER = logging.getLogger(__name__)
 
 
 class Grant(models.Model):
@@ -82,7 +85,11 @@ class Grant(models.Model):
         datacentres
         :return: bool
         """
-        return self.importedgrant.grant_type not in UNFUNDED_GRANT_TYPES
+        ig = self.importedgrant
+        if ig:
+            return ig.grant_type not in UNFUNDED_GRANT_TYPES
+        else:
+            return True
 
     @property
     def visible(self):
