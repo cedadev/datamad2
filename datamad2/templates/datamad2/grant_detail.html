@@ -248,14 +248,15 @@
                         <th>DMP Agreed</th>
                         <td>
                             {% if imported_grant.grant.dmp_agreed %}
-                                {% with doc=imported_grant.grant.document_set.all.first %}
+
+                                {% with doc=dmp_docs.all.first %}
                                     {% if doc %}
-                                    {{ doc.last_modified| date:"dS M Y" }}
+                                    {{ imported_grant.grant.dmp_agreed_date | date:"jS M Y" }}
                                     <br>
                                     <a href="{{ doc.upload.url }}"
                                        download="{{ doc.download_title }}"> {{ doc.title }} </a>
                                     {%  else %}
-                                        {{ imported_grant.grant.dmp_agreed_date | date:"d M Y"}}
+                                        {{ imported_grant.grant.dmp_agreed_date | date:"jS M Y"}}
                                     {% endif %}
                                 {% endwith %}
                             {% else %}
