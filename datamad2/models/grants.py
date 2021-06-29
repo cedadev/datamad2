@@ -71,6 +71,26 @@ class Grant(models.Model):
     dmp_agreed_date = MonitorField(monitor='dmp_agreed', when=[True])
 
     @property
+    def update_linked_grants(self):
+        editable_grant_info = {"alt_data_contact": self.alt_data_contact, 
+        "alt_data_contact_email": self.alt_data_contact_email, 
+        "alt_data_contact_phone": self.alt_data_contact_phone, 
+        "other_data_centre": self.other_data_centre, 
+        "date_contacted_pi": self.date_contacted_pi, 
+        "will_grant_produce_data": self.will_grant_produce_data, 
+        "datasets_delivered": self.datasets_delivered, 
+        "sanctions_recommended": self.sanctions_recommended, 
+        "dmp_agreed": self.dmp_agreed}
+
+        if self.parent_grant:
+            Grant.objects.filter(pk=self.parent_grant.pk).update(**editable_grant_info)
+
+        child_grants = self.child_grant.get_queryset()
+        for child_grant in child_grants:
+            Grant.objects.filter(pk=child_grant.pk).update(**editable_grant_info)
+        
+
+    @property
     def importedgrant(self):
         """
         Return the most recent imported grant version for this grant
