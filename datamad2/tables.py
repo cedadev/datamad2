@@ -64,12 +64,14 @@ class GrantTable(tables.Table):
         }
         fields = (
             'importedgrant__grant_holder',
+            'importedgrant__call',
         )
         sequence = (
             'visibility',
             'grant_ref',
             'grant_title',
             'importedgrant__grant_holder',
+            'importedgrant__call',
             'labels',
             'date_added',
             'actual_start_date',
