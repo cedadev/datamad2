@@ -40,6 +40,11 @@ class GrantTable(tables.Table):
         format='d M Y'
     )
 
+    actual_end_date = tables.DateColumn(
+        accessor='importedgrant__actual_end_date',
+        format='d M Y'
+    )
+
     assigned_datacentre = tables.TemplateColumn(
         accessor='assigned_data_centre',
         template_name='datamad2/fields/assigned_datacentre_field.html',
@@ -73,6 +78,7 @@ class GrantTable(tables.Table):
             'labels',
             'date_added',
             'actual_start_date',
+            'actual_end_date',
             'assigned_datacentre',
             '...'
         )
