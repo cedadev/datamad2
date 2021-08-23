@@ -13,7 +13,7 @@ Once you have the pre-requisites installed, navigate to the docs directory and r
 
 This will serve the docs locally and will update as you change the source.
 
-##Set up Guide
+## Set up Guide
 
 Process to set up Datamad2
 
