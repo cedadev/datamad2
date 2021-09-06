@@ -266,9 +266,8 @@ class GrantInfoEditView(LoginRequiredMixin, UpdateView):
         if "update_linked" in self.request.POST:
             grant = get_object_or_404(Grant, pk=pk)
             grant.update_linked_grants
-            return reverse('grant_detail', kwargs={'pk': pk}) + '#editable-info'
-        else:
-            return reverse('grant_detail', kwargs={'pk': pk}) + '#editable-info'
+        
+        return reverse('grant_detail', kwargs={'pk': pk}) + '#editable-info'
 
 
 class SearchResultsExportView(LoginRequiredMixin, FormView):

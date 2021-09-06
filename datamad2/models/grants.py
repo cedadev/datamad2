@@ -83,11 +83,15 @@ class Grant(models.Model):
         "dmp_agreed": self.dmp_agreed}
 
         if self.parent_grant:
+            # if there is a parent grant, I am a child grant. Update parent.
             Grant.objects.filter(pk=self.parent_grant.pk).update(**editable_grant_info)
+            
+            # Get and update siblings
+            Grant.objects.filter(parent_grant=self.parent_grant).update(**editable_grant_info)
 
+        # I might be a parent grant - get any child grants and update
         child_grants = self.child_grant.get_queryset()
-        for child_grant in child_grants:
-            Grant.objects.filter(pk=child_grant.pk).update(**editable_grant_info)
+        child_grants.update(**editable_grant_info)
         
 
     @property
