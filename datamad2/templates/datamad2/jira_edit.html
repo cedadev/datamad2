@@ -1,0 +1,27 @@
+{% extends 'datamad2/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{% url 'grant_list' %}">Home</a></li>
+    <!-- <li class="breadcrumb-item"><a href="{% url 'grant_detail' grant.pk %}">{{ grant.grant_ref }}</a></li> -->
+    <li class="breadcrumb-item active">Edit JIRA link</li>
+{% endblock breadcrumb_items %}
+
+{% block content_panel %}
+    <div class="row">
+        <div class="col">
+            <form method="post">{% csrf_token %}
+                <h4><label> Edit JIRA link: </label></h4>
+                {{ form | crispy }}
+                <button type="submit" class="btn btn-primary pl-4 pr-4">Save</button>
+                <a href="javascript:void;" class="btn btn-secondary pl-4 pr-4" onclick="javascript:history.back();">Cancel</a>
+            </form>
+        </div>
+    </div>
+{% endblock content_panel %}
+
+
+{% block tail_js_extra %}
+    {{ block.super }}
+    {{ form.media }}
+{% endblock tail_js_extra %}

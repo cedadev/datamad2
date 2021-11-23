@@ -14,3 +14,4 @@ from .grant import GrantInfoForm, UpdateClaimForm, GrantFieldsExportForm
 from .preferences import FacetPreferencesForm, SortByPreferencesForm
 from .search import DatamadFacetedSearchForm
 from .data_product import DigitalDataProductForm, ModelSourceDataProductForm, PhysicalDataProductForm, HardcopyDataProductForm, ThirdPartyDataProductForm, PreservationPlanForm, DataFormatForm
+from .jira import UpdateJIRAForm

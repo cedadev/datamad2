@@ -319,6 +319,10 @@
                                    href="{% url 'jiraticket_delete' pk=imported_grant.grant.pk jt_pk=ticket.pk %}">
                                     &nbsp;<i class="fa fa-unlink text-danger"></i>
                                 </a>
+                                <a title='Edit JIRA Link' data-toggle='tooltip'
+                                   href="{% url 'jiraticket_edit' pk=imported_grant.grant.pk jt_pk=ticket.pk %}">
+                                    &nbsp;<i class="fas fa-edit"></i>
+                                </a>
                             </td>
                             {% endif %}
                         </tr>

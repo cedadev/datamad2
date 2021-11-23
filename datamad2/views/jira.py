@@ -12,8 +12,10 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 from datamad2.models import Grant, JIRATicket
 from datamad2.utils import rgetattr
 from datamad2.create_issue import make_issue
+import datamad2.forms as datamad_forms
 from .mixins import DatacentreAdminTestMixin
 from .generic import ObjectDeleteView
+from django.views.generic.edit import UpdateView
 
 # Django imports
 from django.contrib.auth.decorators import login_required
@@ -108,6 +110,29 @@ class JIRATicketDeleteView(DatacentreAdminTestMixin, ObjectDeleteView):
     """
     model = JIRATicket
     pk_url_kwarg = 'jt_pk'
+
+    def get_success_url(self):
+        return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']})
+
+
+class JIRATicketEditView(DatacentreAdminTestMixin, UpdateView):
+    """
+    View which presents a form to edit the JIRA link
+    """
+    model = JIRATicket
+    form_class = datamad_forms.UpdateJIRAForm
+    pk_url_kwarg = 'jt_pk'
+    template_name = 'datamad2/jira_edit.html'
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['url'] = get_object_or_404(JIRATicket, pk=self.kwargs['jt_pk']).url
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['grant'] = get_object_or_404(Grant, pk=self.kwargs['pk'])
+        return context
 
     def get_success_url(self):
         return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']})

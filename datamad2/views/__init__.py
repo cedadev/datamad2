@@ -15,4 +15,4 @@ from .grant import grant_detail, grant_history, grant_history_detail, \
     DocumentGenerationSelectView, ChangeClaimFormView, GrantInfoEditView, \
     grant_visibility, SearchResultsExportView
 from .home import FacetedGrantListView
-from .jira import push_to_jira, JIRATicketDeleteView
+from .jira import push_to_jira, JIRATicketDeleteView, JIRATicketEditView
