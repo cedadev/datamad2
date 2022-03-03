@@ -37,12 +37,15 @@ class UserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
 
         user = self.model(
-            email=self.normalize_email(email), **extra_fields)
+            email=self.normalize_email(email), 
+            **extra_fields)
 
         # Set the username to match the email
         user.username = self.normalize_email(email)
         user.set_password(password)
-        user.data_centre = DataCentre.objects.get(name=data_centre)
+        # causing create superuser to fail, so data centre only included for non superusers
+        if not user.is_superuser:
+            user.data_centre = DataCentre.objects.get(name=data_centre)
         user.save(using=self._db)
         return user
 
@@ -51,7 +54,6 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, datacentre, **extra_fields)
 
     def create_superuser(self, email, password=None, datacentre=None, **extra_fields):
-
         DataCentre.objects.get_or_create(name=None)
 
         extra_fields.setdefault('is_superuser', True)
