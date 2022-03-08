@@ -262,7 +262,12 @@ class GrantInfoEditView(LoginRequiredMixin, UpdateView):
     template_name = 'datamad2/grantinfo_edit.html'
 
     def get_success_url(self):
-        return reverse('grant_detail', kwargs={'pk': self.kwargs['pk']}) + '#editable-info'
+        pk = self.kwargs['pk']
+        if "update_linked" in self.request.POST:
+            grant = get_object_or_404(Grant, pk=pk)
+            grant.update_linked_grants
+        
+        return reverse('grant_detail', kwargs={'pk': pk}) + '#editable-info'
 
 
 class SearchResultsExportView(LoginRequiredMixin, FormView):
