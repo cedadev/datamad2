@@ -38,7 +38,7 @@ pbr==5.4.4
 plumber==1.5
 psycopg2-binary==2.9.1
 pycparser==2.20
-PyJWT==1.7.1
+PyJWT==2.4.0
 pytest-runner==5.1
 python-dateutil==2.8.1
 python-docx==0.8.10
